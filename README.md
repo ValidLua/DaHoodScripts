@@ -1,4 +1,6 @@
 # DaHoodCodesSource
-Da Hood Code For scripts
-----------------------------
-create your own scripts
+Create your own scripts
+
+
+#How to use
+
