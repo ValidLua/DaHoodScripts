@@ -19,3 +19,12 @@
 	spoofValue.Name = 'RagdollConstraints';
 	local defValue = Instance.new('IntValue', game:GetService('Players').LocalPlayer.Character:FindFirstChild('BodyEffects'));
 	defValue.Name = 'Defense';
+	
+	
+	
+	--[[
+	
+	******************************************************************************************************************************
+	
+	]]--
+
