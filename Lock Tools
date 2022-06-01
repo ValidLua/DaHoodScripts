@@ -3,7 +3,7 @@
 
 
 
-game.StarterGui:SetCore("SendNotification", {Title = "Lock Tools", Text = "Thank You SwagMode :3", Duration = 60
+game.StarterGui:SetCore("SendNotification", {Title = "Lock Tools", Text = "Thank You SwagMode :3", Duration = 15
 
 })
 
