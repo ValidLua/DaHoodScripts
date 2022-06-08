@@ -1,4 +1,4 @@
--- Press Z
+-- Thank You Dimag X dev :D
 
 local mt = getrawmetatable(game)
 local old = mt.__newindex
