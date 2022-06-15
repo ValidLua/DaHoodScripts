@@ -1,9 +1,9 @@
-player = game.Players.LocalPlayer
+Plr = game.Players.LocalPlayer
 
-game:GetService('RunService'):BindToRenderStep("Auto-Block", 0 , function()
+game:GetService('RunService'):BindToRenderStep("Hide - Block", 0 , function()
 
 		wait()
-		for _,v in pairs(player.Character:FindFirstChildWhichIsA('Humanoid'):GetPlayingAnimationTracks()) do
+		for _,v in pairs(Plr.Character:FindFirstChildWhichIsA('Humanoid'):GetPlayingAnimationTracks()) do
 			if v.Name == 'Block' then
 				v:Stop()
 			end
