@@ -7,8 +7,8 @@ Thanks SwagMode you make it easy for me
 
 
 MainEvent = game:GetService('ReplicatedStorage').MainEvent
-player = game.Players.LocalPlayer
-Distancia = 15
+player = game.Players.LocalPlayer;
+Distancia = 15; -- Here put the distance to activate
 
 game:GetService('RunService'):BindToRenderStep("Auto-Block", 0 , function()
 
