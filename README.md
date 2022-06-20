@@ -1,3 +1,10 @@
+
+
+
+Discord: Deleted User 09049e12954#0025
+
+Twitter: @3v1lD34th
+
      _  ____   _  _    _    _              ____          __  _
     | ||___ \ | || |  | |  | |            |___ \        /_ || |
    _` | |__ < |__   _|| __|| '_ \          |__ < \ \ / / | || |
@@ -6,10 +13,6 @@
                                    ______
                                   |______|
 
-
-Discord: Deleted User 09049e12954#0025
-
-Twitter: @3v1lD34th
 
 
 # DaHoodCodesSource.
