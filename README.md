@@ -1,5 +1,7 @@
 
+* If any script is faulty, try to fix it yourself, it helps to learn something. I'll try to get everything working.
 
+| We must stop all those scripts that only seek money by selling premium commands |
 
 Discord: Deleted User 09049e12954#0025
 
