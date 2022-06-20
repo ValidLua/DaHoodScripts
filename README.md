@@ -1,3 +1,7 @@
+Discord: Deleted User 09049e12954#0025
+Twitter: @3v1lD34th
+
+
 # DaHoodCodesSource.
 Create your own scripts
 
