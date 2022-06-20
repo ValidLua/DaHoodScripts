@@ -3,6 +3,8 @@
 
 | We must stop all those scripts that only seek money by selling premium commands |
 
+Tomorrow I will appear doxxed :(
+
 Discord: Deleted User 09049e12954#0025
 
 Twitter: @3v1lD34th
