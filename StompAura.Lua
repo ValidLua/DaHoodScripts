@@ -1,6 +1,7 @@
 --[[
 
 Is it me or does this script raise your ping a bit?
+I will try to solve it
 
 ]]--
 
