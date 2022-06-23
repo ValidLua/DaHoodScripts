@@ -23,9 +23,13 @@ local jo = game:GetService('Players').LocalPlayer;
 local x = true;
 local Plr = game.Players.LocalPlayer;
 cagada = false;
+fyga = true
 
 
-game:GetService('RunService'):BindToRenderStep("Stomp", 0 , function()
+Plr = game.Players.LocalPlayer
+
+
+game:GetService('RunService'):BindToRenderStep("Bucle", 0 , function()
 
     wait()
 
@@ -49,18 +53,18 @@ print("Alguien cerca esta muerto")
         guardado = true 
         end
 
-       game:GetService("ReplicatedStorage").MainEvent:FireServer("Stomp")
 
   Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[target].Character.UpperTorso.Position + Vector3.new(0, 3, 0))
 
   game:GetService("ReplicatedStorage").MainEvent:FireServer("Stomp")
 
-  until  game.Players[target].Character.BodyEffects['K.O'].Value == false
+  until  fuga == true
 
 if guardado == true then
  for i = 1, 1 do 
-      jo.Character.HumanoidRootPart.CFrame = CFrame.new(AX1,AY1 + 1,AZ1)
+      jo.Character.HumanoidRootPart.CFrame = CFrame.new(AX1,AY1,AZ1)
       guardado = false
+      fuga = false
  end
  end
 end
