@@ -16,14 +16,9 @@ https://github.com/D34THEV1L/DaHoodCodesSource
 game.StarterGui:SetCore("SendNotification", {Title = "D34TH_3V1L [GUI]", Text = "D34TH_3V1L Has been executed", Duration = 20
 
 })
-pcall(function()
-	
+
 -- Variables AutoEat
 
-Y1C = nil
-X1C = nil
-Z1C = nil
-listo = nil
 
 --This script reveals ALL hidden messages in the default chat
 --chat "/spy" to toggle!
@@ -2449,5 +2444,4 @@ local AnimationsButton = AnimationsPage.AddButton("Mage", function()
 	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=707826056"
 	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
 	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
 end)
