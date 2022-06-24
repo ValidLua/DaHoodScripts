@@ -153,9 +153,9 @@ versisesalio()
 caca = true
 
             pcall(function()Plr.Character.Humanoid:EquipTool(Plr.Backpack.Combat)end)	
-            wait()
+            wait(0.005)
             Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[target].Character.UpperTorso.Position + Vector3.new(0, -12, 0))
-            wait()	
+            wait(0.005)	
             Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[target].Character.UpperTorso.Position + Vector3.new(0, -13, 0))
             pcall(function()
                 Plr.Character.Combat:Activate()
