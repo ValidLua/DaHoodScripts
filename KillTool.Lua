@@ -40,9 +40,6 @@ Plr.CharacterAdded:Connect(function(character)
 end)
 
 function e(character)
-    print("Stop exploiting boy you ruin the games")
-    print("Made By D34TH_3V1L")
-
     for i, v in pairs(character:GetChildren()) do
         if v:FindFirstChild("LocalScript") then
             v:Destroy()
@@ -84,7 +81,7 @@ wait()
 local success, err = pcall(function()
 					if player.Character.BodyEffects.Attacking.Value == true then
 						for i,v in pairs(game:GetService('Players'):GetChildren()) do
-							if (v.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.LeftHand.Position).Magnitude <= 50 then
+							if (v.Character.HumanoidRootPart.Position - player.Character.LeftHand.Position).Magnitude <= 50 then
 								if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then
 									if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"):FindFirstChild('Handle') then
 										firetouchinterest(game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Handle, v.Character.UpperTorso, 0)
@@ -153,9 +150,9 @@ versisesalio()
 caca = true
 
             pcall(function()Plr.Character.Humanoid:EquipTool(Plr.Backpack.Combat)end)	
-            wait(0.005)
-            Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[target].Character.UpperTorso.Position + Vector3.new(0, -12, 0))
-            wait(0.005)	
+            wait()
+            Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[target].Character.UpperTorso.Position + Vector3.new(0, 13, 0))
+            wait()	
             Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[target].Character.UpperTorso.Position + Vector3.new(0, -13, 0))
             pcall(function()
                 Plr.Character.Combat:Activate()
