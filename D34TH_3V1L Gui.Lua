@@ -16,7 +16,8 @@ https://github.com/D34THEV1L/DaHoodCodesSource
 game.StarterGui:SetCore("SendNotification", {Title = "D34TH_3V1L [GUI]", Text = "D34TH_3V1L Has been executed", Duration = 20
 
 })
-
+pcall(function()
+	
 -- Variables AutoEat
 
 Y1C = nil
@@ -2449,4 +2450,4 @@ local AnimationsButton = AnimationsPage.AddButton("Mage", function()
 	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
 	game.Players.LocalPlayer.Character.Humanoid.Jump = true
 end)
-
+end)
