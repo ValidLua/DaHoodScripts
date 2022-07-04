@@ -9,6 +9,10 @@ Discord: Deleted User 09049e12954#0025
 
 Twitter: @3v1lD34th
 
+# Update Log
+
+- New Gui [Da Hood]
+
 # DaHoodCodesSource.
 Create your own scripts
 
