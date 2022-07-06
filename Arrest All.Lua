@@ -3,7 +3,10 @@ game.StarterGui:SetCore("SendNotification", {Title = "AutoArrest ", Text = "Wait
 
 repeat wait() until game:IsLoaded()
 
+if game:IsLoaded() then loaded = true end
 
+
+if loaded == true then
 
 -- Gui to Lua
 -- Version: 3.2
@@ -329,4 +332,5 @@ while wait() do
 		until tonumber(target.DataFolder.Information.Wanted.Value) == 0 or game:GetService("UserInputService"):IsKeyDown(Enum.KeyCode.V)
 	end)
 	e = false
+end
 end
