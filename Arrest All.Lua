@@ -5,11 +5,9 @@ repeat
 	wait()
 until game:IsLoaded() and game.Players.LocalPlayer.Character:FindFirstChild("FULLY_LOADED_CHAR")
 
-if game:IsLoaded() and and game.Players.LocalPlayer.Character:FindFirstChild("FULLY_LOADED_CHAR")
-then loaded = true end
 
 
-if loaded == true then
+
 
 -- Gui to Lua
 -- Version: 3.2
@@ -336,4 +334,4 @@ while wait() do
 	end)
 	e = false
 end
-end
+
