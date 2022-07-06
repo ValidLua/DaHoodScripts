@@ -1,3 +1,10 @@
+game.StarterGui:SetCore("SendNotification", {Title = "AutoArrest ", Text = "Waiting for the game to load", Icon =  "rbxassetid://505845268", Duration = 35
+})
+
+repeat wait() until game:IsLoaded()
+
+
+
 -- Gui to Lua
 -- Version: 3.2
 
@@ -87,19 +94,6 @@ game:GetService('RunService'):BindToRenderStep("Reach", 0 , function()
 		end
 	end)
 end)
-
-
-
-
-
-
-
-
-
-game.StarterGui:SetCore("SendNotification", {Title = "AutoArrest ", Text = "Waiting for the game to load", Icon =  "rbxassetid://505845268", Duration = 35
-})
-
-wait(7)
 
 x = true
 
