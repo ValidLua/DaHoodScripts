@@ -99,7 +99,7 @@ end)
 game.StarterGui:SetCore("SendNotification", {Title = "AutoArrest ", Text = "Waiting for the game to load", Icon =  "rbxassetid://505845268", Duration = 35
 })
 
-wait(5)
+wait(7)
 
 x = true
 
