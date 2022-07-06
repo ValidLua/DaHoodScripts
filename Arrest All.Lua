@@ -67,6 +67,7 @@ queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/D3
 game.StarterGui:SetCore("SendNotification", {Title = "AutoArrest ", Text = "Waiting for the game to load", Icon =  "rbxassetid://505845268", Duration = 35
 })
 
+wait(6)
 
 x = true
 
