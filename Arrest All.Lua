@@ -1,6 +1,16 @@
 -- Gui to Lua
 -- Version: 3.2
 
+Players = game:GetService('Players')
+player = game.Players.LocalPlayer
+Plr = game.Players.LocalPlayer
+lokis = nil
+Grab = nil
+GC = nil
+target = nil
+Skid = nil
+
+
 -- Instances:
 
 local ScreenGui = Instance.new("ScreenGui")
@@ -55,6 +65,28 @@ queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/D3
 
 
 
+game:GetService('RunService'):BindToRenderStep("Reach", 0 , function()
+	local success, err = pcall(function()
+		if player.Character.BodyEffects.Attacking.Value == true then
+			for i,v in pairs(game:GetService('Players'):GetChildren()) do
+				if (v.Character.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.LeftHand.Position).Magnitude <= 50 then
+					if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then
+						if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"):FindFirstChild('Handle') then
+							firetouchinterest(game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Handle, v.Character.UpperTorso, 0)
+						else
+							firetouchinterest(game.Players.LocalPlayer.Character['RightHand'], v.Character.UpperTorso, 0)
+							firetouchinterest(game.Players.LocalPlayer.Character['LeftHand'], v.Character.UpperTorso, 0)
+							firetouchinterest(game.Players.LocalPlayer.Character['RightFoot'], v.Character.UpperTorso, 0)
+							firetouchinterest(game.Players.LocalPlayer.Character['LeftFoot'], v.Character.UpperTorso, 0)
+							firetouchinterest(game.Players.LocalPlayer.Character['RightLowerLeg'], v.Character.UpperTorso, 0)
+							firetouchinterest(game.Players.LocalPlayer.Character['LeftLowerLeg'], v.Character.UpperTorso, 0)
+						end
+					end
+				end
+			end
+		end
+	end)
+end)
 
 
 
@@ -67,7 +99,7 @@ queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/D3
 game.StarterGui:SetCore("SendNotification", {Title = "AutoArrest ", Text = "Waiting for the game to load", Icon =  "rbxassetid://505845268", Duration = 35
 })
 
-wait(6)
+wait(5)
 
 x = true
 
@@ -113,10 +145,6 @@ getgenv().rejoin = game:GetService("CoreGui").RobloxPromptGui.promptOverlay.Chil
 	end
 end)
 
-
-
-
-wait(5)
 
 -- Invisible Mask
 
@@ -211,7 +239,9 @@ while wait() do
 				if Plr.Character.Humanoid.Health > 80 then
 					if not target.Character.BodyEffects["K.O"].Value then
 						if A then
-							Plr.Character.HumanoidRootPart.CFrame = CFrame.new(target.Character.UpperTorso.Position + Vector3.new(0, -5, 0))
+							Plr.Character.HumanoidRootPart.CFrame = CFrame.new(target.Character.UpperTorso.Position + Vector3.new(0, -13, 0))
+							wait(0.0000005)
+							Plr.Character.HumanoidRootPart.CFrame = CFrame.new(target.Character.UpperTorso.Position + Vector3.new(0, 13, 0))
 						end
 					else
 						Plr.Character.HumanoidRootPart.CFrame = target.Character.UpperTorso.CFrame
