@@ -73,45 +73,6 @@ queue_on_teleport("https://raw.githubusercontent.com/D34THEV1L/DaHoodCodesSource
 
 
 
-game:GetService('RunService'):BindToRenderStep("Hide-User", 0 , function()
-	local WearingMask = player.Character:FindFirstChild('In-gameMask')
-	local Humanoid = player.Character:FindFirstChildWhichIsA('Humanoid')
-	if not WearingMask then
-		local OwnsMask = player.Character:FindFirstChild('Mask') or player.Backpack:FindFirstChild('Mask')
-		if OwnsMask then
-			local MaskInventory = player.Backpack:FindFirstChild('Mask')
-			if MaskInventory then
-				Humanoid:EquipTool(MaskInventory)
-				wait(0.1)
-			end
-			OwnsMask:Activate()
-		else
-			local ItemName = 'Mask'
-			local ItemCost = 60
-			local ClickDetector = game:GetService("Workspace").Ignored.Shop["[Paintball Mask] - $60"].ClickDetector
-			local Location = game:GetService("Workspace").Ignored.Shop["[Paintball Mask] - $60"].Head.Position
-			local function buy()
-				wait()
-				player.Character.HumanoidRootPart.CFrame = CFrame.new(Location)
-				fireclickdetector(ClickDetector)
-				if not player.Character.LeftHand:FindFirstChild('LeftWrist') then
-					player.Character.LeftHand.Position = player.Character.LeftLowerArm.Position
-					player.Character.RightHand.Position = player.Character.RightLowerArm.Position
-				end
-			end
-			repeat buy() until player.Backpack:FindFirstChild(ItemName) or player.DataFolder.Currency.Value <= ItemCost or player.Character:FindFirstChild(ItemName)
-			player.Character.HumanoidRootPart.CFrame = NamePos
-			if not player.Character.LeftHand:FindFirstChild('LeftWrist') then
-				player.Character.LeftHand.Position = player.Character.LeftLowerArm.Position
-				player.Character.RightHand.Position = player.Character.RightLowerArm.Position
-			end
-		end
-	else
-		local MaskVisible = player.Character:FindFirstChild('In-gameMask'):FindFirstChild('Handle')
-		if MaskVisible then
-			MaskVisible:Destroy()
-		end
-	end
 
 
 
@@ -331,4 +292,3 @@ game:GetService('RunService'):BindToRenderStep("Hide-User", 0 , function()
 		end)
 		e = false
 	end
-	end)
