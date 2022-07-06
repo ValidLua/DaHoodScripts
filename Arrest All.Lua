@@ -1,9 +1,12 @@
 game.StarterGui:SetCore("SendNotification", {Title = "AutoArrest ", Text = "Waiting for the game to load", Icon =  "rbxassetid://505845268", Duration = 35
 })
 
-repeat wait() until game:IsLoaded()
+repeat
+	wait()
+until game:IsLoaded() and game.Players.LocalPlayer.Character:FindFirstChild("FULLY_LOADED_CHAR")
 
-if game:IsLoaded() then loaded = true end
+if game:IsLoaded() and and game.Players.LocalPlayer.Character:FindFirstChild("FULLY_LOADED_CHAR")
+then loaded = true end
 
 
 if loaded == true then
