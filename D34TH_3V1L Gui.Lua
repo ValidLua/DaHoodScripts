@@ -1,5 +1,4 @@
--- Gui to Lua
--- Version: 3.2
+-- Made By: D34TH_3V1L
 
 -- Instances:
 
