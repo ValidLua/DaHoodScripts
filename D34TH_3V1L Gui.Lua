@@ -1,16 +1,5 @@
---[[
-V 5.13.4
-
-
-Yes, this script is SOURCE CODE! :D
-
-Pls if you use my script give me credits
-
-You can do with it what you want
-
-I will keep updating it
-
-]]
+-- Gui to Lua
+-- Version: 3.2
 
 -- Instances:
 
@@ -569,7 +558,8 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 			
 			if rpgt == false then RPGLock.Text = 'UnRPGLock' rpgt = true
 			r = true
-			while r == true do
+				while r == true do
+					wait()
 				pcall(function()
 					if game.Workspace.Ignored:FindFirstChild("Grenade") then
 						local lol = game.Workspace.Ignored:FindFirstChild("Launcher")
@@ -616,7 +606,8 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 			
 			if Grenade == false then GrenadeLock.Text = 'UnGrenadeLock' Grenade = true
 			g = true
-			while g == true do
+				while g == true do
+					wait()
 				pcall(function()
 					if game.Workspace.Ignored:FindFirstChild("Grenade") then
 						local lol = game.Workspace.Ignored:FindFirstChild("Grenade")
