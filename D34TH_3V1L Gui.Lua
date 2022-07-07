@@ -1,5 +1,16 @@
--- Gui to Lua
--- Version: 3.2
+--[[
+V 5.13.4
+
+
+Yes, this script is SOURCE CODE! :D
+
+Pls if you use my script give me credits
+
+You can do with it what you want
+
+I will keep updating it
+
+]]
 
 -- Instances:
 
@@ -64,31 +75,31 @@ TextButton.TextWrapped = true
 
 local function BIVR_fake_script() -- TextButton.LocalScript 
 	local script = Instance.new('LocalScript', TextButton)
-	
+
 	local checking = script.Parent
-	
+
 	checking.Text = 'Hi'
-	
-		wait(1)
+
+	wait(1)
 	checking.Text = 'Scripting your world'
 	wait(3)
-		checking.Text = 'checking game.'
+	checking.Text = 'checking game.'
 	wait(1)
-		checking.Text = 'checking game. .'
+	checking.Text = 'checking game. .'
 	wait(1)
-		checking.Text = 'checking game. . .'
+	checking.Text = 'checking game. . .'
 	wait(1)
-	
+
 	if game.PlaceId == 2788229376 then -- checks the game id
 		checking.Text = 'game not found'
-		wait(2)
+		wait(1)
 		checking.Text = 'Done [Da Hood]'
 		wait(2)
 		checking.Text = 'Thanks for using my script.'
-		wait(4)
+		wait(2)
 		Frame.Visible = false
-		
-		
+
+
 		-- Gui to Lua
 		-- Version: 3.2
 
@@ -100,7 +111,7 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		local localCharacter  = localPlayer.Character;
 		local jo = game:GetService('Players').LocalPlayer;
 		local ReachButton = script.Parent;
-		local player = game.Players.LocalPlayer;
+		player = game.Players.LocalPlayer;
 		local target = nil;
 
 		-------------
@@ -553,7 +564,43 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		RPGLock.Text = "RPG Lock"
 		RPGLock.TextColor3 = Color3.fromRGB(179, 179, 179)
 		RPGLock.TextSize = 28.000
+		local rpgt = false
+		RPGLock.MouseButton1Up:Connect(function()
+			
+			if rpgt == false then RPGLock.Text = 'UnRPGLock' rpgt = true
+			r = true
+			while r == true do
+				pcall(function()
+					if game.Workspace.Ignored:FindFirstChild("Grenade") then
+						local lol = game.Workspace.Ignored:FindFirstChild("Launcher")
 
+						if lol:FindFirstChildOfClass("BodyVelocity") then
+							wait()
+							lol.BodyVelocity:Destroy()
+						end
+
+						if lol:FindFirstChild("BodyVelocity") == nil then
+							lol.CFrame = CFrame.new(game:GetService("Players")[Skid].Character.Head.CFrame.X, game:GetService("Players")[Skid].Character.Head.CFrame.Y + 6.5, game:GetService("Players")[Skid].Character.Head.CFrame.Z)
+						end
+					elseif game.Workspace.Ignored:FindFirstChild("Handle") then
+						local lol = game.Workspace.Ignored:FindFirstChild("Handle")
+
+						if lol:FindFirstChild("Pin") then
+							lol.CFrame = CFrame.new(game:GetService("Players")[Skid].Character.Head.CFrame.X, game:GetService("Players")[Skid].Character.Head.CFrame.Y + 8, game:GetService("Players")[Skid].Character.Head.CFrame.Z)
+						end
+					end
+				end)
+			end
+	else
+				RPGLock.Text = 'RPG Lock'
+				r = false
+				rpgt = false
+			end
+			
+			end)
+
+		
+		
 		GrenadeLock.Name = "Grenade Lock"
 		GrenadeLock.Parent = TargetFrame
 		GrenadeLock.BackgroundColor3 = Color3.fromRGB(27, 27, 27)
@@ -564,9 +611,12 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		GrenadeLock.Text = "Grenade Lock"
 		GrenadeLock.TextColor3 = Color3.fromRGB(179, 179, 179)
 		GrenadeLock.TextSize = 28.000
+		local Grenade = false
 		GrenadeLock.MouseButton1Up:Connect(function()
-
-			while wait() do
+			
+			if Grenade == false then GrenadeLock.Text = 'UnGrenadeLock' Grenade = true
+			g = true
+			while g == true do
 				pcall(function()
 					if game.Workspace.Ignored:FindFirstChild("Grenade") then
 						local lol = game.Workspace.Ignored:FindFirstChild("Grenade")
@@ -588,7 +638,13 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 					end
 				end)
 			end
-		end)
+		
+			else
+				GrenadeLock.Text = 'Grenade Lock' Grenade = false
+		g = false
+			end
+			
+			end)
 		Lock.Name = "Lock"
 		Lock.Parent = TargetFrame
 		Lock.BackgroundColor3 = Color3.fromRGB(27, 27, 27)
@@ -599,10 +655,11 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		Lock.Text = "Target"
 		Lock.TextColor3 = Color3.fromRGB(179, 179, 179)
 		Lock.TextSize = 28.000
-		local LockText = false
+		LockText = false
 		Lock.MouseButton1Up:Connect(function()
 
-			if LockText == false then Lock.Text = 'Target' LockText = true
+
+			if LockText == false then Lock.Text = 'UnTarget' LockText = true
 
 				pcall(function()
 					player.Character.LeftHand.LeftWrist:Destroy();
@@ -633,7 +690,11 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 				repeat wait() until Lock.Text == 'Target'
 				Pause()
 
+
 			else LockText = false Lock.Text = 'UnTarget'
+
+
+
 
 			end
 
@@ -651,21 +712,14 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		Info.TextSize = 28.000
 		Info.MouseButton1Up:Connect(function()
 
+
 			local Skid = target	
 
 			game.StarterGui:SetCore("SendNotification", {Title = "D34TH_3V1L [Target Gui]", Text = "Information printed on the console press F9 to see it", Duration = 10
 
 			})
 
-			print("D34TH_3V1L ")
-			print("------------------")
-			print(""..game:GetService("Players")[Skid].Name.."Tools: ")
-			print("------------------")
-			for i, v in pairs(game:GetService("Players")[Skid].Backpack:GetDescendants()) do
-				if v:IsA("Tool") then
-					print(""..v.Name.."")
-				end
-			end
+
 
 			print("------------------")
 			print(""..game:GetService("Players")[Skid].Name.." | Information:")
@@ -1438,7 +1492,7 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		Welcome.Position = UDim2.new(-0.0430621952, 0, 0.0240549836, 0)
 		Welcome.Size = UDim2.new(0, 239, 0, 33)
 		Welcome.Font = Enum.Font.SpecialElite
-		Welcome.Text = "Bienvenido"
+		Welcome.Text = "Welcome: "
 		Welcome.TextColor3 = Color3.fromRGB(112, 112, 112)
 		Welcome.TextSize = 30.000
 
@@ -1459,7 +1513,7 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		Version.Position = UDim2.new(0.0287081376, 0, 0.780068755, 0)
 		Version.Size = UDim2.new(0, 200, 0, 50)
 		Version.Font = Enum.Font.SourceSansBold
-		Version.Text = "Version 4.12.2"
+		Version.Text = "Version 5.13.4"
 		Version.TextColor3 = Color3.fromRGB(113, 113, 113)
 		Version.TextSize = 42.000
 		Version.TextStrokeColor3 = Color3.fromRGB(124, 124, 124)
@@ -1490,7 +1544,7 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		UpdateLog_2.Position = UDim2.new(0.595693767, 0, 0.266834646, 0)
 		UpdateLog_2.Size = UDim2.new(0, 157, 0, 143)
 		UpdateLog_2.Font = Enum.Font.PatrickHand
-		UpdateLog_2.Text = "-Added: Waypoints, AntiStompV2. More? Coming soon"
+		UpdateLog_2.Text = "-Added: Waypoints, AntiStompV2, New AimLock[Op(15x)] More? Coming soon"
 		UpdateLog_2.TextColor3 = Color3.fromRGB(176, 176, 176)
 		UpdateLog_2.TextScaled = true
 		UpdateLog_2.TextSize = 22.000
@@ -1503,7 +1557,7 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		UpdateLog_3.Position = UDim2.new(0.583732069, 0, 0.813226461, 0)
 		UpdateLog_3.Size = UDim2.new(0, 157, 0, 30)
 		UpdateLog_3.Font = Enum.Font.PatrickHand
-		UpdateLog_3.Text = "Update: 07/05/2022"
+		UpdateLog_3.Text = "Update: 06/07/2022 (MX)"
 		UpdateLog_3.TextColor3 = Color3.fromRGB(176, 176, 176)
 		UpdateLog_3.TextScaled = true
 		UpdateLog_3.TextSize = 22.000
@@ -2836,7 +2890,7 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 				game.StarterGui:SetCore("SendNotification", {Title = "D34TH_HUB", Text = "[C] to toggle GUI", Icon =  "rbxassetid://505845268", Duration = 10
 				})
 
-				loadstring(game:HttpGet("https://raw.githubusercontent.com/D34THEV1L/DaHoodCodesSource/main/AimLock.Lua"))()
+				loadstring(game:HttpGet("https://raw.githubusercontent.com/D34THEV1L/DaHoodCodesSource/main/AimLock%20%5B15x%20cracked%5D.lua"))()
 			end)
 		end
 		coroutine.wrap(GMJBBE_fake_script)()
@@ -4146,15 +4200,15 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 		HeatlhFrame.Visible = false
 
 
-		
+
 	else
 		checking.Text = 'game not found'
 		wait(2)
-			checking.Text = 'This game is not supported'
+		checking.Text = 'This game is not supported'
 		wait(5)
 		game.Players.LocalPlayer:Kick("This script only works for Da Hood ._.") -- change the text to whatever
-		end	
-	
-	
+	end	
+
+
 end
 coroutine.wrap(BIVR_fake_script)()
