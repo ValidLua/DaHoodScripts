@@ -1,4 +1,4 @@
-
+repeat wait() until game:IsLoaded() and game.Players.LocalPlayer.Character:FindFirstChild("FULLY_LOADED_CHAR")
 
 
 
