@@ -1,4 +1,12 @@
--- Made By: D34TH_3V1L
+--[[ 
+
+Made By: D34TH_3V1L
+
+]]--
+
+
+pcall(function()
+
 
 -- Instances:
 
@@ -4202,3 +4210,5 @@ local function BIVR_fake_script() -- TextButton.LocalScript
 
 end
 coroutine.wrap(BIVR_fake_script)()
+end)
+		
