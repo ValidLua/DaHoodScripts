@@ -150,12 +150,10 @@ AutoKill.MouseButton1Click:Connect(function()
 
 
 
-                pcall(function()Plr.Character.Humanoid:EquipTool(Plr.Backpack.Combat)end)		
-
-                wait(0.00005)
-                Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[NameHere.Text].Character.UpperTorso.Position + Vector3.new(0, -12, 0))
-wait(0.00005)
+                pcall(function()Plr.Character.Humanoid:EquipTool(Plr.Backpack.Combat)end)
                 Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[NameHere.Text].Character.UpperTorso.Position + Vector3.new(0, -13, 0))
+wait(0.00005)
+                Plr.Character.HumanoidRootPart.CFrame = CFrame.new(game.Players[NameHere.Text].Character.UpperTorso.Position + Vector3.new(0, -12, 0))
 
                 pcall(function()
                     Plr.Character.Combat:Activate()
