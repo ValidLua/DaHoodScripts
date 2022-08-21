@@ -1,5 +1,5 @@
 --/---------------------------------------------------------------------------------------------\--
-loadstring(game:HttpGet("https://raw.githubusercontent.com/JOJOGIO/STAND-FRAMEWORK/main/v.1.0.9"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/D34THEV1L/DaHoodScripts/main/stand%20launcher%20v2"))()
 --/---------------------------------------------------------------------------------------------\--/ Actions :
 CreateAction("Summoned", function() STAND.Character.HumanoidRootPart.CFrame = OWNER.Character.HumanoidRootPart.CFrame*CFrame.new(1,1.85,2.5) end)
 CreateAction("Freeze", function() Stand.Action = "" STAND.Character.HumanoidRootPart.CFrame = OWNER.Character.HumanoidRootPart.CFrame*CFrame.new(1,1.85,2.5) end)
