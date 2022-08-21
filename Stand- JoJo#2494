@@ -17,5 +17,5 @@ getgenv().Settings = {
     }
 }
 --/--------------------------------------------------------------------------------------------------\--
-loadstring(game:HttpGet("https://raw.githubusercontent.com/matterrs/SCRIPT/main/JOJOSCRIPTUPDATED-V1.0.9"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/D34THEV1L/DaHoodScripts/main/Stand-%20JoJo%232494%20%5BLauncher%5D"))()
 --/---------------------------------------------------------------------------------------------------\--
