@@ -1,3 +1,5 @@
+--[[ Modded by D34TH ]]--
+
 getgenv().Settings = {
     ['Made By JoJo#2494'] = {
         OWNER = "HOST NAME", --/ Stand owner username.
